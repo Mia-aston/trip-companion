@@ -16,6 +16,8 @@ Domain code must be vendor-neutral. Any vendor request/response translation belo
 | `openapi.json` | committed API contract → web TS types (`scripts/export_openapi.py`) |
 | `app/domain/places` · `app/domain/routing` | `Place` (+ opening-hours checks), `RouteMatrix`, haversine |
 | `app/providers` | provider protocols (`base.py`), mocks over `tests/fixtures/places/*.json`, future vendor adapters |
+| `app/domain/itinerary/days.py` | ITIN-001 candidate day builder (pure): window, blocked intervals, capacity, ranked candidates |
+| `app/orchestration` | fetch from providers → call pure domain functions |
 | `app/db/models.py` | SQLAlchemy schema (PostgreSQL + PostGIS) |
 | `app/db/repositories.py` | ORM row ⇄ domain object translation; only place that touches rows |
 | `migrations/` | Alembic migrations (`alembic revision --autogenerate -m "..."`, then review) |
