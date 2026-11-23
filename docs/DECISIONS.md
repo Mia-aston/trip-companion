@@ -19,6 +19,9 @@ Accepted long-form ADRs live in `docs/decisions/`.
 | A-11 | Instants (`starts_at`, `fetched_at`, …) require an offset on input and are normalized to UTC; clients display them in the stop's `timezone`. Matches `timestamptz` storage so data round-trips exactly | CORE-002 |
 | A-13 | `PATCH /v1/trips/{id}` may send `stops` to replace the whole stop list (only way to change trip length); bookings must not point at removed stops. Explicit `null` clears optional fields | CORE-003 |
 | A-14 | API allows browser origins from `CORS_ORIGINS` (default localhost:3000); web calls the API directly from the client in M1 | UI-001 |
+| A-15 | Day capacity rules (buffers 90/180 min, pace utilisation, mobility/children factors, 60-min floor, scoring weights) as in ARCHITECTURE.md#day-capacity-m2; tunable constants in one module | M2 |
+| A-16 | Stop base location comes from the places provider (`city` place for the stop's city) until stops get explicit coordinates | M2 |
+| A-17 | Provider results cached in Postgres (places upsert, search snapshots 24 h, places/routes 7 days); stale cached data is returned when the provider loses a record; providers chosen by `PLACES_PROVIDER` / `ROUTES_PROVIDER` | M2 |
 | A-12 | `trips.owner_id` is nullable until auth lands (D-01, M8); members/constraints keep insertion order via `position` | CORE-002 |
 
 ## Open (default applies until decided)

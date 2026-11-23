@@ -2,7 +2,7 @@
 
 ## Current state (23 Nov 2026)
 
-**Milestone:** M1 — Trip workspace (in progress). M0 done. Stacked PRs: #1 `m0-foundation` → #2 `m0/core-001-contracts` → #3 `m1/core-002-schema` → #4 `m1/core-003-trips-api` → #5 `m1/core-004-seed` → #6 `m1/ui-001-create-trip`.
+**Milestone:** M1 — Trip workspace (in progress). M0 done. Stacked PRs: #1 `m0-foundation` → #2 `m0/core-001-contracts` → #3 `m1/core-002-schema` → #4 `m1/core-003-trips-api` → #5 `m1/core-004-seed` → #6 `m1/ui-001-create-trip` → #7 `m2/place-route-contracts` → #8 `m2/itin-001-day-candidates` → #9 `m2/place-003-persistence-api`.
 **Rule:** one issue per branch; contract changes go through docs + DECISIONS first.
 
 ### Done
@@ -25,17 +25,23 @@
 - **UI-001 done**: Next.js app — `/` Create Trip form, `/trips/[id]` read-only trip page (times in stop timezone). API CORS (A-14). Playwright e2e (desktop + phone) + CI `e2e` job.
 - **M1 exit criteria met** on the PR #6 branch (E1 at repository, API and UI level); closes when #1–#6 are merged.
 
+- **M2 started.** PLACE-001 + ROUTE-001 (#7): `Place` / `RouteMatrix` contracts, opening-hours checks, 21 Egypt fixture places, mock places/routes providers, contract suite.
+- **ITIN-001 done** (#8): `app/domain/itinerary/days.py` (pure) + `app/orchestration/day_candidates.py`. Golden slice **E2 passes** on mocks: 31 Oct no capacity, 6 Nov cut at 19:30, 4 Nov starts after the train, Giza must-do ranked first on Cairo days, closed places filtered.
+
+- **PLACE-003 done** (#9): migration 0003 (places columns, `provider_snapshots`, `route_legs`), `CachedPlacesProvider` / `CachedRoutesProvider` (A-17), provider registry, `POST /v1/places/search`, `GET /v1/places/{id}`, `GET /v1/trips/{id}/day-candidates`. **M2 exit met** (E2 at domain and API level).
+
 ### Contracts affected
-- A-13 (PATCH `stops`), A-14 (CORS). No schema change since CORE-002.
+- New endpoints above; OpenAPI + TS regenerated. A-15…A-17.
 
 ### Known gaps / blockers
-- No auth (D-01): every trip visible to every caller — dev only. No trips list endpoint/page (not in MVP contract).
-- UI cannot edit yet (members/constraints/bookings/PATCH exist in API; editing UI comes with the itinerary editor, M3).
+- Live places/routes adapters wait for D-02. No UI for day candidates yet (comes with the itinerary editor in M3).
+- Egypt fixture lacks a Cairo → desert transport booking (flagged by the day builder).
+- 9 stacked PRs unmerged — merge #1 → #9 before M3 to keep the stack manageable.
 
-### Next safe tasks (M2 — Places + routing)
-1. PLACE-001: normalized `Place` contract (hours, rating, price level, accessibility, timezone, provenance) + mock fixtures for Egypt POIs; extend the provider contract suite.
-2. ROUTE-001: `RouteMatrix` contract + mock adapter (haversine × mode speed), contract tests.
-3. provider_snapshots table + TTL; ITIN-001 candidate day builder → E2.
+### Next safe tasks (M3 — Itinerary engine)
+1. M3 doc pass: plan_versions/itinerary tables, validator rules, structured plan schema, regenerate contract.
+2. ITIN-002 feasibility validator (pure) over `DayPlanInput` + a proposed schedule.
+3. AI-001 structured itinerary schema + fake planner; ITIN-003 locked items + partial regeneration → E3.
 
 ### Context rule
 Pick one issue, read `AGENTS.md` → `docs/SCOPE.md` → module README → touched contracts. Do not redesign unrelated modules.

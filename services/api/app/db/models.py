@@ -13,6 +13,7 @@ from sqlalchemy import (
     CheckConstraint,
     Date,
     DateTime,
+    Float,
     ForeignKey,
     Index,
     Numeric,
@@ -216,18 +217,71 @@ class BookingRow(TimestampMixin, Base):
 
 
 class PlaceRow(TimestampMixin, Base):
-    """Normalized place cache. `provider` + `provider_place_id` identify the source record."""
+    """Normalized place cache (PLACE-003). Domain id = '<provider>:<provider_place_id>'."""
 
     __tablename__ = "places"
-    __table_args__ = (UniqueConstraint("provider", "provider_place_id"),)
+    __table_args__ = (
+        UniqueConstraint("provider", "provider_place_id"),
+        CheckConstraint("rating IS NULL OR rating BETWEEN 0 AND 5", name="rating_range"),
+        CheckConstraint("price_level IS NULL OR price_level BETWEEN 1 AND 4", name="price_level_range"),
+        CheckConstraint("typical_visit_minutes BETWEEN 5 AND 600", name="visit_range"),
+    )
 
     id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=uuid.uuid4)
     provider: Mapped[str] = mapped_column(String(40))
     provider_place_id: Mapped[str] = mapped_column(String(255))
     name: Mapped[str] = mapped_column(String(255))
+    city: Mapped[str | None] = mapped_column(String(120))
     # geography(Point, 4326): distances in metres via ST_Distance / ST_DWithin. GiST index is created.
     location: Mapped[object] = mapped_column(Geography(geometry_type="POINT", srid=4326))
     categories: Mapped[list[str]] = mapped_column(ARRAY(Text), default=list, server_default="{}")
+    opening_hours: Mapped[list | None] = mapped_column(JSONB)  # NULL = unknown
+    rating: Mapped[float | None] = mapped_column(Float)
+    rating_count: Mapped[int | None]
+    price_level: Mapped[int | None] = mapped_column(SmallInteger)
+    wheelchair_accessible: Mapped[bool | None]
+    timezone: Mapped[str] = mapped_column(String(64), server_default="UTC")
+    typical_visit_minutes: Mapped[int] = mapped_column(SmallInteger, server_default="60")
+    fetched_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+
+
+class ProviderSnapshotRow(Base):
+    """Short-lived record of a provider call: which normalized results it returned and until when they are fresh."""
+
+    __tablename__ = "provider_snapshots"
+    __table_args__ = (
+        UniqueConstraint("provider", "kind", "request_hash"),
+        CheckConstraint("expires_at > fetched_at", name="ttl_positive"),
+    )
+
+    id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=uuid.uuid4)
+    provider: Mapped[str] = mapped_column(String(40))
+    kind: Mapped[str] = mapped_column(String(40))
+    request_hash: Mapped[str] = mapped_column(String(64))
+    request: Mapped[dict] = mapped_column(JSONB)
+    result_ids: Mapped[list[str]] = mapped_column(ARRAY(Text), default=list, server_default="{}")
+    fetched_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+    expires_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), index=True)
+
+
+class RouteLegRow(Base):
+    """Cached travel time between two places for one mode and provider."""
+
+    __tablename__ = "route_legs"
+    __table_args__ = (
+        UniqueConstraint("provider", "mode", "origin_id", "destination_id"),
+        CheckConstraint("mode IN ('walk', 'drive')", name="mode_valid"),
+        CheckConstraint("duration_s >= 0 AND distance_m >= 0", name="non_negative"),
+    )
+
+    id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=uuid.uuid4)
+    provider: Mapped[str] = mapped_column(String(40))
+    mode: Mapped[str] = mapped_column(String(8))
+    origin_id: Mapped[str] = mapped_column(String(300))
+    destination_id: Mapped[str] = mapped_column(String(300))
+    duration_s: Mapped[int]
+    distance_m: Mapped[int]
+    fetched_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
 
 
 class ExpenseRow(TimestampMixin, Base):

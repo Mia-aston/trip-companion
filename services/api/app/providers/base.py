@@ -2,6 +2,10 @@ from dataclasses import dataclass
 from datetime import date, datetime
 from typing import Protocol
 
+from app.domain.places.models import Place, PlaceCategory
+from app.domain.routing.models import RouteMatrix, TravelMode, Waypoint
+from app.domain.shared.models import GeoPoint
+
 
 @dataclass(frozen=True)
 class FlightSegment:
@@ -22,18 +26,27 @@ class FlightOption:
     booking_url: str | None = None
 
 
-@dataclass(frozen=True)
-class Place:
-    id: str
-    name: str
-    latitude: float
-    longitude: float
-    categories: tuple[str, ...] = ()
-
-
 class FlightProvider(Protocol):
     def search(self, origin: str, destination: str, departure_date: date, travellers: int) -> list[FlightOption]: ...
 
 
 class PlacesProvider(Protocol):
-    def search(self, query: str, latitude: float, longitude: float) -> list[Place]: ...
+    """Adapters return normalized `Place` objects only (PLACE-001)."""
+
+    name: str
+
+    def search(
+        self, query: str, near: GeoPoint, *, radius_m: int = 25_000, categories: list[PlaceCategory] | None = None
+    ) -> list[Place]: ...
+
+    def details(self, place_id: str) -> Place | None: ...
+
+    def resolve_city(self, city: str) -> Place | None: ...
+
+
+class RoutesProvider(Protocol):
+    """Adapters return a normalized `RouteMatrix` (ROUTE-001)."""
+
+    name: str
+
+    def matrix(self, waypoints: list[Waypoint], mode: TravelMode) -> RouteMatrix: ...

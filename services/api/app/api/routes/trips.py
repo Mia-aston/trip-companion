@@ -7,9 +7,11 @@ from fastapi import APIRouter, Depends, Response, status
 from pydantic import TypeAdapter
 from sqlalchemy.orm import Session
 
+from app.api.deps import Places, Routes
 from app.api.errors import ERROR_RESPONSES
 from app.db.repositories import TripRepository
 from app.db.session import get_session
+from app.domain.itinerary.days import TripDayCandidates
 from app.domain.shared.errors import NotFound
 from app.domain.trips import rules
 from app.domain.trips.models import (
@@ -23,6 +25,7 @@ from app.domain.trips.models import (
     TripCreate,
     TripUpdate,
 )
+from app.orchestration.day_candidates import build_day_candidates
 
 router = APIRouter(prefix="/v1/trips", tags=["trips"], responses=ERROR_RESPONSES)
 _CONSTRAINT = TypeAdapter(Constraint)
@@ -105,3 +108,9 @@ def add_booking(trip_id: UUID, payload: BookingCreate, repo: Repo) -> Booking:
 def remove_booking(trip_id: UUID, booking_id: UUID, repo: Repo) -> None:
     _load(repo, trip_id)
     _gone(repo.remove_booking(trip_id, booking_id), f"booking {booking_id}")
+
+
+@router.get("/{trip_id}/day-candidates", response_model=TripDayCandidates)
+def day_candidates(trip_id: UUID, repo: Repo, places: Places, routes: Routes) -> TripDayCandidates:
+    """Per day: available window, capacity and ranked feasible places (ITIN-001). Read-only; nothing is scheduled."""
+    return build_day_candidates(_load(repo, trip_id), places, routes)
