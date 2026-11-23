@@ -1,4 +1,8 @@
-"""Translate between ORM rows and domain objects. Only this layer touches rows."""
+"""Translate between ORM rows and domain objects. Only this layer touches rows.
+
+KNOWN GAP: TripRepository targets migration 0001 (single `travellers` column) and does not
+match the CORE-001 Trip contract yet. CORE-002 adds migration 0002 and rewrites this mapping.
+"""
 
 from uuid import UUID
 
