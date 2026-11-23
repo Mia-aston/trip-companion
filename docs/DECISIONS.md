@@ -16,6 +16,8 @@ Accepted long-form ADRs live in `docs/decisions/`.
 | A-08 (was D-08) | TS types generated from FastAPI OpenAPI (`openapi-typescript`); no hand-written `packages/contracts/` | CORE-001 |
 | A-09 | Trip-level `dietary` and `mobility_needs` are trip fields; `trip_constraints` hold `must_do`, `avoid`, `time_window` only | CORE-001 |
 | A-10 | M1 API is declared under `/v1` in CORE-001; unimplemented routes return 501 until CORE-003 | CORE-001 |
+| A-11 | Instants (`starts_at`, `fetched_at`, …) require an offset on input and are normalized to UTC; clients display them in the stop's `timezone`. Matches `timestamptz` storage so data round-trips exactly | CORE-002 |
+| A-12 | `trips.owner_id` is nullable until auth lands (D-01, M8); members/constraints keep insertion order via `position` | CORE-002 |
 
 ## Open (default applies until decided)
 Defaults below were accepted by the owner on 23 Nov 2026 (DOC-001); they stay open only for the vendor/tech choice.

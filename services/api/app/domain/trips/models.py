@@ -9,7 +9,7 @@ from enum import StrEnum
 from typing import Annotated, Literal, Self
 from uuid import UUID, uuid4
 
-from pydantic import AwareDatetime, Field, computed_field, model_validator
+from pydantic import Field, computed_field, model_validator
 
 from app.domain.shared.models import (
     Contract,
@@ -22,6 +22,7 @@ from app.domain.shared.models import (
     PriceLevel,
     TimeWindow,
     TimeZoneName,
+    UtcDatetime,
 )
 
 MAX_TRAVELLERS = 20
@@ -170,8 +171,8 @@ class TimeWindowConstraintCreate(Contract):
     kind: Literal["time_window"] = "time_window"
     hardness: Hardness = Hardness.HARD
     label: Name
-    starts_at: AwareDatetime
-    ends_at: AwareDatetime
+    starts_at: UtcDatetime
+    ends_at: UtcDatetime
 
     @model_validator(mode="after")
     def ordered(self) -> Self:
@@ -213,8 +214,8 @@ Constraint = Annotated[MustDo | Avoid | TimeWindowConstraint, Field(discriminato
 class BookingCreate(Contract):
     kind: BookingKind
     title: Name
-    starts_at: AwareDatetime
-    ends_at: AwareDatetime
+    starts_at: UtcDatetime
+    ends_at: UtcDatetime
     stop_seq: int | None = Field(default=None, ge=0, description="Which stop this belongs to")
     location_name: str | None = Field(default=None, max_length=200)
     reference: str | None = Field(default=None, max_length=120, description="Confirmation code")

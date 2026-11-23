@@ -18,13 +18,19 @@ Domain code must be vendor-neutral. Any vendor request/response translation belo
 | `migrations/` | Alembic migrations (`alembic revision --autogenerate -m "..."`, then review) |
 | `tests/` | unit + provider contract tests; `tests/db/` needs `TEST_DATABASE_URL` |
 
-## Schema (migration `0001_initial_schema`)
+## Schema (migrations `0001`, `0002`)
 
-- `trips` — checks: `end_date >= start_date`, travellers 1–20, pace enum.
-- `trip_members` — unique `(trip_id, display_name)`.
+- `users` — minimal account (D-01); `email` unique.
+- `trips` — CORE-001 contract: travellers (`adults`, `children_ages`, `infants`, party ≤ 20, infants ≤ adults), currencies, budget (all-or-nothing), pace, day window, interests, dietary, mobility, price level, `flight_prefs` JSONB, nullable `owner_id`.
+- `trip_stops` — ordered multi-city stops; unique `(trip_id, seq)`; `leave_on = arrive_on + nights`.
+- `trip_members` — unique `(trip_id, lower(display_name))`; role, currency_pref, `position` keeps order.
+- `trip_constraints` — kind `must_do|avoid|time_window`; kind-specific fields in `payload` JSONB (validated by the contract on read).
+- `bookings` — manual bookings; `ends_at >= starts_at`; cost all-or-nothing.
 - `places` — `geography(Point, 4326)` + GiST index; unique `(provider, provider_place_id)`.
-- `expenses` (cost + payer), `expense_shares` (who owes what), `transfers` (member → member, never trip cost; sender ≠ recipient).
-- Money is `numeric(14,2)` with ISO-4217 3-letter currency. Deleting a trip cascades to members/expenses/transfers.
+- `expenses` (cost + payer), `expense_shares` (who owes what), `transfers` (member → member, never trip cost; sender ≠ recipient). Money `numeric(14,2)` + ISO-4217.
+- Deleting a trip cascades to all children. Instants are `timestamptz` and come back as UTC (A-11).
+
+`TripRepository` (`app/db/repositories.py`) persists the whole Trip aggregate: `add`, `get`, `delete`.
 
 ## Adding a provider adapter
 

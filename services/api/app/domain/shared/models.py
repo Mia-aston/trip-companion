@@ -3,7 +3,7 @@
 Pure types + validation. No I/O, no DB, no vendor code.
 """
 
-from datetime import time
+from datetime import UTC, datetime, time
 from decimal import Decimal
 from enum import StrEnum
 from typing import Annotated, Self
@@ -34,6 +34,17 @@ def _check_tz(value: str) -> str:
 TimeZoneName = Annotated[str, AfterValidator(_check_tz), Field(examples=["Africa/Cairo"])]
 
 
+def _to_utc(value: datetime) -> datetime:
+    return value.astimezone(UTC)
+
+
+UtcDatetime = Annotated[
+    AwareDatetime,
+    AfterValidator(_to_utc),
+    Field(description="Offset required on input; normalized to and returned in UTC. Display in the stop's timezone."),
+]
+
+
 class Money(Contract):
     """Exact money. Serialized as a decimal string, never a float."""
 
@@ -57,8 +68,8 @@ class Provenance(Contract):
 
     source: ProvenanceSource
     provider: str | None = None
-    fetched_at: AwareDatetime | None = None
-    expires_at: AwareDatetime | None = None
+    fetched_at: UtcDatetime | None = None
+    expires_at: UtcDatetime | None = None
 
     @model_validator(mode="after")
     def provider_facts_are_timestamped(self) -> Self:
