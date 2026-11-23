@@ -305,7 +305,11 @@ class TripCreate(_Travellers, _TripPreferences):
 
 
 class TripUpdate(Contract):
-    """PATCH body. Omitted fields are unchanged. Stops/members/constraints/bookings use sub-resources."""
+    """PATCH body. Omitted fields are unchanged; explicit `null` clears an optional field (e.g. `budget`).
+
+    `stops` replaces the whole stop list (needed to change trip length). Members, constraints and
+    bookings use their sub-resources. Cross-field rules are re-checked on the merged trip (`rules.apply_update`).
+    """
 
     title: Name | None = None
     start_date: date | None = None
@@ -324,6 +328,7 @@ class TripUpdate(Contract):
     price_level: PriceLevel | None = None
     flight_prefs: FlightPrefs | None = None
     status: TripStatus | None = None
+    stops: Annotated[list[StopCreate], Field(min_length=1, max_length=20)] | None = None
 
 
 class Trip(_Travellers, _TripPreferences):
@@ -342,17 +347,22 @@ class Trip(_Travellers, _TripPreferences):
     def from_create(cls, payload: TripCreate) -> "Trip":
         """Build an unsaved Trip: assign ids and derive stop dates from nights."""
         data = payload.model_dump(exclude={"stops", "members", "constraints", "bookings", "travellers"})
-        stops, day = [], payload.start_date
-        for seq, s in enumerate(payload.stops):
-            leave = day + timedelta(days=s.nights)
-            stops.append(Stop(id=uuid4(), seq=seq, arrive_on=day, leave_on=leave, **s.model_dump()))
-            day = leave
         constraint_types = {"must_do": MustDo, "avoid": Avoid, "time_window": TimeWindowConstraint}
         return cls(
             id=uuid4(),
-            stops=stops,
+            stops=derive_stops(payload.start_date, payload.stops),
             members=[Member(id=uuid4(), **m.model_dump()) for m in payload.members],
             constraints=[constraint_types[c.kind](id=uuid4(), **c.model_dump()) for c in payload.constraints],
             bookings=[Booking(id=uuid4(), **b.model_dump()) for b in payload.bookings],
             **data,
         )
+
+
+def derive_stops(start: date, stops: list[StopCreate]) -> list[Stop]:
+    """Assign seq + new ids and derive arrive/leave dates from nights, starting at `start`."""
+    out, day = [], start
+    for seq, s in enumerate(stops):
+        leave = day + timedelta(days=s.nights)
+        out.append(Stop(id=uuid4(), seq=seq, arrive_on=day, leave_on=leave, **s.model_dump()))
+        day = leave
+    return out

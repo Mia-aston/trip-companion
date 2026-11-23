@@ -10,7 +10,9 @@ Domain code must be vendor-neutral. Any vendor request/response translation belo
 |---|---|
 | `app/domain/shared` | cross-module contracts (Money, Provenance, TimeWindow, enums) |
 | `app/domain/*` | typed domain objects + pure logic (no DB, no vendors) |
-| `app/api` | `/v1` routes + error envelope |
+| `app/api` | `/v1` routes (thin: validate → rules → repository) + error envelope |
+| `app/domain/trips/rules.py` | Trip rules needing current state (PATCH merge, member/booking checks) |
+| `app/domain/shared/errors.py` | `NotFound` / `Conflict` / `InvalidChange` → 404 / 409 / 422 |
 | `openapi.json` | committed API contract → web TS types (`scripts/export_openapi.py`) |
 | `app/providers` | provider protocols, mocks, future vendor adapters |
 | `app/db/models.py` | SQLAlchemy schema (PostgreSQL + PostGIS) |
@@ -30,7 +32,7 @@ Domain code must be vendor-neutral. Any vendor request/response translation belo
 - `expenses` (cost + payer), `expense_shares` (who owes what), `transfers` (member → member, never trip cost; sender ≠ recipient). Money `numeric(14,2)` + ISO-4217.
 - Deleting a trip cascades to all children. Instants are `timestamptz` and come back as UTC (A-11).
 
-`TripRepository` (`app/db/repositories.py`) persists the whole Trip aggregate: `add`, `get`, `delete`.
+`TripRepository` (`app/db/repositories.py`) persists the Trip aggregate: `add`, `get`, `save` (scalars + stops), `delete`, and `add_/remove_` member, constraint, booking. `get_session` commits per request and rolls back on any error.
 
 ## Adding a provider adapter
 

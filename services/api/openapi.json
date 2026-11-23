@@ -1470,7 +1470,7 @@
       },
       "TripUpdate": {
         "additionalProperties": false,
-        "description": "PATCH body. Omitted fields are unchanged. Stops/members/constraints/bookings use sub-resources.",
+        "description": "PATCH body. Omitted fields are unchanged; explicit `null` clears an optional field (e.g. `budget`).\n\n`stops` replaces the whole stop list (needed to change trip length). Members, constraints and\nbookings use their sub-resources. Cross-field rules are re-checked on the merged trip (`rules.apply_update`).",
         "properties": {
           "adults": {
             "anyOf": [
@@ -1671,6 +1671,22 @@
               }
             ]
           },
+          "stops": {
+            "anyOf": [
+              {
+                "items": {
+                  "$ref": "#/components/schemas/StopCreate"
+                },
+                "maxItems": 20,
+                "minItems": 1,
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Stops"
+          },
           "title": {
             "anyOf": [
               {
@@ -1742,6 +1758,26 @@
             },
             "description": "Successful Response"
           },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Not found"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Conflicts with stored state"
+          },
           "422": {
             "content": {
               "application/json": {
@@ -1750,17 +1786,7 @@
                 }
               }
             },
-            "description": "Validation error"
-          },
-          "501": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            },
-            "description": "Declared in contract, not implemented yet"
+            "description": "Validation error or invalid change"
           }
         },
         "summary": "Create Trip",
@@ -1788,6 +1814,26 @@
           "204": {
             "description": "Successful Response"
           },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Not found"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Conflicts with stored state"
+          },
           "422": {
             "content": {
               "application/json": {
@@ -1796,17 +1842,7 @@
                 }
               }
             },
-            "description": "Validation error"
-          },
-          "501": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            },
-            "description": "Declared in contract, not implemented yet"
+            "description": "Validation error or invalid change"
           }
         },
         "summary": "Delete Trip",
@@ -1839,6 +1875,26 @@
             },
             "description": "Successful Response"
           },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Not found"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Conflicts with stored state"
+          },
           "422": {
             "content": {
               "application/json": {
@@ -1847,17 +1903,7 @@
                 }
               }
             },
-            "description": "Validation error"
-          },
-          "501": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            },
-            "description": "Declared in contract, not implemented yet"
+            "description": "Validation error or invalid change"
           }
         },
         "summary": "Get Trip",
@@ -1900,6 +1946,26 @@
             },
             "description": "Successful Response"
           },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Not found"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Conflicts with stored state"
+          },
           "422": {
             "content": {
               "application/json": {
@@ -1908,17 +1974,7 @@
                 }
               }
             },
-            "description": "Validation error"
-          },
-          "501": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            },
-            "description": "Declared in contract, not implemented yet"
+            "description": "Validation error or invalid change"
           }
         },
         "summary": "Update Trip",
@@ -1963,6 +2019,26 @@
             },
             "description": "Successful Response"
           },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Not found"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Conflicts with stored state"
+          },
           "422": {
             "content": {
               "application/json": {
@@ -1971,17 +2047,7 @@
                 }
               }
             },
-            "description": "Validation error"
-          },
-          "501": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            },
-            "description": "Declared in contract, not implemented yet"
+            "description": "Validation error or invalid change"
           }
         },
         "summary": "Add Booking",
@@ -2019,6 +2085,26 @@
           "204": {
             "description": "Successful Response"
           },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Not found"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Conflicts with stored state"
+          },
           "422": {
             "content": {
               "application/json": {
@@ -2027,17 +2113,7 @@
                 }
               }
             },
-            "description": "Validation error"
-          },
-          "501": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            },
-            "description": "Declared in contract, not implemented yet"
+            "description": "Validation error or invalid change"
           }
         },
         "summary": "Remove Booking",
@@ -2120,6 +2196,26 @@
             },
             "description": "Successful Response"
           },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Not found"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Conflicts with stored state"
+          },
           "422": {
             "content": {
               "application/json": {
@@ -2128,17 +2224,7 @@
                 }
               }
             },
-            "description": "Validation error"
-          },
-          "501": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            },
-            "description": "Declared in contract, not implemented yet"
+            "description": "Validation error or invalid change"
           }
         },
         "summary": "Add Constraint",
@@ -2176,6 +2262,26 @@
           "204": {
             "description": "Successful Response"
           },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Not found"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Conflicts with stored state"
+          },
           "422": {
             "content": {
               "application/json": {
@@ -2184,17 +2290,7 @@
                 }
               }
             },
-            "description": "Validation error"
-          },
-          "501": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            },
-            "description": "Declared in contract, not implemented yet"
+            "description": "Validation error or invalid change"
           }
         },
         "summary": "Remove Constraint",
@@ -2239,6 +2335,26 @@
             },
             "description": "Successful Response"
           },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Not found"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Conflicts with stored state"
+          },
           "422": {
             "content": {
               "application/json": {
@@ -2247,17 +2363,7 @@
                 }
               }
             },
-            "description": "Validation error"
-          },
-          "501": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            },
-            "description": "Declared in contract, not implemented yet"
+            "description": "Validation error or invalid change"
           }
         },
         "summary": "Add Member",
@@ -2295,6 +2401,26 @@
           "204": {
             "description": "Successful Response"
           },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Not found"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Conflicts with stored state"
+          },
           "422": {
             "content": {
               "application/json": {
@@ -2303,17 +2429,7 @@
                 }
               }
             },
-            "description": "Validation error"
-          },
-          "501": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            },
-            "description": "Declared in contract, not implemented yet"
+            "description": "Validation error or invalid change"
           }
         },
         "summary": "Remove Member",

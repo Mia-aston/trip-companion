@@ -793,7 +793,10 @@ export interface components {
         TripStatus: "draft" | "planned" | "active" | "done";
         /**
          * TripUpdate
-         * @description PATCH body. Omitted fields are unchanged. Stops/members/constraints/bookings use sub-resources.
+         * @description PATCH body. Omitted fields are unchanged; explicit `null` clears an optional field (e.g. `budget`).
+         *
+         *     `stops` replaces the whole stop list (needed to change trip length). Members, constraints and
+         *     bookings use their sub-resources. Cross-field rules are re-checked on the merged trip (`rules.apply_update`).
          */
         TripUpdate: {
             /** Adults */
@@ -822,6 +825,8 @@ export interface components {
             /** Start Date */
             start_date?: string | null;
             status?: components["schemas"]["TripStatus"] | null;
+            /** Stops */
+            stops?: components["schemas"]["StopCreate"][] | null;
             /** Title */
             title?: string | null;
         };
@@ -878,8 +883,8 @@ export interface operations {
                     "application/json": components["schemas"]["Trip"];
                 };
             };
-            /** @description Validation error */
-            422: {
+            /** @description Not found */
+            404: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -887,8 +892,17 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
-            /** @description Declared in contract, not implemented yet */
-            501: {
+            /** @description Conflicts with stored state */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation error or invalid change */
+            422: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -918,8 +932,8 @@ export interface operations {
                     "application/json": components["schemas"]["Trip"];
                 };
             };
-            /** @description Validation error */
-            422: {
+            /** @description Not found */
+            404: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -927,8 +941,17 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
-            /** @description Declared in contract, not implemented yet */
-            501: {
+            /** @description Conflicts with stored state */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation error or invalid change */
+            422: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -956,8 +979,8 @@ export interface operations {
                 };
                 content?: never;
             };
-            /** @description Validation error */
-            422: {
+            /** @description Not found */
+            404: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -965,8 +988,17 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
-            /** @description Declared in contract, not implemented yet */
-            501: {
+            /** @description Conflicts with stored state */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation error or invalid change */
+            422: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -1000,8 +1032,8 @@ export interface operations {
                     "application/json": components["schemas"]["Trip"];
                 };
             };
-            /** @description Validation error */
-            422: {
+            /** @description Not found */
+            404: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -1009,8 +1041,17 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
-            /** @description Declared in contract, not implemented yet */
-            501: {
+            /** @description Conflicts with stored state */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation error or invalid change */
+            422: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -1044,8 +1085,8 @@ export interface operations {
                     "application/json": components["schemas"]["Booking"];
                 };
             };
-            /** @description Validation error */
-            422: {
+            /** @description Not found */
+            404: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -1053,8 +1094,17 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
-            /** @description Declared in contract, not implemented yet */
-            501: {
+            /** @description Conflicts with stored state */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation error or invalid change */
+            422: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -1083,8 +1133,8 @@ export interface operations {
                 };
                 content?: never;
             };
-            /** @description Validation error */
-            422: {
+            /** @description Not found */
+            404: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -1092,8 +1142,17 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
-            /** @description Declared in contract, not implemented yet */
-            501: {
+            /** @description Conflicts with stored state */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation error or invalid change */
+            422: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -1127,8 +1186,8 @@ export interface operations {
                     "application/json": components["schemas"]["MustDo"] | components["schemas"]["Avoid"] | components["schemas"]["TimeWindowConstraint"];
                 };
             };
-            /** @description Validation error */
-            422: {
+            /** @description Not found */
+            404: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -1136,8 +1195,17 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
-            /** @description Declared in contract, not implemented yet */
-            501: {
+            /** @description Conflicts with stored state */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation error or invalid change */
+            422: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -1166,8 +1234,8 @@ export interface operations {
                 };
                 content?: never;
             };
-            /** @description Validation error */
-            422: {
+            /** @description Not found */
+            404: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -1175,8 +1243,17 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
-            /** @description Declared in contract, not implemented yet */
-            501: {
+            /** @description Conflicts with stored state */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation error or invalid change */
+            422: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -1210,8 +1287,8 @@ export interface operations {
                     "application/json": components["schemas"]["Member"];
                 };
             };
-            /** @description Validation error */
-            422: {
+            /** @description Not found */
+            404: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -1219,8 +1296,17 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
-            /** @description Declared in contract, not implemented yet */
-            501: {
+            /** @description Conflicts with stored state */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation error or invalid change */
+            422: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -1249,8 +1335,8 @@ export interface operations {
                 };
                 content?: never;
             };
-            /** @description Validation error */
-            422: {
+            /** @description Not found */
+            404: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -1258,8 +1344,17 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
-            /** @description Declared in contract, not implemented yet */
-            501: {
+            /** @description Conflicts with stored state */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation error or invalid change */
+            422: {
                 headers: {
                     [name: string]: unknown;
                 };

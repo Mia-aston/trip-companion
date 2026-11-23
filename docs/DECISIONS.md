@@ -17,6 +17,7 @@ Accepted long-form ADRs live in `docs/decisions/`.
 | A-09 | Trip-level `dietary` and `mobility_needs` are trip fields; `trip_constraints` hold `must_do`, `avoid`, `time_window` only | CORE-001 |
 | A-10 | M1 API is declared under `/v1` in CORE-001; unimplemented routes return 501 until CORE-003 | CORE-001 |
 | A-11 | Instants (`starts_at`, `fetched_at`, …) require an offset on input and are normalized to UTC; clients display them in the stop's `timezone`. Matches `timestamptz` storage so data round-trips exactly | CORE-002 |
+| A-13 | `PATCH /v1/trips/{id}` may send `stops` to replace the whole stop list (only way to change trip length); bookings must not point at removed stops. Explicit `null` clears optional fields | CORE-003 |
 | A-12 | `trips.owner_id` is nullable until auth lands (D-01, M8); members/constraints keep insertion order via `position` | CORE-002 |
 
 ## Open (default applies until decided)

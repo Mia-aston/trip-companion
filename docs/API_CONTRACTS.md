@@ -5,20 +5,20 @@ Source: plan v0.1 §12. Paths may change; **semantics may not change without upd
 Conventions (MVP):
 - All routes under `/v1`. JSON, snake_case. Instants ISO-8601 with offset on input, always returned in UTC (`Z`) (A-11); dates `YYYY-MM-DD`; wall-clock times `HH:MM:SS`.
 - Money is `{ "amount": "128.62", "currency": "EUR" }` (string decimal, never float).
-- Errors: `{ "error": { "code": "...", "message": "...", "details": [...] } }`; validation = 422, conflict with locked/booked items = 409, provider down = 503 with `stale: true` data if any.
+- Errors: `{ "error": { "code": "...", "message": "...", "details": [...] } }`; validation or invalid change = 422 (`validation_error`), unknown id = 404, clash with stored state (duplicate member, member with expenses, locked items) = 409 (`conflict`), provider down = 503 with `stale: true` data if any.
 - Volatile data carries `provenance: { source: "provider|user|ai", provider?, fetched_at?, expires_at? }`.
 - Mutations that create money/booking rows accept `Idempotency-Key`.
 - OpenAPI from FastAPI is the machine contract; TS types are generated from it (A-08).
 
 | Method & path | Purpose | Milestone | Tier | Status |
 |---|---|---|---|---|
-| `POST /v1/trips` | create trip (variables in SCOPE.md) | M1 | MVP | contract frozen; validates + echoes unsaved Trip (CORE-001) |
-| `GET /v1/trips/{trip_id}` | load trip + members + stops + constraints + bookings | M1 | MVP | declared, 501 (CORE-003) |
-| `PATCH /v1/trips/{trip_id}` | edit trip fields | M1 | MVP | declared, 501 (CORE-003) |
-| `DELETE /v1/trips/{trip_id}` | delete trip (privacy) | M1 | MVP | declared, 501 (CORE-003) |
-| `POST/DELETE /v1/trips/{trip_id}/members[/{id}]` | manage members (PATCH: NICE) | M1 | MVP | declared, 501 (CORE-003) |
-| `POST/DELETE /v1/trips/{trip_id}/constraints[/{id}]` | must_do, avoid, time_window (A-09) | M1 | MVP | declared, 501 (CORE-003) |
-| `POST/DELETE /v1/trips/{trip_id}/bookings[/{id}]` | manual bookings (PATCH: NICE) | M1 | MVP | declared, 501 (CORE-003) |
+| `POST /v1/trips` | create trip (variables in SCOPE.md) | M1 | MVP | implemented, persisted (CORE-003) |
+| `GET /v1/trips/{trip_id}` | load trip + members + stops + constraints + bookings | M1 | MVP | implemented (CORE-003) |
+| `PATCH /v1/trips/{trip_id}` | edit trip fields; optional `stops` replaces all stops (A-13); merged trip re-validated → 422 | M1 | MVP | implemented (CORE-003) |
+| `DELETE /v1/trips/{trip_id}` | delete trip (privacy) | M1 | MVP | implemented (CORE-003) |
+| `POST/DELETE /v1/trips/{trip_id}/members[/{id}]` | manage members (PATCH: NICE) | M1 | MVP | implemented (CORE-003) |
+| `POST/DELETE /v1/trips/{trip_id}/constraints[/{id}]` | must_do, avoid, time_window (A-09) | M1 | MVP | implemented (CORE-003) |
+| `POST/DELETE /v1/trips/{trip_id}/bookings[/{id}]` | manual bookings (PATCH: NICE) | M1 | MVP | implemented (CORE-003) |
 | `POST /v1/places/search` | text/nearby search → `Place[]` | M2 | MVP | todo |
 | `GET /v1/places/{place_id}` | normalized details | M2 | MVP | todo |
 | `POST /v1/routes/matrix` | travel times between places (internal use first) | M2 | MVP | todo |
