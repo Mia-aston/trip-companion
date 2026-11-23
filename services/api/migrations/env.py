@@ -13,13 +13,20 @@ if not config.get_main_option("sqlalchemy.url"):
 
 target_metadata = Base.metadata
 
-# PostGIS ships its own tables (spatial_ref_sys, tiger/topology schemas); never autogenerate drops for them.
-POSTGIS_TABLES = {"spatial_ref_sys"}
-
 
 def include_object(obj, name, type_, reflected, compare_to):
-    if type_ == "table" and reflected and compare_to is None:
-        return name not in POSTGIS_TABLES and alembic_helpers.include_object(obj, name, type_, reflected, compare_to)
+    """Only diff objects we own.
+
+    PostGIS images ship extra schemas/tables (spatial_ref_sys, tiger geocoder, topology). A reflected
+    table that is not in our metadata is never ours, so autogenerate must not propose dropping it —
+    nor its indexes. Consequence: dropping one of *our* tables must be written by hand in a migration.
+    """
+    if reflected and compare_to is None:
+        if type_ == "table":
+            return False
+        table = getattr(obj, "table", None)
+        if table is not None and table.name not in target_metadata.tables:
+            return False
     return alembic_helpers.include_object(obj, name, type_, reflected, compare_to)
 
 
