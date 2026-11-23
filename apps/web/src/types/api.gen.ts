@@ -233,6 +233,84 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/trips/{trip_id}/itinerary/items": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Add Item
+         * @description Add your own item; overlapping unlocked planner items on that day are dropped.
+         */
+        post: operations["add_item_v1_trips__trip_id__itinerary_items_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/trips/{trip_id}/itinerary/items/{item_key}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /**
+         * Delete Item
+         * @description Remove an unlocked, non-booking item. Returns the new version.
+         */
+        delete: operations["delete_item_v1_trips__trip_id__itinerary_items__item_key__delete"];
+        options?: never;
+        head?: never;
+        /** Edit Item */
+        patch: operations["edit_item_v1_trips__trip_id__itinerary_items__item_key__patch"];
+        trace?: never;
+    };
+    "/v1/trips/{trip_id}/itinerary/items/{item_key}/lock": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Lock Item */
+        post: operations["lock_item_v1_trips__trip_id__itinerary_items__item_key__lock_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/trips/{trip_id}/itinerary/regenerate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Regenerate
+         * @description Re-plan one day. Bookings, locked items, kept user items and all other days stay identical.
+         */
+        post: operations["regenerate_v1_trips__trip_id__itinerary_regenerate_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/trips/{trip_id}/members": {
         parameters: {
             query?: never;
@@ -271,6 +349,31 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        /** AddItem */
+        AddItem: {
+            /**
+             * Date
+             * Format: date
+             */
+            date: string;
+            /**
+             * End
+             * Format: time
+             */
+            end: string;
+            /**
+             * Place Id
+             * @description Set to make it a place visit; otherwise a custom item
+             */
+            place_id?: string | null;
+            /**
+             * Start
+             * Format: time
+             */
+            start: string;
+            /** Title */
+            title: string;
+        };
         /** Avoid */
         Avoid: {
             /** Category */
@@ -505,6 +608,15 @@ export interface components {
          * @enum {string}
          */
         DietaryRestriction: "vegetarian" | "vegan" | "halal" | "kosher" | "gluten_free" | "lactose_free" | "nut_allergy" | "shellfish_allergy";
+        /** EditItem */
+        EditItem: {
+            /** End */
+            end?: string | null;
+            /** Start */
+            start?: string | null;
+            /** Title */
+            title?: string | null;
+        };
         /** ErrorBody */
         ErrorBody: {
             /** Code */
@@ -624,6 +736,11 @@ export interface components {
          * @enum {string}
          */
         ItemSource: "planner" | "user" | "booking";
+        /** LockItem */
+        LockItem: {
+            /** Locked */
+            locked: boolean;
+        };
         /** Member */
         Member: {
             /** Currency Pref */
@@ -957,6 +1074,41 @@ export interface components {
          * @enum {string}
          */
         ProvenanceSource: "provider" | "user" | "ai";
+        /** RegenerateRequest */
+        RegenerateRequest: {
+            /**
+             * Exclude Place Ids
+             * @default []
+             */
+            exclude_place_ids?: string[];
+            /**
+             * Note
+             * @description Stored as the version's reason; not interpreted
+             * @default
+             */
+            note?: string;
+            pace?: components["schemas"]["Pace"] | null;
+            /**
+             * Remove Item Keys
+             * @description User items to drop, e.g. a custom 'Aswan day trip'
+             * @default []
+             */
+            remove_item_keys?: string[];
+            scope: components["schemas"]["RegenerateScope"];
+            /**
+             * Stay Within M
+             * @description Only places this close to the stop base
+             */
+            stay_within_m?: number | null;
+        };
+        /** RegenerateScope */
+        RegenerateScope: {
+            /**
+             * Date
+             * Format: date
+             */
+            date: string;
+        };
         /**
          * Severity
          * @enum {string}
@@ -2045,6 +2197,270 @@ export interface operations {
         requestBody?: {
             content: {
                 "application/json": components["schemas"]["GenerateRequest"] | null;
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PlanVersion"];
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Conflicts with stored state */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation error or invalid change */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    add_item_v1_trips__trip_id__itinerary_items_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                trip_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AddItem"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PlanVersion"];
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Conflicts with stored state */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation error or invalid change */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    delete_item_v1_trips__trip_id__itinerary_items__item_key__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                item_key: string;
+                trip_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PlanVersion"];
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Conflicts with stored state */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation error or invalid change */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    edit_item_v1_trips__trip_id__itinerary_items__item_key__patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                item_key: string;
+                trip_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["EditItem"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PlanVersion"];
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Conflicts with stored state */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation error or invalid change */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    lock_item_v1_trips__trip_id__itinerary_items__item_key__lock_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                item_key: string;
+                trip_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["LockItem"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PlanVersion"];
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Conflicts with stored state */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation error or invalid change */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    regenerate_v1_trips__trip_id__itinerary_regenerate_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                trip_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RegenerateRequest"];
             };
         };
         responses: {

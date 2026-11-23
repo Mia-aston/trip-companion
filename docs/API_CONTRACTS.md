@@ -24,14 +24,14 @@ Conventions (MVP):
 | `GET /v1/trips/{trip_id}/day-candidates` | per-day window, capacity, ranked feasible places (ITIN-001) | M2 | MVP | implemented (PLACE-003) |
 | `POST /v1/routes/matrix` | travel times between places | M2 | NICE | internal only (cached `RoutesProvider`); not exposed |
 | `POST /v1/trips/{trip_id}/itinerary/generate` | full plan → new plan version (`{"note"?}`); keeps locked + user items; 422 with violations if invalid | M3 | MVP | implemented (AI-002) |
-| `POST /v1/trips/{trip_id}/itinerary/regenerate` | one-day regenerate (body in ARCHITECTURE.md#regenerate-contract-itin-003-mvp--one-day) → new version + diff | M3 | MVP | todo |
+| `POST /v1/trips/{trip_id}/itinerary/regenerate` | one-day regenerate (body in ARCHITECTURE.md#regenerate-contract-itin-003-mvp--one-day) → new version + diff | M3 | MVP | implemented (ITIN-003) |
 | `GET /v1/trips/{trip_id}/itinerary?version=` | latest or specific version (404 if none) | M3 | MVP | implemented (AI-002) |
 | `GET /v1/trips/{trip_id}/itinerary/diff?from=&to=` | diff by `item_key` (defaults: latest vs previous) | M3 | MVP | implemented (AI-002) |
 | `POST /v1/trips/{trip_id}/itinerary/rollback` | restore a version | M3 | NICE | todo |
-| `POST /v1/trips/{trip_id}/itinerary/items` | add a custom item to a day → new version | M3 | MVP | todo |
-| `PATCH /v1/trips/{trip_id}/itinerary/items/{item_key}` | edit time / title → new version (validated) | M3 | MVP | todo |
-| `DELETE /v1/trips/{trip_id}/itinerary/items/{item_key}` | remove an unlocked item → new version | M3 | MVP | todo |
-| `POST /v1/trips/{trip_id}/itinerary/items/{item_key}/lock` | lock/unlock (`{"locked": bool}`) → new version | M3 | MVP | todo |
+| `POST /v1/trips/{trip_id}/itinerary/items` | add a custom item to a day → new version | M3 | MVP | implemented (ITIN-003) |
+| `PATCH /v1/trips/{trip_id}/itinerary/items/{item_key}` | edit time / title → new version (validated) | M3 | MVP | implemented (ITIN-003) |
+| `DELETE /v1/trips/{trip_id}/itinerary/items/{item_key}` | remove an unlocked item → new version | M3 | MVP | implemented (ITIN-003) |
+| `POST /v1/trips/{trip_id}/itinerary/items/{item_key}/lock` | lock/unlock (`{"locked": bool}`) → new version | M3 | MVP | implemented (ITIN-003) |
 | `POST /v1/flights/search` | normalized `FlightOption[]` with expiry | M4 | MVP | todo |
 | `POST /v1/trips/{trip_id}/transport/select` | selected offer → booking + time constraint | M4 | MVP | todo |
 | `GET /v1/places/{place_id}/knowledge?moment=&lang=` | knowledge cards | M5 | MVP | todo |

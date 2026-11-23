@@ -20,6 +20,7 @@ Domain code must be vendor-neutral. Any vendor request/response translation belo
 | `app/db/cache.py` | `CachedPlacesProvider` / `CachedRoutesProvider`: same protocols, backed by `places`, `provider_snapshots`, `route_legs` |
 | `app/providers/registry.py` | picks adapters from `PLACES_PROVIDER` / `ROUTES_PROVIDER` |
 | `app/domain/itinerary/{plan,validator,planner}.py` | AI-001 `ProposedPlan` → canonical `PlanDay`s; ITIN-002 validator V1–V9; `Planner` protocol + `GreedyPlanner` |
+| `app/domain/itinerary/edits.py` | ITIN-003 pure edits: add / edit / delete / lock, booking re-mirroring |
 | `app/domain/itinerary/versions.py` · `app/db/plans.py` | `PlanVersion`, diff by `item_key`, key reuse, kept items · `PlanRepository` (immutable versions) |
 | `app/orchestration` | fetch from providers → call pure domain functions |
 | `app/db/models.py` | SQLAlchemy schema (PostgreSQL + PostGIS) |

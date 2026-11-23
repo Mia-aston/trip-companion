@@ -103,7 +103,7 @@ def test_invalid_plan_is_rejected_and_not_stored(client, trip):
     resp = _gen(client, trip)
     assert resp.status_code == 422
     error = resp.json()["error"]
-    assert error["message"] == "Generated plan failed validation"
+    assert error["message"] == "Plan failed validation"
     assert any(v["rule"] == "V2" for v in error["details"])
     assert client.get(f"/v1/trips/{trip['id']}/itinerary").status_code == 404
 

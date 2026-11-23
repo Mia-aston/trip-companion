@@ -1,6 +1,52 @@
 {
   "components": {
     "schemas": {
+      "AddItem": {
+        "additionalProperties": false,
+        "properties": {
+          "date": {
+            "format": "date",
+            "title": "Date",
+            "type": "string"
+          },
+          "end": {
+            "format": "time",
+            "title": "End",
+            "type": "string"
+          },
+          "place_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Set to make it a place visit; otherwise a custom item",
+            "title": "Place Id"
+          },
+          "start": {
+            "format": "time",
+            "title": "Start",
+            "type": "string"
+          },
+          "title": {
+            "maxLength": 200,
+            "minLength": 1,
+            "title": "Title",
+            "type": "string"
+          }
+        },
+        "required": [
+          "date",
+          "title",
+          "start",
+          "end"
+        ],
+        "title": "AddItem",
+        "type": "object"
+      },
       "Avoid": {
         "additionalProperties": false,
         "properties": {
@@ -578,6 +624,50 @@
         "title": "DietaryRestriction",
         "type": "string"
       },
+      "EditItem": {
+        "additionalProperties": false,
+        "properties": {
+          "end": {
+            "anyOf": [
+              {
+                "format": "time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "End"
+          },
+          "start": {
+            "anyOf": [
+              {
+                "format": "time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Start"
+          },
+          "title": {
+            "anyOf": [
+              {
+                "maxLength": 200,
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Title"
+          }
+        },
+        "title": "EditItem",
+        "type": "object"
+      },
       "ErrorBody": {
         "properties": {
           "code": {
@@ -831,6 +921,20 @@
         ],
         "title": "ItemSource",
         "type": "string"
+      },
+      "LockItem": {
+        "additionalProperties": false,
+        "properties": {
+          "locked": {
+            "title": "Locked",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "locked"
+        ],
+        "title": "LockItem",
+        "type": "object"
       },
       "Member": {
         "additionalProperties": false,
@@ -1709,6 +1813,83 @@
         ],
         "title": "ProvenanceSource",
         "type": "string"
+      },
+      "RegenerateRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "exclude_place_ids": {
+            "default": [],
+            "items": {
+              "type": "string"
+            },
+            "title": "Exclude Place Ids",
+            "type": "array"
+          },
+          "note": {
+            "default": "",
+            "description": "Stored as the version's reason; not interpreted",
+            "maxLength": 500,
+            "title": "Note",
+            "type": "string"
+          },
+          "pace": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Pace"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "remove_item_keys": {
+            "default": [],
+            "description": "User items to drop, e.g. a custom 'Aswan day trip'",
+            "items": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "title": "Remove Item Keys",
+            "type": "array"
+          },
+          "scope": {
+            "$ref": "#/components/schemas/RegenerateScope"
+          },
+          "stay_within_m": {
+            "anyOf": [
+              {
+                "maximum": 50000.0,
+                "minimum": 200.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Only places this close to the stop base",
+            "title": "Stay Within M"
+          }
+        },
+        "required": [
+          "scope"
+        ],
+        "title": "RegenerateRequest",
+        "type": "object"
+      },
+      "RegenerateScope": {
+        "additionalProperties": false,
+        "properties": {
+          "date": {
+            "format": "date",
+            "title": "Date",
+            "type": "string"
+          }
+        },
+        "required": [
+          "date"
+        ],
+        "title": "RegenerateScope",
+        "type": "object"
       },
       "Severity": {
         "enum": [
@@ -3753,6 +3934,392 @@
           }
         },
         "summary": "Generate",
+        "tags": [
+          "itinerary"
+        ]
+      }
+    },
+    "/v1/trips/{trip_id}/itinerary/items": {
+      "post": {
+        "description": "Add your own item; overlapping unlocked planner items on that day are dropped.",
+        "operationId": "add_item_v1_trips__trip_id__itinerary_items_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "trip_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Trip Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddItem"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PlanVersion"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Not found"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Conflicts with stored state"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Validation error or invalid change"
+          }
+        },
+        "summary": "Add Item",
+        "tags": [
+          "itinerary"
+        ]
+      }
+    },
+    "/v1/trips/{trip_id}/itinerary/items/{item_key}": {
+      "delete": {
+        "description": "Remove an unlocked, non-booking item. Returns the new version.",
+        "operationId": "delete_item_v1_trips__trip_id__itinerary_items__item_key__delete",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "item_key",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Item Key",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "trip_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Trip Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PlanVersion"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Not found"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Conflicts with stored state"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Validation error or invalid change"
+          }
+        },
+        "summary": "Delete Item",
+        "tags": [
+          "itinerary"
+        ]
+      },
+      "patch": {
+        "operationId": "edit_item_v1_trips__trip_id__itinerary_items__item_key__patch",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "item_key",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Item Key",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "trip_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Trip Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EditItem"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PlanVersion"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Not found"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Conflicts with stored state"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Validation error or invalid change"
+          }
+        },
+        "summary": "Edit Item",
+        "tags": [
+          "itinerary"
+        ]
+      }
+    },
+    "/v1/trips/{trip_id}/itinerary/items/{item_key}/lock": {
+      "post": {
+        "operationId": "lock_item_v1_trips__trip_id__itinerary_items__item_key__lock_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "item_key",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Item Key",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "trip_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Trip Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LockItem"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PlanVersion"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Not found"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Conflicts with stored state"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Validation error or invalid change"
+          }
+        },
+        "summary": "Lock Item",
+        "tags": [
+          "itinerary"
+        ]
+      }
+    },
+    "/v1/trips/{trip_id}/itinerary/regenerate": {
+      "post": {
+        "description": "Re-plan one day. Bookings, locked items, kept user items and all other days stay identical.",
+        "operationId": "regenerate_v1_trips__trip_id__itinerary_regenerate_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "trip_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Trip Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegenerateRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PlanVersion"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Not found"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Conflicts with stored state"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Validation error or invalid change"
+          }
+        },
+        "summary": "Regenerate",
         "tags": [
           "itinerary"
         ]
