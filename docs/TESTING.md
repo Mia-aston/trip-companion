@@ -52,8 +52,8 @@ Fixture: `tests/fixtures/egypt/` (built in M1, extended per milestone). Confirme
 |---|---|---|
 | E1 persist | M1 | Egypt trip with members, stops, constraints, bookings saves and reloads identically, no AI |
 | E2 feasibility ✅ (`tests/golden/test_e2_day_candidates.py`; API level in `tests/db/test_places_api.py`) | M2 | each day's candidates are reachable within the day window using the route matrix; late-arrival day has 0 sightseeing stops |
-| E3 regenerate | M3 | "remove Aswan, stay Luxor downtown" on 6 Nov changes only 6 Nov items; all other days, hotel and flight are byte-identical; new plan_version with diff; validator passes; 22:30 departure respected |
-| E3b weather | M3 | balloon cancelled → only 5 Nov morning block replaced |
+| E3 regenerate (v1 generated; user adds custom item "Aswan day trip" on 6 Nov → v2; regenerate 6 Nov with `remove_item_keys=[aswan]`, `stay_within_m=3000` → v3) | M3 | "remove Aswan, stay Luxor downtown" on 6 Nov changes only 6 Nov items; all other days, hotel and flight are byte-identical; new plan_version with diff; validator passes; 22:30 departure respected |
+| E3b weather | M3 | balloon booking set to `cancelled`, regenerate 5 Nov → only the 05:30–08:00 block changes; other 5 Nov locked items stay |
 | E4 flights | M4 | selecting a flight that lands 31 Oct 23:30 sets day-1 capacity to 0 sightseeing |
 | E5 recommendations | M5 | Luxor downtown lunch ranks by taste profile; every result has provenance + why; no sensitive inference |
 | E6 settlement | M6 | Egypt expense case reconciles; transfers excluded from trip cost; Σ net = 0 |

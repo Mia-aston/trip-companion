@@ -2,7 +2,7 @@
 
 ## Current state (23 Nov 2026)
 
-**Milestone:** M1 — Trip workspace (in progress). M0 done. Stacked PRs: #1 `m0-foundation` → #2 `m0/core-001-contracts` → #3 `m1/core-002-schema` → #4 `m1/core-003-trips-api` → #5 `m1/core-004-seed` → #6 `m1/ui-001-create-trip` → #7 `m2/place-route-contracts` → #8 `m2/itin-001-day-candidates` → #9 `m2/place-003-persistence-api`.
+**Milestone:** M3 — Itinerary engine (doc pass). M0–M2 done and on `main` (#10). Process from M3: one PR per issue, based on `main`, merged before the next starts (stacked PRs #3–#9 had to be re-landed via #10).
 **Rule:** one issue per branch; contract changes go through docs + DECISIONS first.
 
 ### Done
@@ -34,14 +34,15 @@
 - New endpoints above; OpenAPI + TS regenerated. A-15…A-17.
 
 ### Known gaps / blockers
-- Live places/routes adapters wait for D-02. No UI for day candidates yet (comes with the itinerary editor in M3).
+- Live places/routes adapters wait for D-02; LLM planner waits for D-07 (A-18).
 - Egypt fixture lacks a Cairo → desert transport booking (flagged by the day builder).
-- 9 stacked PRs unmerged — merge #1 → #9 before M3 to keep the stack manageable.
 
-### Next safe tasks (M3 — Itinerary engine)
-1. M3 doc pass: plan_versions/itinerary tables, validator rules, structured plan schema, regenerate contract.
-2. ITIN-002 feasibility validator (pure) over `DayPlanInput` + a proposed schedule.
-3. AI-001 structured itinerary schema + fake planner; ITIN-003 locked items + partial regeneration → E3.
+### Next safe tasks (M3, in order — see ROADMAP)
+1. Merge the M3 doc pass PR.
+2. ITIN-002 + AI-001: `ProposedPlan`, `validate()` V1–V9, `GreedyPlanner` (pure) + property tests.
+3. AI-002: migration 0004, plan repository, generate/get/diff API.
+4. ITIN-003: item edits + regenerate → E3/E3b.
+5. UI-002 itinerary editor.
 
 ### Context rule
 Pick one issue, read `AGENTS.md` → `docs/SCOPE.md` → module README → touched contracts. Do not redesign unrelated modules.
