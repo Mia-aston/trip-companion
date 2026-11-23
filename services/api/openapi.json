@@ -396,6 +396,15 @@
         "title": "ConstraintSource",
         "type": "string"
       },
+      "CreatedBy": {
+        "enum": [
+          "planner",
+          "user",
+          "system"
+        ],
+        "title": "CreatedBy",
+        "type": "string"
+      },
       "DayCandidate": {
         "additionalProperties": false,
         "properties": {
@@ -674,6 +683,20 @@
         "title": "FlightPrefs",
         "type": "object"
       },
+      "GenerateRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "note": {
+            "default": "",
+            "description": "Stored as the version's reason",
+            "maxLength": 500,
+            "title": "Note",
+            "type": "string"
+          }
+        },
+        "title": "GenerateRequest",
+        "type": "object"
+      },
       "GeoPoint": {
         "additionalProperties": false,
         "properties": {
@@ -717,6 +740,96 @@
           "adventure"
         ],
         "title": "Interest",
+        "type": "string"
+      },
+      "ItemChange": {
+        "additionalProperties": false,
+        "properties": {
+          "date": {
+            "format": "date",
+            "title": "Date",
+            "type": "string"
+          },
+          "fields": {
+            "description": "Changed fields, e.g. starts_at, place_id, locked",
+            "items": {
+              "type": "string"
+            },
+            "title": "Fields",
+            "type": "array"
+          },
+          "item_key": {
+            "format": "uuid",
+            "title": "Item Key",
+            "type": "string"
+          },
+          "kind": {
+            "$ref": "#/components/schemas/ItemKind"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          }
+        },
+        "required": [
+          "item_key",
+          "date",
+          "title",
+          "kind",
+          "fields"
+        ],
+        "title": "ItemChange",
+        "type": "object"
+      },
+      "ItemKind": {
+        "enum": [
+          "place",
+          "booking",
+          "transfer",
+          "meal",
+          "custom",
+          "free"
+        ],
+        "title": "ItemKind",
+        "type": "string"
+      },
+      "ItemRef": {
+        "additionalProperties": false,
+        "properties": {
+          "date": {
+            "format": "date",
+            "title": "Date",
+            "type": "string"
+          },
+          "item_key": {
+            "format": "uuid",
+            "title": "Item Key",
+            "type": "string"
+          },
+          "kind": {
+            "$ref": "#/components/schemas/ItemKind"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          }
+        },
+        "required": [
+          "item_key",
+          "date",
+          "title",
+          "kind"
+        ],
+        "title": "ItemRef",
+        "type": "object"
+      },
+      "ItemSource": {
+        "enum": [
+          "planner",
+          "user",
+          "booking"
+        ],
+        "title": "ItemSource",
         "type": "string"
       },
       "Member": {
@@ -1244,6 +1357,296 @@
         "title": "PlaceSearch",
         "type": "object"
       },
+      "PlanDay": {
+        "additionalProperties": false,
+        "properties": {
+          "date": {
+            "format": "date",
+            "title": "Date",
+            "type": "string"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/PlanItem"
+            },
+            "title": "Items",
+            "type": "array"
+          },
+          "stop_seq": {
+            "title": "Stop Seq",
+            "type": "integer"
+          },
+          "timezone": {
+            "title": "Timezone",
+            "type": "string"
+          }
+        },
+        "required": [
+          "date",
+          "stop_seq",
+          "timezone",
+          "items"
+        ],
+        "title": "PlanDay",
+        "type": "object"
+      },
+      "PlanDiff": {
+        "additionalProperties": false,
+        "properties": {
+          "added": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/ItemRef"
+            },
+            "title": "Added",
+            "type": "array"
+          },
+          "changed": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/ItemChange"
+            },
+            "title": "Changed",
+            "type": "array"
+          },
+          "changed_dates": {
+            "default": [],
+            "items": {
+              "format": "date",
+              "type": "string"
+            },
+            "title": "Changed Dates",
+            "type": "array"
+          },
+          "from_version": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "From Version"
+          },
+          "removed": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/ItemRef"
+            },
+            "title": "Removed",
+            "type": "array"
+          },
+          "to_version": {
+            "title": "To Version",
+            "type": "integer"
+          },
+          "unchanged": {
+            "default": 0,
+            "title": "Unchanged",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "from_version",
+          "to_version",
+          "added",
+          "removed",
+          "changed",
+          "unchanged",
+          "changed_dates"
+        ],
+        "title": "PlanDiff",
+        "type": "object"
+      },
+      "PlanItem": {
+        "additionalProperties": false,
+        "properties": {
+          "booking_id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Booking Id"
+          },
+          "ends_at": {
+            "description": "Offset required on input; normalized to and returned in UTC. Display in the stop's timezone.",
+            "format": "date-time",
+            "title": "Ends At",
+            "type": "string"
+          },
+          "item_key": {
+            "format": "uuid",
+            "title": "Item Key",
+            "type": "string"
+          },
+          "kind": {
+            "$ref": "#/components/schemas/ItemKind"
+          },
+          "locked": {
+            "default": false,
+            "title": "Locked",
+            "type": "boolean"
+          },
+          "place_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Place Id"
+          },
+          "source": {
+            "$ref": "#/components/schemas/ItemSource"
+          },
+          "starts_at": {
+            "description": "Offset required on input; normalized to and returned in UTC. Display in the stop's timezone.",
+            "format": "date-time",
+            "title": "Starts At",
+            "type": "string"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "weather_sensitive": {
+            "default": false,
+            "title": "Weather Sensitive",
+            "type": "boolean"
+          },
+          "why": {
+            "default": "",
+            "title": "Why",
+            "type": "string"
+          }
+        },
+        "required": [
+          "item_key",
+          "kind",
+          "title",
+          "place_id",
+          "booking_id",
+          "starts_at",
+          "ends_at",
+          "locked",
+          "weather_sensitive",
+          "source",
+          "why"
+        ],
+        "title": "PlanItem",
+        "type": "object"
+      },
+      "PlanVersion": {
+        "additionalProperties": false,
+        "properties": {
+          "created_at": {
+            "anyOf": [
+              {
+                "description": "Offset required on input; normalized to and returned in UTC. Display in the stop's timezone.",
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Created At"
+          },
+          "created_by": {
+            "$ref": "#/components/schemas/CreatedBy"
+          },
+          "days": {
+            "items": {
+              "$ref": "#/components/schemas/PlanDay"
+            },
+            "title": "Days",
+            "type": "array"
+          },
+          "diff": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/PlanDiff"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "explanation": {
+            "default": "",
+            "title": "Explanation",
+            "type": "string"
+          },
+          "parent_version": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Parent Version"
+          },
+          "planner": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Planner"
+          },
+          "reason": {
+            "default": "",
+            "title": "Reason",
+            "type": "string"
+          },
+          "trip_id": {
+            "format": "uuid",
+            "title": "Trip Id",
+            "type": "string"
+          },
+          "version": {
+            "minimum": 1.0,
+            "title": "Version",
+            "type": "integer"
+          },
+          "warnings": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/Violation"
+            },
+            "title": "Warnings",
+            "type": "array"
+          }
+        },
+        "required": [
+          "trip_id",
+          "version",
+          "parent_version",
+          "created_by",
+          "planner",
+          "reason",
+          "explanation",
+          "warnings",
+          "diff",
+          "created_at",
+          "days"
+        ],
+        "title": "PlanVersion",
+        "type": "object"
+      },
       "Provenance": {
         "additionalProperties": false,
         "description": "Where a user-visible fact came from and how fresh it is.",
@@ -1305,6 +1708,14 @@
           "ai"
         ],
         "title": "ProvenanceSource",
+        "type": "string"
+      },
+      "Severity": {
+        "enum": [
+          "error",
+          "warning"
+        ],
+        "title": "Severity",
         "type": "string"
       },
       "Stop": {
@@ -2245,6 +2656,55 @@
         },
         "title": "TripUpdate",
         "type": "object"
+      },
+      "Violation": {
+        "additionalProperties": false,
+        "properties": {
+          "date": {
+            "anyOf": [
+              {
+                "format": "date",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Date"
+          },
+          "item_key": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Item Key"
+          },
+          "message": {
+            "title": "Message",
+            "type": "string"
+          },
+          "rule": {
+            "title": "Rule",
+            "type": "string"
+          },
+          "severity": {
+            "$ref": "#/components/schemas/Severity"
+          }
+        },
+        "required": [
+          "rule",
+          "severity",
+          "date",
+          "item_key",
+          "message"
+        ],
+        "title": "Violation",
+        "type": "object"
       }
     }
   },
@@ -3033,6 +3493,268 @@
         "summary": "Day Candidates",
         "tags": [
           "trips"
+        ]
+      }
+    },
+    "/v1/trips/{trip_id}/itinerary": {
+      "get": {
+        "operationId": "get_itinerary_v1_trips__trip_id__itinerary_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "trip_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Trip Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "version",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "minimum": 1,
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Version"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PlanVersion"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Not found"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Conflicts with stored state"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Validation error or invalid change"
+          }
+        },
+        "summary": "Get Itinerary",
+        "tags": [
+          "itinerary"
+        ]
+      }
+    },
+    "/v1/trips/{trip_id}/itinerary/diff": {
+      "get": {
+        "operationId": "diff_v1_trips__trip_id__itinerary_diff_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "trip_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Trip Id",
+              "type": "string"
+            }
+          },
+          {
+            "description": "Defaults to the latest version",
+            "in": "query",
+            "name": "to",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "minimum": 1,
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Defaults to the latest version",
+              "title": "To"
+            }
+          },
+          {
+            "description": "Defaults to to - 1",
+            "in": "query",
+            "name": "from",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "minimum": 1,
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Defaults to to - 1",
+              "title": "From"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PlanDiff"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Not found"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Conflicts with stored state"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Validation error or invalid change"
+          }
+        },
+        "summary": "Diff",
+        "tags": [
+          "itinerary"
+        ]
+      }
+    },
+    "/v1/trips/{trip_id}/itinerary/generate": {
+      "post": {
+        "description": "Plan (or re-plan) the whole trip. Locked and user-added items are kept; 422 with violations if invalid.",
+        "operationId": "generate_v1_trips__trip_id__itinerary_generate_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "trip_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Trip Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "anyOf": [
+                  {
+                    "$ref": "#/components/schemas/GenerateRequest"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Payload"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PlanVersion"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Not found"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Conflicts with stored state"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Validation error or invalid change"
+          }
+        },
+        "summary": "Generate",
+        "tags": [
+          "itinerary"
         ]
       }
     },

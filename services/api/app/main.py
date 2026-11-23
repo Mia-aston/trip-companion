@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.api.errors import install_error_handlers
+from app.api.routes.itinerary import router as itinerary_router
 from app.api.routes.places import router as places_router
 from app.api.routes.trips import router as trips_router
 from app.config import get_settings
@@ -16,6 +17,7 @@ app.add_middleware(
 )
 app.include_router(trips_router)
 app.include_router(places_router)
+app.include_router(itinerary_router)
 
 
 @app.get("/health")

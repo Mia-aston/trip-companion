@@ -103,3 +103,39 @@ def test_greedy_plans_always_validate(pace, interests, mobility, nights, start_h
     trip = Trip.from_create(TripCreate.model_validate(payload))
     result = plan_trip(trip, MockPlacesProvider(), MockRoutesProvider(), GreedyPlanner())
     assert not has_errors(result.violations), [v.message for v in result.violations if v.severity is Severity.ERROR]
+
+
+@settings(max_examples=30, deadline=None, suppress_health_check=[HealthCheck.too_slow])
+@given(pick=st.integers(0, 50), pace=st.sampled_from(["relaxed", "balanced", "packed"]))
+def test_replanning_around_a_locked_item_stays_valid(pick, pace):
+    """Regression: travel time to/from kept (locked) visits must be respected (found in AI-002)."""
+    from app.domain.itinerary.versions import kept_items
+
+    payload = {
+        "title": "Luxor",
+        "origin": "CAI",
+        "start_date": DAY.isoformat(),
+        "end_date": (DAY + timedelta(days=1)).isoformat(),
+        "base_currency": "EGP",
+        "pace": pace,
+        "interests": ["history"],
+        "stops": [{"city": "Luxor", "nights": 1, "timezone": "Africa/Cairo"}],
+    }
+    trip = Trip.from_create(TripCreate.model_validate(payload))
+    first = plan_trip(trip, MockPlacesProvider(), MockRoutesProvider(), GreedyPlanner())
+    visits = [(d, i) for d in first.plan for i in d.items if i.kind is ItemKind.PLACE]
+    d, target = visits[pick % len(visits)]
+    locked = [
+        x.model_copy(
+            update={
+                "items": [
+                    i.model_copy(update={"locked": True}) if i.item_key == target.item_key else i for i in x.items
+                ]
+            }
+        )
+        for x in first.plan
+    ]
+    second = plan_trip(
+        trip, MockPlacesProvider(), MockRoutesProvider(), GreedyPlanner(), keep=kept_items(locked), previous=locked
+    )
+    assert not has_errors(second.violations), [v.message for v in second.violations if v.severity is Severity.ERROR]
