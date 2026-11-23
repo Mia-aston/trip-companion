@@ -8,17 +8,17 @@ Conventions (MVP):
 - Errors: `{ "error": { "code": "...", "message": "...", "details": [...] } }`; validation = 422, conflict with locked/booked items = 409, provider down = 503 with `stale: true` data if any.
 - Volatile data carries `provenance: { source: "provider|user|ai", provider?, fetched_at?, expires_at? }`.
 - Mutations that create money/booking rows accept `Idempotency-Key`.
-- OpenAPI from FastAPI is the machine contract; TS types are generated from it (D-08).
+- OpenAPI from FastAPI is the machine contract; TS types are generated from it (A-08).
 
 | Method & path | Purpose | Milestone | Tier | Status |
 |---|---|---|---|---|
-| `POST /v1/trips` | create trip (variables in SCOPE.md) | M1 | MVP | skeleton exists at `/trips`, not persisted |
-| `GET /v1/trips/{trip_id}` | load trip + members + stops + constraints + bookings | M1 | MVP | todo |
-| `PATCH /v1/trips/{trip_id}` | edit trip fields | M1 | MVP | todo |
-| `DELETE /v1/trips/{trip_id}` | delete trip (privacy) | M1 | MVP | todo |
-| `POST/PATCH/DELETE /v1/trips/{trip_id}/members[/{id}]` | manage members | M1 | MVP | todo |
-| `POST/PATCH/DELETE /v1/trips/{trip_id}/constraints[/{id}]` | must-do, avoid, dietary, windows | M1 | MVP | todo |
-| `POST/PATCH/DELETE /v1/trips/{trip_id}/bookings[/{id}]` | manual bookings | M1 | MVP | todo |
+| `POST /v1/trips` | create trip (variables in SCOPE.md) | M1 | MVP | contract frozen; validates + echoes unsaved Trip (CORE-001) |
+| `GET /v1/trips/{trip_id}` | load trip + members + stops + constraints + bookings | M1 | MVP | declared, 501 (CORE-003) |
+| `PATCH /v1/trips/{trip_id}` | edit trip fields | M1 | MVP | declared, 501 (CORE-003) |
+| `DELETE /v1/trips/{trip_id}` | delete trip (privacy) | M1 | MVP | declared, 501 (CORE-003) |
+| `POST/DELETE /v1/trips/{trip_id}/members[/{id}]` | manage members (PATCH: NICE) | M1 | MVP | declared, 501 (CORE-003) |
+| `POST/DELETE /v1/trips/{trip_id}/constraints[/{id}]` | must_do, avoid, time_window (A-09) | M1 | MVP | declared, 501 (CORE-003) |
+| `POST/DELETE /v1/trips/{trip_id}/bookings[/{id}]` | manual bookings (PATCH: NICE) | M1 | MVP | declared, 501 (CORE-003) |
 | `POST /v1/places/search` | text/nearby search → `Place[]` | M2 | MVP | todo |
 | `GET /v1/places/{place_id}` | normalized details | M2 | MVP | todo |
 | `POST /v1/routes/matrix` | travel times between places (internal use first) | M2 | MVP | todo |
@@ -42,7 +42,9 @@ Conventions (MVP):
 | `POST /v1/trips/{trip_id}/today/actions` | skip / late / replan-rest-of-day | M7 | MVP | todo |
 | `DELETE /v1/me` | delete account data | M8 | MVP | todo |
 
-## Core payloads (to be frozen as Pydantic models in CORE-001)
+## Core payloads (frozen in CORE-001)
+
+Source of truth: `services/api/app/domain/trips/models.py`, `app/domain/shared/models.py` → `services/api/openapi.json` → `apps/web/src/types/api.gen.ts`. Full example: `services/api/tests/fixtures/egypt/trip_create.json`.
 
 ```jsonc
 // TripCreate

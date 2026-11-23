@@ -12,8 +12,8 @@ Each milestone lists: **MVP** (must ship to exit) · **Deferred** (NICE → afte
 - [x] Postgres/PostGIS baseline schema + Alembic + DB tests (migration 0001)
 - [x] Provider contract test suite; CI (lint, `alembic check`, PostGIS tests, web typecheck)
 - [x] Split plan v0.1 into repo docs (SCOPE, PRODUCT, ARCHITECTURE, DATA_MODEL, API_CONTRACTS, TESTING, WORKFLOW, DECISIONS)
-- [ ] DOC-001 Owner review + freeze v0.1 docs; confirm open decisions defaults (D-01…D-10)
-- [ ] CORE-001 Pydantic contracts for Trip (new variables), Member, Stop, Constraint, Booking, Money; TS types generated (D-08)
+- [x] DOC-001 Owner review + freeze v0.1 docs; open-decision defaults accepted (23 Nov 2026)
+- [x] CORE-001 Pydantic contracts for Trip (new variables), Member, Stop, Constraint, Booking, Money; `/v1` routes declared; TS types generated (A-08) — awaiting owner review
 
 **Exit:** all open architecture questions tagged in DECISIONS.md with a default; core Pydantic/TS contracts reviewed. No feature code before this.
 

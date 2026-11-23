@@ -9,10 +9,10 @@ Status column: **built** = in migration `0001`; **change** = exists but must be 
 |---|---|---|---|---|---|
 | `users` | account/profile; no inferred sensitive traits | id, email, display_name, default_currency, locale | MVP | M1 | todo |
 | `taste_profiles` | declared taste (+ learned, NEXT) | user_id, vector (taste/texture), cuisines_liked[], dietary[], updated_at | MVP | M5 | todo |
-| `trips` | the trip | id, owner_id, title, status (draft/planned/active/done), start/end_date, adults, children_ages[], infants, origin, base_currency, settlement_currency, budget_total, budget_scope, pace, day_start, day_end, interests[], mobility_needs, price_level | MVP | M1 | **change** (has single `travellers`; lacks status, currency, budget, owner) |
+| `trips` | the trip | id, owner_id, title, status (draft/planned/active/done), start/end_date, adults, children_ages[], infants, origin, base_currency, settlement_currency, budget_total, budget_scope, pace, day_start, day_end, interests[], dietary[], mobility_needs, price_level, flight_prefs JSON | MVP | M1 | **change** (has single `travellers`; lacks status, currency, budget, owner) |
 | `trip_stops` | ordered destinations (multi-city) | trip_id, seq, place_id/city, nights, arrive_on, leave_on, timezone, accommodation_booking_id / area | MVP | M1 | todo |
 | `trip_members` | people who pay/owe | trip_id, user_id?, display_name, role, currency_pref | MVP | M1 | **change** (lacks role, user_id, currency_pref) |
-| `trip_constraints` | hard/soft constraints | trip_id, kind (must_do/avoid/dietary/time_window/mobility/…), hardness (hard/soft), payload JSON (typed per kind), source (user/booking/system), locked | MVP | M1 | todo |
+| `trip_constraints` | hard/soft constraints | trip_id, kind (must_do/avoid/time_window — dietary & mobility are trip fields, A-09), hardness (hard/soft), payload JSON (typed per kind), source (user/booking/system), locked | MVP | M1 | todo |
 | `transport_options` | normalized flight search result snapshot | trip_id, provider, offer_id, segments JSON, total, currency, fetched_at, expires_at | MVP | M4 | todo |
 | `bookings` | confirmed external booking (manual in MVP) | trip_id, kind (flight/hotel/activity/transport), title, starts_at, ends_at, place_id?, reference, cost → expense_id?, status | MVP | M1 | todo |
 | `places` | canonical normalized place | provider, provider_place_id, name, location (geography), categories[], opening_hours JSON, rating, price_level, accessibility, timezone, fetched_at | MVP | M2 | **change** (lacks hours/rating/price/fetched_at) |
@@ -52,7 +52,7 @@ member_net = paid_for_trip - cost_share + transfers_sent - transfers_received
   < 0  → member should pay
 Σ member_net = 0   (property-tested)
 ```
-> Sign note: the plan v0.1 formula (`+ transfers_received - transfers_sent`) has the transfer signs reversed — sending a reimbursement *reduces* what you owe, so it must be added. Fixed here; see D-09.
+> Sign note: the plan v0.1 formula (`+ transfers_received - transfers_sent`) has the transfer signs reversed — sending a reimbursement *reduces* what you owe, so it must be added. Fixed here; see A-05.
 
 UI shows side by side: total trip cost · cost share per person · paid directly · transfers · remaining settlement. Transfers never appear in total trip cost.
 

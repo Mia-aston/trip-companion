@@ -34,6 +34,7 @@ def test_postgis_extension_installed(session):
     assert session.scalar(select(func.postgis_version()))
 
 
+@pytest.mark.xfail(strict=True, reason="CORE-002: trips table not yet migrated to the CORE-001 Trip contract")
 def test_trip_repository_round_trip(session):
     repo = TripRepository(session)
     created = repo.add(

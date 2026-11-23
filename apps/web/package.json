@@ -4,7 +4,9 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "lint": "next lint"
+    "lint": "next lint",
+    "gen:types": "openapi-typescript ../../services/api/openapi.json --default-non-nullable false -o src/types/api.gen.ts",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "next": "^16.0.0",
@@ -12,8 +14,9 @@
     "react-dom": "^19.0.0"
   },
   "devDependencies": {
-    "typescript": "^5.0.0",
+    "@types/node": "^22.0.0",
     "@types/react": "^19.0.0",
-    "@types/node": "^22.0.0"
+    "openapi-typescript": "^7.4.4",
+    "typescript": "^5.0.0"
   }
 }

@@ -8,7 +8,10 @@ Domain code must be vendor-neutral. Any vendor request/response translation belo
 
 | Path | Owns |
 |---|---|
+| `app/domain/shared` | cross-module contracts (Money, Provenance, TimeWindow, enums) |
 | `app/domain/*` | typed domain objects + pure logic (no DB, no vendors) |
+| `app/api` | `/v1` routes + error envelope |
+| `openapi.json` | committed API contract → web TS types (`scripts/export_openapi.py`) |
 | `app/providers` | provider protocols, mocks, future vendor adapters |
 | `app/db/models.py` | SQLAlchemy schema (PostgreSQL + PostGIS) |
 | `app/db/repositories.py` | ORM row ⇄ domain object translation; only place that touches rows |
@@ -26,3 +29,10 @@ Domain code must be vendor-neutral. Any vendor request/response translation belo
 ## Adding a provider adapter
 
 Add the instance to `FLIGHT_PROVIDERS` / `PLACES_PROVIDERS` in `tests/test_providers_contract.py`; it must pass the contract suite (use recorded fixtures, not live calls).
+
+## Changing a contract
+
+1. Edit models in `app/domain/**/models.py` (+ docs/API_CONTRACTS.md / DATA_MODEL.md).
+2. `python scripts/export_openapi.py`
+3. `cd ../../apps/web && npm run gen:types`
+4. Commit `openapi.json` and `src/types/api.gen.ts` — CI fails if either is stale.
