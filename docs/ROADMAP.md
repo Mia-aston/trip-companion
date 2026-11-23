@@ -40,7 +40,7 @@ Rules: `docs/ARCHITECTURE.md#itinerary-engine-m3`. One PR per issue, each based 
 **MVP issues (in order)**
 1. ✅ M3 doc pass — itinerary tables, validator rules, planner contract, regenerate contract, E3 fixture.
 2. ✅ ITIN-002 + AI-001 — `ProposedPlan` schema (structured planner output), `validate()` (pure, rules V1–V9), `GreedyPlanner` (deterministic, no LLM) behind the `Planner` interface. Property test: validator never accepts overlaps / out-of-window items.
-3. AI-002 — migration 0004 (`plan_versions`, `itinerary_days`, `itinerary_items`), plan repository, orchestration (day inputs → planner → validator → persist → explanation), `POST …/itinerary/generate`, `GET …/itinerary`, `GET …/itinerary/diff`.
+3. ✅ AI-002 — migration 0004 (`plan_versions`, `itinerary_days`, `itinerary_items`), plan repository, orchestration (day inputs → planner → validator → persist → explanation), `POST …/itinerary/generate`, `GET …/itinerary`, `GET …/itinerary/diff`.
 4. ITIN-003 — item edits (`PATCH`, lock, add custom item, delete), `POST …/itinerary/regenerate` (day scope), diff by stable `item_key` → **E3, E3b**.
 5. UI-002 — itinerary editor: generate, day list, lock toggle, remove/add item, "regenerate this day" (pace, stay-near radius, exclude), version note + diff summary; Playwright.
 

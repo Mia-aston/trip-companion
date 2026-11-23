@@ -92,6 +92,10 @@ class GreedyPlanner:
                 title = "Lunch break" if earliest == LUNCH[0] else "Dinner"
                 items.append(ProposedItem(kind=ItemKind.MEAL, title=title, start=slot[0].time(), end=slot[1].time()))
 
+        # located fixed items (kept/locked visits): travel to and from them must fit too
+        located = [
+            (datetime.combine(day, f.start), datetime.combine(day, f.end), f.place_id) for f in pd.fixed if f.place_id
+        ]
         places = {p.id: p for p in pd.places}
         excluded = set(pd.exclude_place_ids) | {f.place_id for f in pd.fixed if f.place_id} | used_places
         ranked = [c for c in inp.candidates if c.fits and c.place_id not in excluded]
@@ -108,14 +112,17 @@ class GreedyPlanner:
             visit = timedelta(minutes=cand.visit_minutes)
             while start + visit <= w_end:
                 end = start + visit
-                if not _overlaps(start, end, busy) and (
-                    place is None or is_open_for(place, start, cand.visit_minutes) is not False
+                if (
+                    not _overlaps(start, end, busy)
+                    and (place is None or is_open_for(place, start, cand.visit_minutes) is not False)
+                    and self._travel_fits(start, end, cand.place_id, located, pd.matrix)
                 ):
                     break
                 start += STEP
             else:
                 continue
             busy.append((start, end))
+            located.append((start, end, cand.place_id))
             items.append(
                 ProposedItem(
                     kind=ItemKind.PLACE,
@@ -130,6 +137,23 @@ class GreedyPlanner:
 
         items.sort(key=lambda i: i.start)
         return ProposedDay(date=day, items=items)
+
+    @staticmethod
+    def _travel_fits(start, end, place_id, located, matrix) -> bool:
+        """Enough drive time from the previous located item and to the next one (V3)."""
+        before = [x for x in located if x[1] <= start]
+        after = [x for x in located if x[0] >= end]
+        if before:
+            prev = max(before, key=lambda x: x[1])
+            need = matrix.minutes(prev[2], place_id) if matrix else None
+            if need is not None and start < prev[1] + timedelta(minutes=need):
+                return False
+        if after:
+            nxt = min(after, key=lambda x: x[0])
+            need = matrix.minutes(place_id, nxt[2]) if matrix else None
+            if need is not None and nxt[0] < end + timedelta(minutes=need):
+                return False
+        return True
 
     @staticmethod
     def _travel(matrix: RouteMatrix | None, origin: str | None, dest: str, fallback: int) -> int:

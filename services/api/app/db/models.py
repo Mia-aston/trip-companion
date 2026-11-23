@@ -332,3 +332,74 @@ class TransferRow(TimestampMixin, Base):
     amount: Mapped[Decimal] = mapped_column(Money)
     currency: Mapped[str] = mapped_column(String(3))
     sent_on: Mapped[date | None] = mapped_column(Date)
+
+
+class PlanVersionRow(Base):
+    """Immutable plan snapshot (A-19). Days/items are written once and never updated."""
+
+    __tablename__ = "plan_versions"
+    __table_args__ = (
+        UniqueConstraint("trip_id", "version"),
+        CheckConstraint("version >= 1", name="version_positive"),
+        CheckConstraint("parent_version IS NULL OR parent_version < version", name="parent_before"),
+        CheckConstraint(_in("created_by", ("planner", "user", "system")), name="created_by_valid"),
+    )
+
+    id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=uuid.uuid4)
+    trip_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("trips.id", ondelete="CASCADE"), index=True)
+    version: Mapped[int]
+    parent_version: Mapped[int | None]
+    created_by: Mapped[str] = mapped_column(String(16))
+    planner: Mapped[str | None] = mapped_column(String(40))
+    reason: Mapped[str] = mapped_column(Text, default="", server_default="")
+    explanation: Mapped[str] = mapped_column(Text, default="", server_default="")
+    warnings: Mapped[list] = mapped_column(JSONB, default=list, server_default="[]")
+    diff: Mapped[dict | None] = mapped_column(JSONB)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+
+    days: Mapped[list["ItineraryDayRow"]] = relationship(
+        cascade="all, delete-orphan", passive_deletes=True, order_by="ItineraryDayRow.date"
+    )
+
+
+class ItineraryDayRow(Base):
+    __tablename__ = "itinerary_days"
+    __table_args__ = (UniqueConstraint("plan_version_id", "date"),)
+
+    id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=uuid.uuid4)
+    plan_version_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("plan_versions.id", ondelete="CASCADE"))
+    date: Mapped[date] = mapped_column(Date)
+    stop_seq: Mapped[int] = mapped_column(SmallInteger)
+    timezone: Mapped[str] = mapped_column(String(64))
+    capacity_minutes: Mapped[int] = mapped_column(default=0, server_default="0")
+    notes: Mapped[list[str]] = mapped_column(ARRAY(Text), default=list, server_default="{}")
+
+    items: Mapped[list["ItineraryItemRow"]] = relationship(
+        cascade="all, delete-orphan", passive_deletes=True, order_by="ItineraryItemRow.position"
+    )
+
+
+class ItineraryItemRow(Base):
+    __tablename__ = "itinerary_items"
+    __table_args__ = (
+        UniqueConstraint("day_id", "item_key"),
+        CheckConstraint("ends_at >= starts_at", name="times_ordered"),
+        CheckConstraint(_in("kind", ("place", "booking", "transfer", "meal", "custom", "free")), name="kind_valid"),
+        CheckConstraint(_in("source", ("planner", "user", "booking")), name="source_valid"),
+        CheckConstraint("kind <> 'place' OR place_id IS NOT NULL", name="place_has_id"),
+    )
+
+    id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=uuid.uuid4)
+    day_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("itinerary_days.id", ondelete="CASCADE"), index=True)
+    item_key: Mapped[uuid.UUID] = mapped_column(index=True)
+    position: Mapped[int] = mapped_column(SmallInteger)
+    kind: Mapped[str] = mapped_column(String(16))
+    title: Mapped[str] = mapped_column(String(200))
+    place_id: Mapped[str | None] = mapped_column(String(300))
+    booking_id: Mapped[uuid.UUID | None]  # no FK: a version keeps its history if the booking is deleted
+    starts_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+    ends_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+    locked: Mapped[bool] = mapped_column(default=False)
+    weather_sensitive: Mapped[bool] = mapped_column(default=False)
+    source: Mapped[str] = mapped_column(String(16))
+    why: Mapped[str] = mapped_column(Text, default="", server_default="")

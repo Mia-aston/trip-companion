@@ -2,16 +2,22 @@
 
 from dataclasses import dataclass, field
 from datetime import date, datetime, time
+from typing import TYPE_CHECKING
 from zoneinfo import ZoneInfo
 
 from app.domain.itinerary.days import DayPlanInput, StopContext, plan_day_inputs
 from app.domain.itinerary.plan import PlanDay, PlanItem, ProposedPlan, booking_items, materialize
 from app.domain.itinerary.planner import FixedBlock, Planner, PlannerContext, PlannerDay
-from app.domain.itinerary.validator import Violation, validate
+from app.domain.itinerary.validator import Severity, Violation, has_errors, validate
+from app.domain.itinerary.versions import CreatedBy, PlanVersion, compute_diff, kept_items, reuse_keys
 from app.domain.places.models import Place
+from app.domain.shared.errors import InvalidChange
 from app.domain.trips.models import Trip
 from app.orchestration.day_candidates import fetch_stop_contexts
 from app.providers.base import PlacesProvider, RoutesProvider
+
+if TYPE_CHECKING:
+    from app.db.plans import PlanRepository
 
 
 @dataclass
@@ -61,6 +67,7 @@ def plan_trip(
         )
     proposed = planner.compose(PlannerContext(days=planner_days, note=note))
     plan = materialize(trip, proposed, [(d.date, d.stop_seq, d.timezone) for d in day_inputs.values()], keep)
+    plan = reuse_keys(plan, previous)
 
     all_places = {p.id: p for ctx in contexts.values() for p in ctx.places}
 
@@ -72,3 +79,41 @@ def plan_trip(
 
     violations = validate(trip, plan, day_inputs, all_places, travel, previous)
     return PlanResult(plan=plan, proposed=proposed, violations=violations, day_inputs=day_inputs, places=all_places)
+
+
+def violations_payload(violations: list[Violation]) -> list[dict]:
+    return [v.model_dump(mode="json") for v in violations]
+
+
+def generate_version(
+    trip: Trip,
+    places: PlacesProvider,
+    routes: RoutesProvider,
+    planner: Planner,
+    plans: "PlanRepository",
+    *,
+    note: str = "",
+) -> PlanVersion:
+    """Full (re)plan → validated new version. Keeps locked and user items from the latest version (A-19, A-21)."""
+    latest = plans.get(trip.id)
+    previous = latest.days if latest else None
+    result = plan_trip(trip, places, routes, planner, keep=kept_items(previous), previous=previous, note=note)
+    if has_errors(result.violations):
+        errors = [v for v in result.violations if v.severity is Severity.ERROR]
+        raise InvalidChange("Generated plan failed validation", violations_payload(errors))
+    version = plans.next_version(trip.id)
+    plan = PlanVersion(
+        trip_id=trip.id,
+        version=version,
+        parent_version=latest.version if latest else None,
+        created_by=CreatedBy.PLANNER,
+        planner=planner.name,
+        reason=note or ("Initial plan" if latest is None else "Re-generated plan"),
+        explanation=result.proposed.explanation,
+        warnings=result.violations,
+        diff=compute_diff(previous, result.plan, latest.version if latest else None, version),
+        days=result.plan,
+    )
+    capacities = {d: inp.capacity_minutes for d, inp in result.day_inputs.items()}
+    notes = {d: inp.notes for d, inp in result.day_inputs.items()}
+    return plans.add(plan, capacities, notes)

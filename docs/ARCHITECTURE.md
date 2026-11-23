@@ -68,6 +68,7 @@ Deterministic, pure (`app/domain/itinerary/days.py`). For each date of the trip:
 
 ### Plan model
 - A trip has **plan versions** `1, 2, 3…`; each is an immutable full snapshot (days → items). Edits never mutate a version: they write the next one (A-19).
+- A full **generate** keeps locked items and the user's own items (`source=user`) from the latest version, rebuilds booking items, and re-plans the rest; a re-proposed visit reuses its previous `item_key` (same date, kind, place) so the diff shows a time change instead of remove + add.
 - Every item has a stable `item_key` (UUID) that survives across versions; the diff between two versions is computed by `item_key`: `added`, `removed`, `changed` (time / place / lock), `unchanged`.
 - Item kinds: `place` (a visit), `booking` (mirrors a flight / transport / activity booking; always locked, deterministic `item_key`; hotels are day context, not items), `transfer` (travel between items, computed), `meal`, `custom` (user free text, e.g. "Aswan day trip"), `free`.
 - `source`: `planner`, `user`, `booking`. Booking items are generated from trip bookings on every version and cannot be edited through the itinerary.
@@ -76,7 +77,7 @@ Deterministic, pure (`app/domain/itinerary/days.py`). For each date of the trip:
 `Planner.compose(PlannerContext) -> ProposedPlan`.
 - `PlannerContext` (bounded): for each day in scope — the `DayPlanInput` from ITIN-001 (window, blocked intervals, capacity, top 15 candidates), fixed items (bookings + locked + out-of-scope), preferences (pace, interests), exclusions.
 - `ProposedPlan`: `days[] { date, items[] { kind, place_id?, title, start "HH:MM", end "HH:MM", why } }` + `explanation` — local wall-clock times in the stop's timezone; the orchestrator converts to UTC.
-- **GreedyPlanner** (MVP, deterministic): per day, walk the ranked candidates; place each must-do first, then by score; start at the earliest free slot after the previous item + drive travel time; keep the visit inside opening hours and outside blocked/fixed intervals; insert a `meal` block (60 min, lunch between 12:30 and 14:30, dinner between 19:00 and 21:00) when the window covers it; each place is visited once per trip; stop when capacity is used. `why` = the candidate's reasons.
+- **GreedyPlanner** (MVP, deterministic): per day, walk the ranked candidates; place each must-do first, then by score; start at the earliest free slot after the previous item + drive travel time; keep the visit inside opening hours and outside blocked/fixed intervals; insert a `meal` block (60 min, lunch between 12:30 and 14:30, dinner between 19:00 and 21:00) when the window covers it; each place is visited once per trip; travel time is respected both after the previous located item and before the next one (including kept/locked visits); stop when capacity is used. `why` = the candidate's reasons.
 
 ### Validator (ITIN-002) — pure; errors block persisting, warnings are shown
 | Rule | Severity | Check |
@@ -105,7 +106,7 @@ The orchestrator never persists a plan with errors: it returns 422 with the viol
 }
 ```
 - Always preserved (not optional): bookings, locked items, everything outside the scope (A-20).
-- Removed: unlocked items in scope, plus `remove_item_keys`. Replacement comes from the planner over the day's candidates filtered by `exclude_place_ids` and `stay_within_m` (distance from the stop base).
+- Removed: unlocked planner items in scope, plus `remove_item_keys` (the way to drop a user's own item, e.g. "Aswan day trip"). User items not listed are kept. Replacement comes from the planner over the day's candidates filtered by `exclude_place_ids` and `stay_within_m` (distance from the stop base).
 - `note` is stored as the version's `reason`; it is not interpreted in MVP (free-text interpretation needs an LLM, NEXT).
 
 ## Partial regeneration

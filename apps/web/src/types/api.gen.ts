@@ -179,6 +179,60 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/trips/{trip_id}/itinerary": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Itinerary */
+        get: operations["get_itinerary_v1_trips__trip_id__itinerary_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/trips/{trip_id}/itinerary/diff": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Diff */
+        get: operations["diff_v1_trips__trip_id__itinerary_diff_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/trips/{trip_id}/itinerary/generate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Generate
+         * @description Plan (or re-plan) the whole trip. Locked and user-added items are kept; 422 with violations if invalid.
+         */
+        post: operations["generate_v1_trips__trip_id__itinerary_generate_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/trips/{trip_id}/members": {
         parameters: {
             query?: never;
@@ -380,6 +434,11 @@ export interface components {
          * @enum {string}
          */
         ConstraintSource: "user" | "booking" | "system";
+        /**
+         * CreatedBy
+         * @enum {string}
+         */
+        CreatedBy: "planner" | "user" | "system";
         /** DayCandidate */
         DayCandidate: {
             /** Categories */
@@ -492,6 +551,15 @@ export interface components {
              */
             max_stops: number | null;
         };
+        /** GenerateRequest */
+        GenerateRequest: {
+            /**
+             * Note
+             * @description Stored as the version's reason
+             * @default
+             */
+            note?: string;
+        };
         /** GeoPoint */
         GeoPoint: {
             /** Lat */
@@ -509,6 +577,53 @@ export interface components {
          * @enum {string}
          */
         Interest: "history" | "food" | "photo" | "nature" | "nightlife" | "shopping" | "art" | "adventure";
+        /** ItemChange */
+        ItemChange: {
+            /**
+             * Date
+             * Format: date
+             */
+            date: string;
+            /**
+             * Fields
+             * @description Changed fields, e.g. starts_at, place_id, locked
+             */
+            fields: string[];
+            /**
+             * Item Key
+             * Format: uuid
+             */
+            item_key: string;
+            kind: components["schemas"]["ItemKind"];
+            /** Title */
+            title: string;
+        };
+        /**
+         * ItemKind
+         * @enum {string}
+         */
+        ItemKind: "place" | "booking" | "transfer" | "meal" | "custom" | "free";
+        /** ItemRef */
+        ItemRef: {
+            /**
+             * Date
+             * Format: date
+             */
+            date: string;
+            /**
+             * Item Key
+             * Format: uuid
+             */
+            item_key: string;
+            kind: components["schemas"]["ItemKind"];
+            /** Title */
+            title: string;
+        };
+        /**
+         * ItemSource
+         * @enum {string}
+         */
+        ItemSource: "planner" | "user" | "booking";
         /** Member */
         Member: {
             /** Currency Pref */
@@ -700,6 +815,130 @@ export interface components {
              */
             radius_m?: number;
         };
+        /** PlanDay */
+        PlanDay: {
+            /**
+             * Date
+             * Format: date
+             */
+            date: string;
+            /** Items */
+            items: components["schemas"]["PlanItem"][];
+            /** Stop Seq */
+            stop_seq: number;
+            /** Timezone */
+            timezone: string;
+        };
+        /** PlanDiff */
+        PlanDiff: {
+            /**
+             * Added
+             * @default []
+             */
+            added: components["schemas"]["ItemRef"][];
+            /**
+             * Changed
+             * @default []
+             */
+            changed: components["schemas"]["ItemChange"][];
+            /**
+             * Changed Dates
+             * @default []
+             */
+            changed_dates: string[];
+            /** From Version */
+            from_version: number | null;
+            /**
+             * Removed
+             * @default []
+             */
+            removed: components["schemas"]["ItemRef"][];
+            /** To Version */
+            to_version: number;
+            /**
+             * Unchanged
+             * @default 0
+             */
+            unchanged: number;
+        };
+        /** PlanItem */
+        PlanItem: {
+            /** Booking Id */
+            booking_id: string | null;
+            /**
+             * Ends At
+             * Format: date-time
+             * @description Offset required on input; normalized to and returned in UTC. Display in the stop's timezone.
+             */
+            ends_at: string;
+            /**
+             * Item Key
+             * Format: uuid
+             */
+            item_key: string;
+            kind: components["schemas"]["ItemKind"];
+            /**
+             * Locked
+             * @default false
+             */
+            locked: boolean;
+            /** Place Id */
+            place_id: string | null;
+            source: components["schemas"]["ItemSource"];
+            /**
+             * Starts At
+             * Format: date-time
+             * @description Offset required on input; normalized to and returned in UTC. Display in the stop's timezone.
+             */
+            starts_at: string;
+            /** Title */
+            title: string;
+            /**
+             * Weather Sensitive
+             * @default false
+             */
+            weather_sensitive: boolean;
+            /**
+             * Why
+             * @default
+             */
+            why: string;
+        };
+        /** PlanVersion */
+        PlanVersion: {
+            /** Created At */
+            created_at: string | null;
+            created_by: components["schemas"]["CreatedBy"];
+            /** Days */
+            days: components["schemas"]["PlanDay"][];
+            diff: components["schemas"]["PlanDiff"] | null;
+            /**
+             * Explanation
+             * @default
+             */
+            explanation: string;
+            /** Parent Version */
+            parent_version: number | null;
+            /** Planner */
+            planner: string | null;
+            /**
+             * Reason
+             * @default
+             */
+            reason: string;
+            /**
+             * Trip Id
+             * Format: uuid
+             */
+            trip_id: string;
+            /** Version */
+            version: number;
+            /**
+             * Warnings
+             * @default []
+             */
+            warnings: components["schemas"]["Violation"][];
+        };
         /**
          * Provenance
          * @description Where a user-visible fact came from and how fresh it is.
@@ -718,6 +957,11 @@ export interface components {
          * @enum {string}
          */
         ProvenanceSource: "provider" | "user" | "ai";
+        /**
+         * Severity
+         * @enum {string}
+         */
+        Severity: "error" | "warning";
         /** Stop */
         Stop: {
             /** Accommodation Area */
@@ -1089,6 +1333,18 @@ export interface components {
             stops?: components["schemas"]["StopCreate"][] | null;
             /** Title */
             title?: string | null;
+        };
+        /** Violation */
+        Violation: {
+            /** Date */
+            date: string | null;
+            /** Item Key */
+            item_key: string | null;
+            /** Message */
+            message: string;
+            /** Rule */
+            rule: string;
+            severity: components["schemas"]["Severity"];
         };
     };
     responses: never;
@@ -1641,6 +1897,164 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["TripDayCandidates"];
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Conflicts with stored state */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation error or invalid change */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    get_itinerary_v1_trips__trip_id__itinerary_get: {
+        parameters: {
+            query?: {
+                version?: number | null;
+            };
+            header?: never;
+            path: {
+                trip_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PlanVersion"];
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Conflicts with stored state */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation error or invalid change */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    diff_v1_trips__trip_id__itinerary_diff_get: {
+        parameters: {
+            query?: {
+                /** @description Defaults to the latest version */
+                to?: number | null;
+                /** @description Defaults to to - 1 */
+                from?: number | null;
+            };
+            header?: never;
+            path: {
+                trip_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PlanDiff"];
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Conflicts with stored state */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation error or invalid change */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    generate_v1_trips__trip_id__itinerary_generate_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                trip_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["GenerateRequest"] | null;
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PlanVersion"];
                 };
             };
             /** @description Not found */

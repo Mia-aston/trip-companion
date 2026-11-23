@@ -23,10 +23,10 @@ Conventions (MVP):
 | `GET /v1/places/{place_id}` | normalized details; id `provider:source_id` | M2 | MVP | implemented (PLACE-003) |
 | `GET /v1/trips/{trip_id}/day-candidates` | per-day window, capacity, ranked feasible places (ITIN-001) | M2 | MVP | implemented (PLACE-003) |
 | `POST /v1/routes/matrix` | travel times between places | M2 | NICE | internal only (cached `RoutesProvider`); not exposed |
-| `POST /v1/trips/{trip_id}/itinerary/generate` | full plan → new plan version (`{"note"?}`); 422 with violations if invalid | M3 | MVP | todo |
+| `POST /v1/trips/{trip_id}/itinerary/generate` | full plan → new plan version (`{"note"?}`); keeps locked + user items; 422 with violations if invalid | M3 | MVP | implemented (AI-002) |
 | `POST /v1/trips/{trip_id}/itinerary/regenerate` | one-day regenerate (body in ARCHITECTURE.md#regenerate-contract-itin-003-mvp--one-day) → new version + diff | M3 | MVP | todo |
-| `GET /v1/trips/{trip_id}/itinerary?version=` | current/specific version | M3 | MVP | todo |
-| `GET /v1/trips/{trip_id}/itinerary/diff?from=&to=` | version diff | M3 | MVP | todo |
+| `GET /v1/trips/{trip_id}/itinerary?version=` | latest or specific version (404 if none) | M3 | MVP | implemented (AI-002) |
+| `GET /v1/trips/{trip_id}/itinerary/diff?from=&to=` | diff by `item_key` (defaults: latest vs previous) | M3 | MVP | implemented (AI-002) |
 | `POST /v1/trips/{trip_id}/itinerary/rollback` | restore a version | M3 | NICE | todo |
 | `POST /v1/trips/{trip_id}/itinerary/items` | add a custom item to a day → new version | M3 | MVP | todo |
 | `PATCH /v1/trips/{trip_id}/itinerary/items/{item_key}` | edit time / title → new version (validated) | M3 | MVP | todo |
