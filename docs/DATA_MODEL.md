@@ -1,7 +1,7 @@
 # Data model
 
 Source: plan v0.1 §11, §14. Input variables and their tiers: `docs/SCOPE.md#trip-input-variables`.
-Status column: **built** = in a migration (`0001`/`0002`); **change** = exists but must be updated (CORE-001/002); **todo** = not yet built.
+Status column: **built** = in a migration (`0001`–`0003`); **change** = exists but must be updated (CORE-001/002); **todo** = not yet built.
 
 ## Entities
 
@@ -15,12 +15,12 @@ Status column: **built** = in a migration (`0001`/`0002`); **change** = exists b
 | `trip_constraints` | hard/soft constraints | trip_id, kind (must_do/avoid/time_window — dietary & mobility are trip fields, A-09), hardness (hard/soft), payload JSON (typed per kind), source (user/booking/system), locked | MVP | M1 | built (0002) |
 | `transport_options` | normalized flight search result snapshot | trip_id, provider, offer_id, segments JSON, total, currency, fetched_at, expires_at | MVP | M4 | todo |
 | `bookings` | confirmed external booking (manual in MVP) | trip_id, kind (flight/hotel/activity/transport), title, starts_at, ends_at, place_id?, reference, cost → expense_id?, status | MVP | M1 | built (0002) |
-| `places` | canonical normalized place | provider, provider_place_id, name, location (geography), categories[], opening_hours JSON (weekly periods), rating, rating_count, price_level, wheelchair_accessible, timezone, typical_visit_minutes, fetched_at | MVP | M2 | **change** (lacks hours/rating/price/fetched_at) |
+| `places` | canonical normalized place | provider, provider_place_id, name, location (geography), categories[], opening_hours JSON (weekly periods), rating, rating_count, price_level, wheelchair_accessible, timezone, typical_visit_minutes, fetched_at | MVP | M2 | built (0003) |
 | `trip_places` | place state within a trip | trip_id, place_id, state (candidate/saved/scheduled/visited/skipped), score | MVP | M2 | todo |
 | `plan_versions` | immutable plan snapshots | trip_id, version, parent_version, created_by (user/planner), reason, diff JSON, created_at | MVP | M3 | todo |
 | `itinerary_days` | a day in a plan version | plan_version_id, date, stop_id, notes | MVP | M3 | todo |
 | `itinerary_items` | scheduled block | day_id, starts_at, ends_at, kind (place/meal/transfer/booking/free), place_id?, booking_id?, locked, weather_sensitive, why | MVP | M3 | todo |
-| `route_legs` | cached travel times | from_place, to_place, mode, duration_s, distance_m, provider, fetched_at | MVP | M2 | todo |
+| `route_legs` | cached travel times | provider, mode, origin_id, destination_id (domain place ids), duration_s, distance_m, fetched_at | MVP | M2 | built (0003) |
 | `knowledge_cards` | before/at/after content | place_id, moment, language, body, sources JSON, generated_at, model | MVP | M5 | todo |
 | `card_reads` | reading state | user_id, card_id, read_at | MVP | M5 | todo |
 | `photo_spots` | sub-place shot data | place_id, label, location?, relative_desc, best_time, direction, crowd_note, lens_hint, accessibility, provenance, confidence | MVP (curated) | M5 | todo |
@@ -29,7 +29,7 @@ Status column: **built** = in a migration (`0001`/`0002`); **change** = exists b
 | `expense_splits` | who owes what | expense_id, member_id, rule (equal/exact/percent), value, amount_original | MVP | M6 | **change** (table is `expense_shares`; add rule/value) |
 | `transfers` | member→member money | trip_id, sender, recipient, original_amount, original_currency, sent_on, idempotency_key | MVP | M6 | built (rename amount→original_amount) |
 | `fx_rates` | timestamped FX snapshots | base, quote, rate, as_of, provider | MVP | M6 | todo |
-| `provider_snapshots` | short-lived fetch metadata | provider, request_hash, fetched_at, ttl_s, status, normalized JSON (raw only if allowed) | MVP | M2 | todo |
+| `provider_snapshots` | short-lived fetch metadata | provider, kind, request_hash, request JSON, result_ids[], fetched_at, expires_at (no raw payloads) | MVP | M2 | built (0003) |
 | `prep_tasks` | prep checklist | trip_id, title, due_on, done | NICE | M7 | — |
 
 Not in v1 (NEXT): collaborative edit sessions, user-submitted photo spots, receipts, bank connections, learned taste history.

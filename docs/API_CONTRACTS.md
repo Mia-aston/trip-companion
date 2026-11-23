@@ -19,9 +19,10 @@ Conventions (MVP):
 | `POST/DELETE /v1/trips/{trip_id}/members[/{id}]` | manage members (PATCH: NICE) | M1 | MVP | implemented (CORE-003) |
 | `POST/DELETE /v1/trips/{trip_id}/constraints[/{id}]` | must_do, avoid, time_window (A-09) | M1 | MVP | implemented (CORE-003) |
 | `POST/DELETE /v1/trips/{trip_id}/bookings[/{id}]` | manual bookings (PATCH: NICE) | M1 | MVP | implemented (CORE-003) |
-| `POST /v1/places/search` | text/nearby search → `Place[]` | M2 | MVP | todo |
-| `GET /v1/places/{place_id}` | normalized details | M2 | MVP | todo |
-| `POST /v1/routes/matrix` | travel times between places (internal use first) | M2 | MVP | todo |
+| `POST /v1/places/search` | text/nearby search → `Place[]` (cached, provenance) | M2 | MVP | implemented (PLACE-003) |
+| `GET /v1/places/{place_id}` | normalized details; id `provider:source_id` | M2 | MVP | implemented (PLACE-003) |
+| `GET /v1/trips/{trip_id}/day-candidates` | per-day window, capacity, ranked feasible places (ITIN-001) | M2 | MVP | implemented (PLACE-003) |
+| `POST /v1/routes/matrix` | travel times between places | M2 | NICE | internal only (cached `RoutesProvider`); not exposed |
 | `POST /v1/trips/{trip_id}/itinerary/generate` | full plan → new plan_version | M3 | MVP | todo |
 | `POST /v1/trips/{trip_id}/itinerary/regenerate` | partial regenerate (body in ARCHITECTURE.md) | M3 | MVP | todo |
 | `GET /v1/trips/{trip_id}/itinerary?version=` | current/specific version | M3 | MVP | todo |

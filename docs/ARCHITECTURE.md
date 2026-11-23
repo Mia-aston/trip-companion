@@ -60,6 +60,8 @@ Deterministic, pure (`app/domain/itinerary/days.py`). For each date of the trip:
    pace `relaxed 0.6 · balanced 0.75 · packed 0.9`; × 0.8 if `mobility_needs != none`; × 0.85 if any child under 6 or infants. Under 60 free minutes → capacity 0 (no sightseeing).
 4. **Candidates:** places of the stop (within 25 km of the stop base), not excluded by `avoid`, open for at least the typical visit inside the window on that weekday (unknown hours → allowed, flagged), wheelchair-inaccessible places dropped when `mobility_needs = wheelchair`.
    Score = 0.5 interest match + 0.2 rating + 0.2 must-do bonus − 0.1 travel penalty (travel minutes from base / 60, capped at 1). A candidate fits if `travel there + visit + travel back ≤ capacity`.
+4b. **Transfer day** (first day of stop 2+): time before the arriving transport booking belongs to the previous stop; without such a booking the day carries a note asking for it.
+4c. A **must-do covered by an activity booking** (title match) counts as met.
 5. **Output** `DayPlanInput`: date, stop, window, blocked intervals, capacity, ranked candidates (place, score, visit minutes, travel minutes, reasons), unmet must-dos. ITIN-002 (M3) turns this into a schedule.
 
 ## Partial regeneration
