@@ -36,3 +36,16 @@ def test_openapi_declares_m1_surface():
     for sub in ("members", "constraints", "bookings"):
         assert "post" in paths[f"/v1/trips/{{trip_id}}/{sub}"]
         assert "delete" in paths[f"/v1/trips/{{trip_id}}/{sub}/{{{sub[:-1]}_id}}"]
+
+
+def test_cors_allows_web_origin():
+    resp = client.options(
+        "/v1/trips",
+        headers={"Origin": "http://localhost:3000", "Access-Control-Request-Method": "POST"},
+    )
+    assert resp.headers["access-control-allow-origin"] == "http://localhost:3000"
+
+
+def test_cors_rejects_unknown_origin():
+    resp = client.get("/health", headers={"Origin": "https://evil.example"})
+    assert "access-control-allow-origin" not in resp.headers

@@ -11,11 +11,11 @@ Source: plan v0.1 §16, §23. Process: `docs/WORKFLOW.md`.
 | Unit | split formulas, score functions, time-window validator, lock rules | `tests/test_*.py` | every PR | M0 ✅ |
 | Contract | provider fixture → normalized model; every adapter passes the same suite | `tests/test_providers_contract.py` + `tests/fixtures/` | every PR | M0 ✅ |
 | Schema / DB | migrations up/down, constraints, cascades, PostGIS | `tests/db/` (needs `TEST_DATABASE_URL`) | every PR (CI PostGIS) | M0 ✅ |
-| API | route validation + persistence via TestClient | `tests/api/` | every PR | M1 |
+| API | route validation + persistence via TestClient | `tests/test_trips_api.py`, `tests/db/test_trips_api.py` | every PR | M1 ✅ |
 | Property-based | splits sum to expense; settlement Σ = 0; validator never accepts overlap | `hypothesis` | every PR | M3/M6 |
 | Golden scenario | Egypt slices (below) | `tests/golden/` | every PR touching itinerary/budget | M1→M6 |
 | Evals | itinerary feasibility rate, explanation grounding, food-match explanation grounding | `evals/` (LLM, not in default CI) | nightly / manual | M3/M5 |
-| UI | create trip, choose flight, edit day, add expense (Playwright) | `apps/web/e2e/` | every PR touching web | M1 (smoke) → M7 |
+| UI | create trip, choose flight, edit day, add expense (Playwright, desktop + phone) | `apps/web/e2e/` | every PR (CI `e2e` job) | M1 ✅ (smoke) → M7 |
 
 Rules:
 - No live provider calls in CI. Live adapters are tested with sanitized recorded fixtures.
