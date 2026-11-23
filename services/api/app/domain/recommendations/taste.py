@@ -31,5 +31,5 @@ def taste_match(user: TasteVector, restaurant: TasteVector) -> float:
     Never infer race or ethnicity from reviewer name, photo, language or profile.
     """
     a, b = user.values(), restaurant.values()
-    distance = sum(abs(x - y) for x, y in zip(a, b)) / len(a)
+    distance = sum(abs(x - y) for x, y in zip(a, b, strict=True)) / len(a)
     return max(0.0, min(1.0, 1.0 - distance))

@@ -1,0 +1,50 @@
+{
+  "title": "Egypt Nov 2026",
+  "origin": "LON",
+  "start_date": "2026-10-31",
+  "end_date": "2026-11-06",
+  "adults": 2,
+  "children_ages": [],
+  "infants": 0,
+  "base_currency": "GBP",
+  "settlement_currency": "GBP",
+  "budget": {"total": {"amount": "2500.00", "currency": "GBP"}, "scope": "per_trip"},
+  "pace": "balanced",
+  "day_window": {"start": "08:00", "end": "21:00"},
+  "interests": ["history", "photo", "food"],
+  "dietary": [],
+  "mobility_needs": "none",
+  "price_level": 2,
+  "flight_prefs": {"max_stops": 1, "cabin": "economy", "checked_bags": 1},
+  "stops": [
+    {"city": "Cairo", "nights": 3, "timezone": "Africa/Cairo", "accommodation_area": "Downtown / Giza"},
+    {"city": "Western Desert", "nights": 1, "timezone": "Africa/Cairo", "accommodation_area": "Desert camp"},
+    {"city": "Luxor", "nights": 2, "timezone": "Africa/Cairo", "accommodation_area": "East bank"}
+  ],
+  "members": [
+    {"display_name": "Mia", "role": "owner", "currency_pref": "GBP"},
+    {"display_name": "QA", "role": "owner", "currency_pref": "GBP"}
+  ],
+  "constraints": [
+    {"kind": "must_do", "hardness": "hard", "query": "Giza pyramids"},
+    {"kind": "must_do", "hardness": "soft", "query": "Luxor hot air balloon", "on_date": "2026-11-05"},
+    {"kind": "time_window", "hardness": "hard", "label": "Collect bags before airport",
+     "starts_at": "2026-11-06T20:30:00+02:00", "ends_at": "2026-11-06T21:00:00+02:00"}
+  ],
+  "bookings": [
+    {"kind": "flight", "title": "Arrival flight to Cairo", "starts_at": "2026-10-31T18:30:00+00:00",
+     "ends_at": "2026-10-31T23:30:00+02:00", "location_name": "CAI", "status": "confirmed"},
+    {"kind": "hotel", "title": "Desert camp", "starts_at": "2026-11-03T16:00:00+02:00",
+     "ends_at": "2026-11-04T09:00:00+02:00", "stop_seq": 1, "status": "confirmed"},
+    {"kind": "transport", "title": "Railway to Luxor", "starts_at": "2026-11-04T10:00:00+02:00",
+     "ends_at": "2026-11-04T19:00:00+02:00", "cost": {"amount": "101.56", "currency": "GBP"}, "status": "confirmed"},
+    {"kind": "hotel", "title": "The View Hotel Luxor", "starts_at": "2026-11-04T19:30:00+02:00",
+     "ends_at": "2026-11-06T12:00:00+02:00", "stop_seq": 2, "location_name": "Luxor",
+     "cost": {"amount": "128.62", "currency": "EUR"}, "status": "confirmed"},
+    {"kind": "activity", "title": "Hot air balloon", "starts_at": "2026-11-05T05:30:00+02:00",
+     "ends_at": "2026-11-05T08:00:00+02:00", "stop_seq": 2, "cost": {"amount": "150.00", "currency": "USD"},
+     "status": "tentative"},
+    {"kind": "flight", "title": "Departure flight from Luxor", "starts_at": "2026-11-06T22:30:00+02:00",
+     "ends_at": "2026-11-07T03:00:00+00:00", "location_name": "LXR", "status": "confirmed"}
+  ]
+}
