@@ -5,9 +5,11 @@ from uuid import UUID
 
 from pydantic import TypeAdapter
 from sqlalchemy import select
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session, selectinload
 
 from app.db.models import BookingRow, TripConstraintRow, TripMemberRow, TripRow, TripStopRow
+from app.domain.shared.errors import Conflict, NotFound
 from app.domain.shared.models import Money, TimeWindow
 from app.domain.trips.models import (
     Booking,
@@ -28,10 +30,21 @@ _CONSTRAINT_COLUMNS = {"id", "kind", "hardness", "source", "locked"}
 
 
 def _trip_row(trip: Trip, owner_id: UUID | None) -> TripRow:
-    budget = trip.budget
     return TripRow(
         id=trip.id,
         owner_id=owner_id,
+        **_trip_columns(trip),
+        stops=[_stop_row(s) for s in trip.stops],
+        members=[_member_row(m, i) for i, m in enumerate(trip.members)],
+        constraints=[_constraint_row(c, position) for position, c in enumerate(trip.constraints)],
+        bookings=[_booking_row(b) for b in trip.bookings],
+    )
+
+
+def _trip_columns(trip: Trip) -> dict:
+    """Scalar trips columns (everything except id/owner and child collections)."""
+    budget = trip.budget
+    return dict(
         title=trip.title,
         status=trip.status.value,
         origin=trip.origin,
@@ -53,11 +66,15 @@ def _trip_row(trip: Trip, owner_id: UUID | None) -> TripRow:
         mobility_needs=trip.mobility_needs.value,
         price_level=trip.price_level,
         flight_prefs=trip.flight_prefs.model_dump(mode="json"),
-        stops=[TripStopRow(**s.model_dump()) for s in trip.stops],
-        members=[TripMemberRow(position=i, **m.model_dump()) for i, m in enumerate(trip.members)],
-        constraints=[_constraint_row(c, position) for position, c in enumerate(trip.constraints)],
-        bookings=[_booking_row(b) for b in trip.bookings],
     )
+
+
+def _stop_row(s: Stop) -> TripStopRow:
+    return TripStopRow(**s.model_dump())
+
+
+def _member_row(m: Member, position: int) -> TripMemberRow:
+    return TripMemberRow(position=position, **m.model_dump())
 
 
 def _constraint_row(c: Constraint, position: int) -> TripConstraintRow:
@@ -199,6 +216,23 @@ class TripRepository:
         row = self.session.scalars(stmt).one_or_none()
         return _to_domain(row) if row else None
 
+    def save(self, trip: Trip) -> Trip:
+        """Persist scalar fields and stops of an existing trip (PATCH). Child collections use their own methods."""
+        row = self._row(trip.id)
+        for column, value in _trip_columns(trip).items():
+            setattr(row, column, value)
+        stored = {s.id: s for s in row.stops}
+        if set(stored) == {s.id for s in trip.stops}:
+            for stop in trip.stops:  # same stops, dates may have shifted
+                for column, value in stop.model_dump(exclude={"id"}).items():
+                    setattr(stored[stop.id], column, value)
+        else:
+            row.stops.clear()
+            self.session.flush()  # delete old stops before inserting: (trip_id, seq) is unique
+            row.stops.extend(_stop_row(s) for s in trip.stops)
+        self.session.flush()
+        return trip
+
     def delete(self, trip_id: UUID) -> bool:
         row = self.session.get(TripRow, trip_id)
         if row is None:
@@ -206,3 +240,57 @@ class TripRepository:
         self.session.delete(row)
         self.session.flush()
         return True
+
+    # --- child collections ---
+
+    def add_member(self, trip_id: UUID, member: Member) -> Member:
+        row = self._row(trip_id)
+        row.members.append(_member_row(member, _next_position(row.members)))
+        self.session.flush()
+        return member
+
+    def remove_member(self, trip_id: UUID, member_id: UUID) -> bool:
+        """Raises Conflict when the member is referenced by expenses, shares or transfers."""
+        return self._remove(TripMemberRow, trip_id, member_id, in_use="member has expenses or transfers")
+
+    def add_constraint(self, trip_id: UUID, constraint: Constraint) -> Constraint:
+        row = self._row(trip_id)
+        row.constraints.append(_constraint_row(constraint, _next_position(row.constraints)))
+        self.session.flush()
+        return constraint
+
+    def remove_constraint(self, trip_id: UUID, constraint_id: UUID) -> bool:
+        return self._remove(TripConstraintRow, trip_id, constraint_id)
+
+    def add_booking(self, trip_id: UUID, booking: Booking) -> Booking:
+        row = self._row(trip_id)  # keep a strong reference until flush
+        row.bookings.append(_booking_row(booking))
+        self.session.flush()
+        return booking
+
+    def remove_booking(self, trip_id: UUID, booking_id: UUID) -> bool:
+        return self._remove(BookingRow, trip_id, booking_id)
+
+    # --- helpers ---
+
+    def _row(self, trip_id: UUID) -> TripRow:
+        row = self.session.get(TripRow, trip_id)
+        if row is None:
+            raise NotFound(f"trip {trip_id} not found")
+        return row
+
+    def _remove(self, model, trip_id: UUID, child_id: UUID, *, in_use: str = "") -> bool:
+        child = self.session.get(model, child_id)
+        if child is None or child.trip_id != trip_id:
+            return False
+        try:
+            with self.session.begin_nested():
+                self.session.delete(child)
+                self.session.flush()
+        except IntegrityError as exc:
+            raise Conflict(in_use or "still referenced") from exc
+        return True
+
+
+def _next_position(rows) -> int:
+    return max((r.position for r in rows), default=-1) + 1

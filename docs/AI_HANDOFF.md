@@ -2,7 +2,7 @@
 
 ## Current state (23 Nov 2026)
 
-**Milestone:** M1 — Trip workspace (in progress). M0 done. Branch chain: `m0-foundation` → `m0/core-001-contracts` → `m1/core-002-schema`.
+**Milestone:** M1 — Trip workspace (in progress). M0 done. Stacked PRs: #1 `m0-foundation` → #2 `m0/core-001-contracts` → #3 `m1/core-002-schema` → #4 `m1/core-003-trips-api`.
 **Rule:** one issue per branch; contract changes go through docs + DECISIONS first.
 
 ### Done
@@ -18,16 +18,21 @@
 
 - **CORE-002 done** on `m1/core-002-schema`: migration `0002` (users, trips v1 columns + CHECKs, trip_stops, trip_constraints, bookings; members role/currency/position) with backfill of 0001 rows and tested downgrade; `TripRepository.add/get/delete` for the full aggregate; Egypt trip round-trips identically (golden slice E1, repository level).
 
+- **CORE-003 done** on `m1/core-003-trips-api`: all `/v1/trips` routes persisted (create, get, patch, delete; members, constraints, bookings add/remove). Pure rules in `app/domain/trips/rules.py` (`apply_update` re-validates the merged trip; duplicate member → 409; booking stop check). Domain errors (`app/domain/shared/errors.py`) → 404/409/422 envelope. `get_session` is a unit of work (commit on success, rollback on error). E1 holds at API level.
+- CI fix: alembic autogenerate ignores PostGIS extension tables (tiger/topology) shipped by the `postgis/postgis` image.
+
 ### Contracts affected
-- CORE-002: instants normalized to UTC (A-11); no other contract change.
+- A-13: PATCH accepts `stops` (replace all); explicit `null` clears optional fields. 501s removed; OpenAPI lists 404/409/422.
 
 ### Known gaps / blockers
-- `/v1/trips` routes still don't persist (CORE-003). No auth: `owner_id` nullable (A-12, D-01).
+- No auth (D-01): `owner_id` NULL, every trip visible to every caller — dev only.
+- No PATCH for members/bookings/constraints (NICE); delete + re-add instead.
+- No `Idempotency-Key` yet on booking create (planned with expenses in M6).
 
 ### Next safe tasks
-1. CORE-003: wire `/v1/trips` routes to `TripRepository` via `get_session`; implement GET/PATCH/DELETE + members/constraints/bookings sub-resources; 404/409 envelopes; API tests against PostGIS (E1 at API level). PATCH needs a service-level re-validation (dates vs stop nights).
-2. CORE-004: Egypt fixture loader (CLI/seed script for dev + staging).
-3. UI-001: Create Trip form + trip page (read-only lists).
+1. CORE-004: Egypt fixture loader (`python scripts/seed_egypt.py` for dev/staging), idempotent.
+2. UI-001: Create Trip form + trip page (read-only lists) against `/v1/trips`, Playwright smoke test.
+3. Then M1 exit (E1 + UI smoke) → M2.
 
 ### Context rule
 Pick one issue, read `AGENTS.md` → `docs/SCOPE.md` → module README → touched contracts. Do not redesign unrelated modules.
