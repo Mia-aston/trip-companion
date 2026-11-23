@@ -38,7 +38,18 @@ cd services/api
 python -m venv .venv
 source .venv/bin/activate
 pip install -e '.[dev]'
+docker compose up -d postgres        # from repo root: PostGIS 16
+alembic upgrade head                  # create schema
 uvicorn app.main:app --reload
 ```
+
+Tests (DB tests run only when `TEST_DATABASE_URL` points at a throwaway PostGIS database; they migrate it up and back down):
+
+```bash
+ruff check . && ruff format --check .
+TEST_DATABASE_URL=postgresql+psycopg://postgres:postgres@localhost:5432/trip_companion_test pytest -rs
+```
+
+CI (`.github/workflows/ci.yml`) runs lint, `alembic check`, unit + PostGIS tests, and a web typecheck on every PR.
 
 The provider implementations in this starter are mocks. Real provider keys belong in `.env` and provider-specific adapters, never domain code.

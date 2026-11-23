@@ -1,6 +1,6 @@
 # Roadmap
 
-## M0 — foundation
+## M0 — foundation ✅
 - monorepo, API skeleton, typed domain models;
 - Postgres/PostGIS schema;
 - provider interfaces + mocks;
