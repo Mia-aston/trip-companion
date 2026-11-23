@@ -6,9 +6,12 @@ This repository is designed for incremental AI-assisted development.
 
 Read only:
 1. this file;
-2. `docs/ARCHITECTURE.md`;
-3. the README or files inside the module you are changing;
-4. directly imported shared contracts.
+2. `docs/SCOPE.md` — confirm the work is MVP for the current milestone (see `docs/ROADMAP.md`); if not, stop;
+3. `docs/ARCHITECTURE.md` (layer rules);
+4. the README or files inside the module you are changing;
+5. directly imported shared contracts (`docs/API_CONTRACTS.md`, `docs/DATA_MODEL.md` rows you touch).
+
+Process and gates: `docs/WORKFLOW.md`, `docs/TESTING.md`. Assumption change → `docs/DECISIONS.md` first.
 
 Do **not** load the whole repository unless a cross-module refactor explicitly requires it.
 

@@ -1,36 +1,27 @@
 # AI handoff log
 
-## Current baseline
+## Current state (23 Nov 2026)
 
-The repository contains product/architecture decisions plus a minimal FastAPI domain skeleton.
+**Milestone:** M0 — Documentation & contracts (in progress). Branch `m0-foundation`.
+**Rule:** no feature code until M0 exit (docs frozen by owner + CORE-001 contracts reviewed).
 
-### Implemented
-- typed Trip request/response model;
-- provider protocol for flights/places;
-- mock flight provider;
-- deterministic itinerary skeleton;
-- taste-profile matching primitives;
-- expense/share/transfer settlement primitives.
-
-- (M0) SQLAlchemy schema + Alembic migration `0001` for trips, members, places (PostGIS), expenses, shares, transfers;
-- (M0) `TripRepository` mapping rows ⇄ `Trip` domain model;
-- (M0) provider contract test suite (flights, places), API + expense unit tests, PostGIS schema tests;
-- (M0) GitHub Actions CI: ruff, `alembic check`, pytest against `postgis/postgis:16-3.4`, web `tsc --noEmit`.
+### Done
+- Monorepo scaffold; FastAPI skeleton; mock flight/places providers; taste-match + expense primitives.
+- Migration `0001`: trips, trip_members, places (PostGIS), expenses, expense_shares, transfers + constraints. `TripRepository`.
+- Tests: unit, provider contract suite, API validation, PostGIS schema tests (35 passing). CI on GitHub Actions.
+- Plan v0.1 reviewed and split into repo docs: SCOPE, PRODUCT, ARCHITECTURE, DATA_MODEL, API_CONTRACTS, TESTING, WORKFLOW, DECISIONS, PROVIDERS, PLAN_COVERAGE. Originals in `docs/archive/`.
 
 ### Contracts affected
-- None changed. New: `app.db.repositories.TripRepository`, `app.config.Settings` (`DATABASE_URL`).
+- Docs only. Planned contract changes (not yet in code): Trip variables (adults/children/infants, stops, currencies, budget, day window, mobility), `/v1` prefix, expense field renames. See DATA_MODEL.md status column.
 
-### Known gaps
-- `POST /trips` still does not persist (wiring belongs to M1).
-- Expense settlement algorithm not implemented yet (only `trip_cost`); planned for M5.
-- No `users`/auth tables yet; `trip_members` are display names only.
+### Known gaps / blockers
+- Owner must confirm D-09 (settlement sign), D-10 (Egypt fixture dates), D-11 (members vs travellers) and freeze docs (DOC-001).
+- `POST /trips` does not persist; current `Trip` model has single `travellers` field (to change in CORE-001).
 
 ### Next safe tasks
-1. M1: persist `POST /trips`, add `GET/PATCH /trips/{id}` using `TripRepository` + `get_session`.
-2. M1: traveller preferences + manual bookings tables (new migration).
-3. Add place normalization model and mock provider fixtures; repository for `places`.
-4. Build `/trips/{id}/itinerary` around persisted data.
-5. Add Next.js create-trip form against the API.
+1. DOC-001 owner review of `docs/` → mark decisions accepted.
+2. CORE-001: shared contracts (`Money`, `Provenance`, `TimeWindow`, …) + new `TripCreate`/`Trip`/`Member`/`Stop`/`Constraint`/`Booking` Pydantic models + OpenAPI → TS type generation. Contract PR only (G1).
+3. Then M1 per ROADMAP.md.
 
 ### Context rule
-Pick one task, read only its module + shared contract. Do not redesign unrelated modules.
+Pick one issue, read `AGENTS.md` → `docs/SCOPE.md` → module README → touched contracts. Do not redesign unrelated modules.

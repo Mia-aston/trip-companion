@@ -10,12 +10,26 @@ A modular travel-planning workspace that turns dates, origin, destination, budge
 
 - `apps/web` — Next.js/TypeScript client boundary.
 - `services/api` — FastAPI orchestration API and domain logic.
-- `docs` — product, architecture, provider policy, data model and handoff notes.
+- `docs` — source of truth (see index below).
 - `.github` — issue templates for module-sized work.
 
 ## Why this repo is modular
 
 Each domain owns its models and service logic. External providers are accessed only through interfaces in `services/api/app/providers`. A coding model should work on one module at a time and should not need global context beyond `AGENTS.md`, the relevant module, and any referenced contract.
+
+## Docs index
+
+| Doc | Answers |
+|---|---|
+| [SCOPE](docs/SCOPE.md) | What is MVP / nice-to-have / next round / non-goal; trip input variables |
+| [PRODUCT](docs/PRODUCT.md) | Why, who, principles, Egypt scenario, recommendation & privacy rules |
+| [ROADMAP](docs/ROADMAP.md) | Milestones M0–M8, issues, exit criteria |
+| [WORKFLOW](docs/WORKFLOW.md) · [TESTING](docs/TESTING.md) | How we build: gates G0–G4, test layers, golden slices |
+| [ARCHITECTURE](docs/ARCHITECTURE.md) · [MODULES](docs/MODULES.md) | Layers, pipeline, partial regeneration, module ownership |
+| [DATA_MODEL](docs/DATA_MODEL.md) · [API_CONTRACTS](docs/API_CONTRACTS.md) | Entities, invariants, settlement, endpoints |
+| [PROVIDERS](docs/PROVIDERS.md) · [DECISIONS](docs/DECISIONS.md) | External APIs; accepted & open decisions |
+| [AI_HANDOFF](docs/AI_HANDOFF.md) | Current state and next safe task |
+| [PLAN_COVERAGE](docs/PLAN_COVERAGE.md) | Plan v0.1 → repo mapping, issues found |
 
 ## MVP modules
 
