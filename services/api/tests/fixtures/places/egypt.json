@@ -1139,5 +1139,290 @@
    "provider": "mock",
    "fetched_at": "2026-11-23T00:00:00Z"
   }
+ },
+ {
+  "id": "mock:mummification-museum",
+  "provider": "mock",
+  "provider_place_id": "mummification-museum",
+  "name": "Mummification Museum",
+  "city": "Luxor",
+  "location": {
+   "lat": 25.7003,
+   "lon": 32.6417
+  },
+  "categories": [
+   "museum"
+  ],
+  "opening_hours": [
+   {
+    "weekday": 0,
+    "open": "09:00",
+    "close": "14:00"
+   },
+   {
+    "weekday": 1,
+    "open": "09:00",
+    "close": "14:00"
+   },
+   {
+    "weekday": 2,
+    "open": "09:00",
+    "close": "14:00"
+   },
+   {
+    "weekday": 3,
+    "open": "09:00",
+    "close": "14:00"
+   },
+   {
+    "weekday": 4,
+    "open": "09:00",
+    "close": "14:00"
+   },
+   {
+    "weekday": 5,
+    "open": "09:00",
+    "close": "14:00"
+   },
+   {
+    "weekday": 6,
+    "open": "09:00",
+    "close": "14:00"
+   },
+   {
+    "weekday": 0,
+    "open": "17:00",
+    "close": "21:00"
+   },
+   {
+    "weekday": 1,
+    "open": "17:00",
+    "close": "21:00"
+   },
+   {
+    "weekday": 2,
+    "open": "17:00",
+    "close": "21:00"
+   },
+   {
+    "weekday": 3,
+    "open": "17:00",
+    "close": "21:00"
+   },
+   {
+    "weekday": 4,
+    "open": "17:00",
+    "close": "21:00"
+   },
+   {
+    "weekday": 5,
+    "open": "17:00",
+    "close": "21:00"
+   },
+   {
+    "weekday": 6,
+    "open": "17:00",
+    "close": "21:00"
+   }
+  ],
+  "rating": 4.4,
+  "rating_count": 2100,
+  "price_level": 2,
+  "wheelchair_accessible": true,
+  "timezone": "Africa/Cairo",
+  "typical_visit_minutes": 60,
+  "provenance": {
+   "source": "provider",
+   "provider": "mock",
+   "fetched_at": "2026-11-23T00:00:00Z"
+  }
+ },
+ {
+  "id": "mock:avenue-of-sphinxes",
+  "provider": "mock",
+  "provider_place_id": "avenue-of-sphinxes",
+  "name": "Avenue of Sphinxes",
+  "city": "Luxor",
+  "location": {
+   "lat": 25.709,
+   "lon": 32.6445
+  },
+  "categories": [
+   "landmark",
+   "archaeological_site"
+  ],
+  "opening_hours": [
+   {
+    "weekday": 0,
+    "open": "06:00",
+    "close": "21:00"
+   },
+   {
+    "weekday": 1,
+    "open": "06:00",
+    "close": "21:00"
+   },
+   {
+    "weekday": 2,
+    "open": "06:00",
+    "close": "21:00"
+   },
+   {
+    "weekday": 3,
+    "open": "06:00",
+    "close": "21:00"
+   },
+   {
+    "weekday": 4,
+    "open": "06:00",
+    "close": "21:00"
+   },
+   {
+    "weekday": 5,
+    "open": "06:00",
+    "close": "21:00"
+   },
+   {
+    "weekday": 6,
+    "open": "06:00",
+    "close": "21:00"
+   }
+  ],
+  "rating": 4.7,
+  "rating_count": 3800,
+  "price_level": 1,
+  "wheelchair_accessible": true,
+  "timezone": "Africa/Cairo",
+  "typical_visit_minutes": 60,
+  "provenance": {
+   "source": "provider",
+   "provider": "mock",
+   "fetched_at": "2026-11-23T00:00:00Z"
+  }
+ },
+ {
+  "id": "mock:winter-palace-garden",
+  "provider": "mock",
+  "provider_place_id": "winter-palace-garden",
+  "name": "Winter Palace Garden",
+  "city": "Luxor",
+  "location": {
+   "lat": 25.6952,
+   "lon": 32.6386
+  },
+  "categories": [
+   "park",
+   "viewpoint"
+  ],
+  "opening_hours": [
+   {
+    "weekday": 0,
+    "open": "08:00",
+    "close": "20:00"
+   },
+   {
+    "weekday": 1,
+    "open": "08:00",
+    "close": "20:00"
+   },
+   {
+    "weekday": 2,
+    "open": "08:00",
+    "close": "20:00"
+   },
+   {
+    "weekday": 3,
+    "open": "08:00",
+    "close": "20:00"
+   },
+   {
+    "weekday": 4,
+    "open": "08:00",
+    "close": "20:00"
+   },
+   {
+    "weekday": 5,
+    "open": "08:00",
+    "close": "20:00"
+   },
+   {
+    "weekday": 6,
+    "open": "08:00",
+    "close": "20:00"
+   }
+  ],
+  "rating": 4.5,
+  "rating_count": 1500,
+  "price_level": 2,
+  "wheelchair_accessible": true,
+  "timezone": "Africa/Cairo",
+  "typical_visit_minutes": 45,
+  "provenance": {
+   "source": "provider",
+   "provider": "mock",
+   "fetched_at": "2026-11-23T00:00:00Z"
+  }
+ },
+ {
+  "id": "mock:sofra",
+  "provider": "mock",
+  "provider_place_id": "sofra",
+  "name": "Sofra Restaurant",
+  "city": "Luxor",
+  "location": {
+   "lat": 25.699,
+   "lon": 32.6428
+  },
+  "categories": [
+   "restaurant"
+  ],
+  "opening_hours": [
+   {
+    "weekday": 0,
+    "open": "11:00",
+    "close": "23:00"
+   },
+   {
+    "weekday": 1,
+    "open": "11:00",
+    "close": "23:00"
+   },
+   {
+    "weekday": 2,
+    "open": "11:00",
+    "close": "23:00"
+   },
+   {
+    "weekday": 3,
+    "open": "11:00",
+    "close": "23:00"
+   },
+   {
+    "weekday": 4,
+    "open": "11:00",
+    "close": "23:00"
+   },
+   {
+    "weekday": 5,
+    "open": "11:00",
+    "close": "23:00"
+   },
+   {
+    "weekday": 6,
+    "open": "11:00",
+    "close": "23:00"
+   }
+  ],
+  "rating": 4.6,
+  "rating_count": 4100,
+  "price_level": 2,
+  "wheelchair_accessible": true,
+  "timezone": "Africa/Cairo",
+  "typical_visit_minutes": 60,
+  "provenance": {
+   "source": "provider",
+   "provider": "mock",
+   "fetched_at": "2026-11-23T00:00:00Z"
+  }
  }
 ]

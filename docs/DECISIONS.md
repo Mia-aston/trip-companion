@@ -26,6 +26,7 @@ Accepted long-form ADRs live in `docs/decisions/`.
 | A-19 | Plan versions are immutable full snapshots; every edit writes a new version; diffs use stable `item_key`s | M3 |
 | A-20 | Regenerate always preserves bookings, locked items, the user's own items unless listed in `remove_item_keys`, and out-of-scope days (not configurable); MVP scope = one day; structured options only (`remove_item_keys`, `exclude_place_ids`, `stay_within_m`, `pace`), `note` stored not interpreted | M3 |
 | A-21 | A plan with validator errors is never persisted (422 + violations); warnings are stored on the version | M3 |
+| A-22 | User edit rules (ARCHITECTURE.md#user-edits-itin-003); visits per day capped by pace 3/5/7 (extends A-15) | M3 |
 | A-12 | `trips.owner_id` is nullable until auth lands (D-01, M8); members/constraints keep insertion order via `position` | CORE-002 |
 
 ## Open (default applies until decided)

@@ -24,7 +24,7 @@ def _place(**overrides) -> Place:
 
 def test_all_fixtures_are_valid_places():
     places = MockPlacesProvider().search("", MockPlacesProvider().resolve_city("Cairo").location, radius_m=2_000_000)
-    assert len(places) == 21
+    assert len(places) == 25
 
 
 def test_id_must_match_provider_and_source_id():

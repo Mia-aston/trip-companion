@@ -77,7 +77,14 @@ Deterministic, pure (`app/domain/itinerary/days.py`). For each date of the trip:
 `Planner.compose(PlannerContext) -> ProposedPlan`.
 - `PlannerContext` (bounded): for each day in scope — the `DayPlanInput` from ITIN-001 (window, blocked intervals, capacity, top 15 candidates), fixed items (bookings + locked + out-of-scope), preferences (pace, interests), exclusions.
 - `ProposedPlan`: `days[] { date, items[] { kind, place_id?, title, start "HH:MM", end "HH:MM", why } }` + `explanation` — local wall-clock times in the stop's timezone; the orchestrator converts to UTC.
-- **GreedyPlanner** (MVP, deterministic): per day, walk the ranked candidates; place each must-do first, then by score; start at the earliest free slot after the previous item + drive travel time; keep the visit inside opening hours and outside blocked/fixed intervals; insert a `meal` block (60 min, lunch between 12:30 and 14:30, dinner between 19:00 and 21:00) when the window covers it; each place is visited once per trip; travel time is respected both after the previous located item and before the next one (including kept/locked visits); stop when capacity is used. `why` = the candidate's reasons.
+- **GreedyPlanner** (MVP, deterministic): per day, walk the ranked candidates; place each must-do first, then by score; start at the earliest free slot after the previous item + drive travel time; keep the visit inside opening hours and outside blocked/fixed intervals; insert a `meal` block (60 min, lunch between 12:30 and 14:30, dinner between 19:00 and 21:00) when the window covers it; each place is visited once per trip; at most 3 / 5 / 7 visits per day for relaxed / balanced / packed (meals not counted); travel time is respected both after the previous located item and before the next one (including kept/locked visits); stop when capacity is used. `why` = the candidate's reasons.
+
+### User edits (ITIN-003)
+- Add / edit / delete / lock an item → a new version with `created_by=user`; the whole plan is re-validated (V6 is not applied to user edits — the user is the authority on their own locks), 422 if invalid.
+- Booking items cannot be edited, deleted or unlocked (409); locked items must be unlocked before they are moved or deleted (409).
+- Adding or moving a user item drops overlapping **unlocked planner** items on that day; overlapping a booking or locked item is a V2 error.
+- User items must also sit inside the day window (V1); widen `day_window` for early starts.
+- Every new version re-mirrors the trip's current bookings (a cancelled booking disappears from the plan on the next version).
 
 ### Validator (ITIN-002) — pure; errors block persisting, warnings are shown
 | Rule | Severity | Check |

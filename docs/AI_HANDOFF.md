@@ -2,7 +2,7 @@
 
 ## Current state (23 Nov 2026)
 
-**Milestone:** M3 — Itinerary engine. M0–M2 on `main`; M3 doc pass (#11) and ITIN-002/AI-001 (#12) merged. Process from M3: one PR per issue, based on `main`, merged before the next starts (stacked PRs #3–#9 had to be re-landed via #10).
+**Milestone:** M3 — Itinerary engine. M0–M2 on `main`; M3 doc pass (#11), ITIN-002/AI-001 (#12), AI-002 (#13) merged. Process from M3: one PR per issue, based on `main`, merged before the next starts (stacked PRs #3–#9 had to be re-landed via #10).
 **Rule:** one issue per branch; contract changes go through docs + DECISIONS first.
 
 ### Done
@@ -39,11 +39,10 @@
 
 - **ITIN-002 + AI-001** (branch `m3/itin-002-validator-planner`): `plan.py` (ProposedPlan, PlanDay/PlanItem, booking items with deterministic keys, `materialize`), `validator.py` (V1–V9), `planner.py` (`Planner` protocol, `GreedyPlanner`: must-dos first, meals, one visit per place per trip), `orchestration/itinerary.py::plan_trip` (in memory). Egypt plan: 0 errors, 1 warning (White Desert hours unknown). Property tests + mutation-checked.
 
-- **AI-002** (branch `m3/ai-002-plan-versions`): migration 0004, `PlanRepository`, `versions.py` (diff, key reuse, kept items), `generate_version` (422 on validator errors, nothing stored), `POST …/itinerary/generate`, `GET …/itinerary[?version]`, `GET …/itinerary/diff`. Fixed a planner bug found by the tests: travel to/from kept locked visits (regression property test, mutation-checked).
+- **ITIN-003** (branch `m3/itin-003-edits-regenerate`): `edits.py` (add / edit / delete / lock, booking re-mirroring), `regenerate_day` (A-20), `apply_user_edit`, API `POST …/regenerate`, `POST|PATCH|DELETE …/items`, `POST …/items/{key}/lock`. **E3 and E3b pass** at API level. Fixture: +4 downtown Luxor places. Planner: visits/day capped by pace (A-22).
 
-### Next safe tasks (M3, in order — see ROADMAP)
-1. ITIN-003: item edits (`PATCH`, lock, add custom item, delete → new version each) + `POST …/itinerary/regenerate` (one day) → E3/E3b golden tests.
-2. UI-002 itinerary editor.
+### Next safe tasks (M3)
+1. UI-002 itinerary editor: generate, day list, lock toggle, remove/add item, "regenerate this day" (pace, stay-near radius), version reason + diff summary; Playwright → M3 exit.
 
 ### Context rule
 Pick one issue, read `AGENTS.md` → `docs/SCOPE.md` → module README → touched contracts. Do not redesign unrelated modules.

@@ -16,6 +16,7 @@ from app.domain.routing.models import RouteMatrix
 from app.domain.shared.models import Contract
 
 MAX_CANDIDATES = 15
+MAX_VISITS = {"relaxed": 3, "balanced": 5, "packed": 7}  # per day, meals not counted (A-15)
 STEP = timedelta(minutes=15)
 LUNCH = (time(12, 30), time(14, 30), 60)  # earliest start, latest end, minutes
 DINNER = (time(19, 0), time(21, 0), 60)
@@ -32,6 +33,7 @@ class FixedBlock(Contract):
 
 class PlannerDay(Contract):
     input: DayPlanInput
+    pace: str = "balanced"
     fixed: list[FixedBlock] = []
     exclude_place_ids: list[str] = []
     places: list[Place] = Field(default=[], description="Details for the day's candidates (hours)")
@@ -102,7 +104,10 @@ class GreedyPlanner:
         ranked.sort(key=lambda c: (not c.must_do, -c.score, c.name))
         cursor, here, used = w_start, inp.base_place_id, 0
 
+        visits = 0
         for cand in ranked[:MAX_CANDIDATES]:
+            if visits >= MAX_VISITS.get(pd.pace, 5):
+                break
             if used + cand.visit_minutes > inp.capacity_minutes:
                 continue
             travel = self._travel(pd.matrix, here, cand.place_id, cand.travel_minutes)
@@ -133,7 +138,7 @@ class GreedyPlanner:
                     why="; ".join(cand.reasons[:3]),
                 )
             )
-            cursor, here, used = end, cand.place_id, used + cand.visit_minutes
+            cursor, here, used, visits = end, cand.place_id, used + cand.visit_minutes, visits + 1
 
         items.sort(key=lambda i: i.start)
         return ProposedDay(date=day, items=items)
