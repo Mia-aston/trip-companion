@@ -26,8 +26,8 @@ Each milestone lists: **MVP** (must ship to exit) · **Deferred** (NICE → afte
 Everything runs on **mock providers + fixtures**; live adapters wait for D-02 and do not block the exit.
 
 **MVP issues (in order)**
-1. PLACE-001 — normalized `Place` contract (categories, opening hours, rating, price level, wheelchair access, timezone, typical visit, provenance) + `is_open()`; mock provider over Egypt fixtures; provider contract suite updated.
-2. ROUTE-001 — `RouteMatrix` contract (walk / drive) + mock adapter (haversine × detour factor ÷ mode speed); contract suite.
+1. ✅ PLACE-001 — normalized `Place` contract (categories, opening hours, rating, price level, wheelchair access, timezone, typical visit, provenance) + `is_open()`; mock provider over Egypt fixtures; provider contract suite updated.
+2. ✅ ROUTE-001 — `RouteMatrix` contract (walk / drive) + mock adapter (haversine × detour factor ÷ mode speed); contract suite.
 3. ITIN-001 — candidate day builder (pure): per date → stop, available window (day window ∩ flight/booking constraints), capacity from pace / mobility / party, ranked feasible candidates with travel time from the stop base. Rules: `docs/ARCHITECTURE.md#day-capacity-m2`.
 4. PLACE-003 — persistence + API: migration 0003 (places columns, `provider_snapshots` with TTL, `route_legs`), `POST /v1/places/search`, `GET /v1/places/{id}`, `GET /v1/trips/{id}/day-candidates`.
 

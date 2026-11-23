@@ -14,7 +14,8 @@ Domain code must be vendor-neutral. Any vendor request/response translation belo
 | `app/domain/trips/rules.py` | Trip rules needing current state (PATCH merge, member/booking checks) |
 | `app/domain/shared/errors.py` | `NotFound` / `Conflict` / `InvalidChange` → 404 / 409 / 422 |
 | `openapi.json` | committed API contract → web TS types (`scripts/export_openapi.py`) |
-| `app/providers` | provider protocols, mocks, future vendor adapters |
+| `app/domain/places` · `app/domain/routing` | `Place` (+ opening-hours checks), `RouteMatrix`, haversine |
+| `app/providers` | provider protocols (`base.py`), mocks over `tests/fixtures/places/*.json`, future vendor adapters |
 | `app/db/models.py` | SQLAlchemy schema (PostgreSQL + PostGIS) |
 | `app/db/repositories.py` | ORM row ⇄ domain object translation; only place that touches rows |
 | `migrations/` | Alembic migrations (`alembic revision --autogenerate -m "..."`, then review) |
@@ -36,7 +37,7 @@ Domain code must be vendor-neutral. Any vendor request/response translation belo
 
 ## Adding a provider adapter
 
-Add the instance to `FLIGHT_PROVIDERS` / `PLACES_PROVIDERS` in `tests/test_providers_contract.py`; it must pass the contract suite (use recorded fixtures, not live calls).
+Add the instance to `FLIGHT_PROVIDERS` / `PLACES_PROVIDERS` / `ROUTES_PROVIDERS` in `tests/test_providers_contract.py`; it must pass the contract suite (use recorded fixtures, not live calls).
 
 ## Dev data
 

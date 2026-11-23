@@ -1,0 +1,1143 @@
+[
+ {
+  "id": "mock:cairo",
+  "provider": "mock",
+  "provider_place_id": "cairo",
+  "name": "Cairo",
+  "city": "Cairo",
+  "location": {
+   "lat": 30.0444,
+   "lon": 31.2357
+  },
+  "categories": [
+   "city"
+  ],
+  "opening_hours": null,
+  "rating": null,
+  "rating_count": null,
+  "price_level": null,
+  "wheelchair_accessible": null,
+  "timezone": "Africa/Cairo",
+  "typical_visit_minutes": 30,
+  "provenance": {
+   "source": "provider",
+   "provider": "mock",
+   "fetched_at": "2026-11-23T00:00:00Z"
+  }
+ },
+ {
+  "id": "mock:giza-pyramids",
+  "provider": "mock",
+  "provider_place_id": "giza-pyramids",
+  "name": "Giza Pyramids",
+  "city": "Cairo",
+  "location": {
+   "lat": 29.9792,
+   "lon": 31.1342
+  },
+  "categories": [
+   "archaeological_site",
+   "landmark"
+  ],
+  "opening_hours": [
+   {
+    "weekday": 0,
+    "open": "08:00",
+    "close": "17:00"
+   },
+   {
+    "weekday": 1,
+    "open": "08:00",
+    "close": "17:00"
+   },
+   {
+    "weekday": 2,
+    "open": "08:00",
+    "close": "17:00"
+   },
+   {
+    "weekday": 3,
+    "open": "08:00",
+    "close": "17:00"
+   },
+   {
+    "weekday": 4,
+    "open": "08:00",
+    "close": "17:00"
+   },
+   {
+    "weekday": 5,
+    "open": "08:00",
+    "close": "17:00"
+   },
+   {
+    "weekday": 6,
+    "open": "08:00",
+    "close": "17:00"
+   }
+  ],
+  "rating": 4.7,
+  "rating_count": 98000,
+  "price_level": 2,
+  "wheelchair_accessible": false,
+  "timezone": "Africa/Cairo",
+  "typical_visit_minutes": 180,
+  "provenance": {
+   "source": "provider",
+   "provider": "mock",
+   "fetched_at": "2026-11-23T00:00:00Z"
+  }
+ },
+ {
+  "id": "mock:grand-egyptian-museum",
+  "provider": "mock",
+  "provider_place_id": "grand-egyptian-museum",
+  "name": "Grand Egyptian Museum",
+  "city": "Cairo",
+  "location": {
+   "lat": 29.9946,
+   "lon": 31.1196
+  },
+  "categories": [
+   "museum"
+  ],
+  "opening_hours": [
+   {
+    "weekday": 0,
+    "open": "09:00",
+    "close": "18:00"
+   },
+   {
+    "weekday": 1,
+    "open": "09:00",
+    "close": "18:00"
+   },
+   {
+    "weekday": 2,
+    "open": "09:00",
+    "close": "18:00"
+   },
+   {
+    "weekday": 3,
+    "open": "09:00",
+    "close": "18:00"
+   },
+   {
+    "weekday": 4,
+    "open": "09:00",
+    "close": "18:00"
+   },
+   {
+    "weekday": 5,
+    "open": "09:00",
+    "close": "18:00"
+   },
+   {
+    "weekday": 6,
+    "open": "09:00",
+    "close": "18:00"
+   }
+  ],
+  "rating": 4.8,
+  "rating_count": 41000,
+  "price_level": 3,
+  "wheelchair_accessible": true,
+  "timezone": "Africa/Cairo",
+  "typical_visit_minutes": 180,
+  "provenance": {
+   "source": "provider",
+   "provider": "mock",
+   "fetched_at": "2026-11-23T00:00:00Z"
+  }
+ },
+ {
+  "id": "mock:egyptian-museum",
+  "provider": "mock",
+  "provider_place_id": "egyptian-museum",
+  "name": "Egyptian Museum (Tahrir)",
+  "city": "Cairo",
+  "location": {
+   "lat": 30.0478,
+   "lon": 31.2336
+  },
+  "categories": [
+   "museum"
+  ],
+  "opening_hours": [
+   {
+    "weekday": 0,
+    "open": "09:00",
+    "close": "17:00"
+   },
+   {
+    "weekday": 1,
+    "open": "09:00",
+    "close": "17:00"
+   },
+   {
+    "weekday": 2,
+    "open": "09:00",
+    "close": "17:00"
+   },
+   {
+    "weekday": 3,
+    "open": "09:00",
+    "close": "17:00"
+   },
+   {
+    "weekday": 4,
+    "open": "09:00",
+    "close": "17:00"
+   },
+   {
+    "weekday": 5,
+    "open": "09:00",
+    "close": "17:00"
+   },
+   {
+    "weekday": 6,
+    "open": "09:00",
+    "close": "17:00"
+   }
+  ],
+  "rating": 4.5,
+  "rating_count": 52000,
+  "price_level": 2,
+  "wheelchair_accessible": true,
+  "timezone": "Africa/Cairo",
+  "typical_visit_minutes": 150,
+  "provenance": {
+   "source": "provider",
+   "provider": "mock",
+   "fetched_at": "2026-11-23T00:00:00Z"
+  }
+ },
+ {
+  "id": "mock:khan-el-khalili",
+  "provider": "mock",
+  "provider_place_id": "khan-el-khalili",
+  "name": "Khan el-Khalili",
+  "city": "Cairo",
+  "location": {
+   "lat": 30.0477,
+   "lon": 31.2623
+  },
+  "categories": [
+   "market",
+   "shopping"
+  ],
+  "opening_hours": [
+   {
+    "weekday": 0,
+    "open": "10:00",
+    "close": "23:00"
+   },
+   {
+    "weekday": 1,
+    "open": "10:00",
+    "close": "23:00"
+   },
+   {
+    "weekday": 2,
+    "open": "10:00",
+    "close": "23:00"
+   },
+   {
+    "weekday": 3,
+    "open": "10:00",
+    "close": "23:00"
+   },
+   {
+    "weekday": 4,
+    "open": "10:00",
+    "close": "23:00"
+   },
+   {
+    "weekday": 5,
+    "open": "10:00",
+    "close": "23:00"
+   },
+   {
+    "weekday": 6,
+    "open": "10:00",
+    "close": "23:00"
+   }
+  ],
+  "rating": 4.4,
+  "rating_count": 61000,
+  "price_level": 1,
+  "wheelchair_accessible": false,
+  "timezone": "Africa/Cairo",
+  "typical_visit_minutes": 90,
+  "provenance": {
+   "source": "provider",
+   "provider": "mock",
+   "fetched_at": "2026-11-23T00:00:00Z"
+  }
+ },
+ {
+  "id": "mock:citadel",
+  "provider": "mock",
+  "provider_place_id": "citadel",
+  "name": "Citadel of Saladin",
+  "city": "Cairo",
+  "location": {
+   "lat": 30.0287,
+   "lon": 31.2599
+  },
+  "categories": [
+   "landmark",
+   "viewpoint"
+  ],
+  "opening_hours": [
+   {
+    "weekday": 0,
+    "open": "08:00",
+    "close": "17:00"
+   },
+   {
+    "weekday": 1,
+    "open": "08:00",
+    "close": "17:00"
+   },
+   {
+    "weekday": 2,
+    "open": "08:00",
+    "close": "17:00"
+   },
+   {
+    "weekday": 3,
+    "open": "08:00",
+    "close": "17:00"
+   },
+   {
+    "weekday": 4,
+    "open": "08:00",
+    "close": "17:00"
+   },
+   {
+    "weekday": 5,
+    "open": "08:00",
+    "close": "17:00"
+   },
+   {
+    "weekday": 6,
+    "open": "08:00",
+    "close": "17:00"
+   }
+  ],
+  "rating": 4.6,
+  "rating_count": 33000,
+  "price_level": 2,
+  "wheelchair_accessible": false,
+  "timezone": "Africa/Cairo",
+  "typical_visit_minutes": 120,
+  "provenance": {
+   "source": "provider",
+   "provider": "mock",
+   "fetched_at": "2026-11-23T00:00:00Z"
+  }
+ },
+ {
+  "id": "mock:al-azhar-park",
+  "provider": "mock",
+  "provider_place_id": "al-azhar-park",
+  "name": "Al-Azhar Park",
+  "city": "Cairo",
+  "location": {
+   "lat": 30.0408,
+   "lon": 31.2647
+  },
+  "categories": [
+   "park",
+   "viewpoint"
+  ],
+  "opening_hours": [
+   {
+    "weekday": 0,
+    "open": "09:00",
+    "close": "22:00"
+   },
+   {
+    "weekday": 1,
+    "open": "09:00",
+    "close": "22:00"
+   },
+   {
+    "weekday": 2,
+    "open": "09:00",
+    "close": "22:00"
+   },
+   {
+    "weekday": 3,
+    "open": "09:00",
+    "close": "22:00"
+   },
+   {
+    "weekday": 4,
+    "open": "09:00",
+    "close": "22:00"
+   },
+   {
+    "weekday": 5,
+    "open": "09:00",
+    "close": "22:00"
+   },
+   {
+    "weekday": 6,
+    "open": "09:00",
+    "close": "22:00"
+   }
+  ],
+  "rating": 4.6,
+  "rating_count": 28000,
+  "price_level": 1,
+  "wheelchair_accessible": true,
+  "timezone": "Africa/Cairo",
+  "typical_visit_minutes": 60,
+  "provenance": {
+   "source": "provider",
+   "provider": "mock",
+   "fetched_at": "2026-11-23T00:00:00Z"
+  }
+ },
+ {
+  "id": "mock:coptic-cairo",
+  "provider": "mock",
+  "provider_place_id": "coptic-cairo",
+  "name": "Coptic Cairo",
+  "city": "Cairo",
+  "location": {
+   "lat": 30.006,
+   "lon": 31.2303
+  },
+  "categories": [
+   "landmark",
+   "museum"
+  ],
+  "opening_hours": [
+   {
+    "weekday": 1,
+    "open": "09:00",
+    "close": "16:00"
+   },
+   {
+    "weekday": 2,
+    "open": "09:00",
+    "close": "16:00"
+   },
+   {
+    "weekday": 3,
+    "open": "09:00",
+    "close": "16:00"
+   },
+   {
+    "weekday": 4,
+    "open": "09:00",
+    "close": "16:00"
+   },
+   {
+    "weekday": 5,
+    "open": "09:00",
+    "close": "16:00"
+   },
+   {
+    "weekday": 6,
+    "open": "09:00",
+    "close": "16:00"
+   }
+  ],
+  "rating": 4.5,
+  "rating_count": 15000,
+  "price_level": 1,
+  "wheelchair_accessible": null,
+  "timezone": "Africa/Cairo",
+  "typical_visit_minutes": 90,
+  "provenance": {
+   "source": "provider",
+   "provider": "mock",
+   "fetched_at": "2026-11-23T00:00:00Z"
+  }
+ },
+ {
+  "id": "mock:abou-tarek",
+  "provider": "mock",
+  "provider_place_id": "abou-tarek",
+  "name": "Abou Tarek (koshary)",
+  "city": "Cairo",
+  "location": {
+   "lat": 30.051,
+   "lon": 31.239
+  },
+  "categories": [
+   "restaurant"
+  ],
+  "opening_hours": [
+   {
+    "weekday": 0,
+    "open": "08:00",
+    "close": "00:00"
+   },
+   {
+    "weekday": 1,
+    "open": "08:00",
+    "close": "00:00"
+   },
+   {
+    "weekday": 2,
+    "open": "08:00",
+    "close": "00:00"
+   },
+   {
+    "weekday": 3,
+    "open": "08:00",
+    "close": "00:00"
+   },
+   {
+    "weekday": 4,
+    "open": "08:00",
+    "close": "00:00"
+   },
+   {
+    "weekday": 5,
+    "open": "08:00",
+    "close": "00:00"
+   },
+   {
+    "weekday": 6,
+    "open": "08:00",
+    "close": "00:00"
+   }
+  ],
+  "rating": 4.4,
+  "rating_count": 30000,
+  "price_level": 1,
+  "wheelchair_accessible": true,
+  "timezone": "Africa/Cairo",
+  "typical_visit_minutes": 45,
+  "provenance": {
+   "source": "provider",
+   "provider": "mock",
+   "fetched_at": "2026-11-23T00:00:00Z"
+  }
+ },
+ {
+  "id": "mock:nile-nightclub",
+  "provider": "mock",
+  "provider_place_id": "nile-nightclub",
+  "name": "Nile Nightclub",
+  "city": "Cairo",
+  "location": {
+   "lat": 30.057,
+   "lon": 31.224
+  },
+  "categories": [
+   "nightlife"
+  ],
+  "opening_hours": [
+   {
+    "weekday": 3,
+    "open": "22:00",
+    "close": "03:00"
+   },
+   {
+    "weekday": 4,
+    "open": "22:00",
+    "close": "03:00"
+   },
+   {
+    "weekday": 5,
+    "open": "22:00",
+    "close": "03:00"
+   }
+  ],
+  "rating": 3.9,
+  "rating_count": 900,
+  "price_level": 3,
+  "wheelchair_accessible": null,
+  "timezone": "Africa/Cairo",
+  "typical_visit_minutes": 120,
+  "provenance": {
+   "source": "provider",
+   "provider": "mock",
+   "fetched_at": "2026-11-23T00:00:00Z"
+  }
+ },
+ {
+  "id": "mock:western-desert",
+  "provider": "mock",
+  "provider_place_id": "western-desert",
+  "name": "Western Desert (Farafra)",
+  "city": "Western Desert",
+  "location": {
+   "lat": 27.0577,
+   "lon": 27.9697
+  },
+  "categories": [
+   "city"
+  ],
+  "opening_hours": null,
+  "rating": null,
+  "rating_count": null,
+  "price_level": null,
+  "wheelchair_accessible": null,
+  "timezone": "Africa/Cairo",
+  "typical_visit_minutes": 30,
+  "provenance": {
+   "source": "provider",
+   "provider": "mock",
+   "fetched_at": "2026-11-23T00:00:00Z"
+  }
+ },
+ {
+  "id": "mock:white-desert",
+  "provider": "mock",
+  "provider_place_id": "white-desert",
+  "name": "White Desert National Park",
+  "city": "Western Desert",
+  "location": {
+   "lat": 27.15,
+   "lon": 28.0
+  },
+  "categories": [
+   "nature",
+   "viewpoint"
+  ],
+  "opening_hours": null,
+  "rating": 4.9,
+  "rating_count": 4200,
+  "price_level": 2,
+  "wheelchair_accessible": false,
+  "timezone": "Africa/Cairo",
+  "typical_visit_minutes": 180,
+  "provenance": {
+   "source": "provider",
+   "provider": "mock",
+   "fetched_at": "2026-11-23T00:00:00Z"
+  }
+ },
+ {
+  "id": "mock:crystal-mountain",
+  "provider": "mock",
+  "provider_place_id": "crystal-mountain",
+  "name": "Crystal Mountain",
+  "city": "Western Desert",
+  "location": {
+   "lat": 27.66,
+   "lon": 28.43
+  },
+  "categories": [
+   "nature"
+  ],
+  "opening_hours": null,
+  "rating": 4.3,
+  "rating_count": 800,
+  "price_level": 1,
+  "wheelchair_accessible": false,
+  "timezone": "Africa/Cairo",
+  "typical_visit_minutes": 45,
+  "provenance": {
+   "source": "provider",
+   "provider": "mock",
+   "fetched_at": "2026-11-23T00:00:00Z"
+  }
+ },
+ {
+  "id": "mock:luxor",
+  "provider": "mock",
+  "provider_place_id": "luxor",
+  "name": "Luxor",
+  "city": "Luxor",
+  "location": {
+   "lat": 25.6872,
+   "lon": 32.6396
+  },
+  "categories": [
+   "city"
+  ],
+  "opening_hours": null,
+  "rating": null,
+  "rating_count": null,
+  "price_level": null,
+  "wheelchair_accessible": null,
+  "timezone": "Africa/Cairo",
+  "typical_visit_minutes": 30,
+  "provenance": {
+   "source": "provider",
+   "provider": "mock",
+   "fetched_at": "2026-11-23T00:00:00Z"
+  }
+ },
+ {
+  "id": "mock:karnak",
+  "provider": "mock",
+  "provider_place_id": "karnak",
+  "name": "Karnak Temple",
+  "city": "Luxor",
+  "location": {
+   "lat": 25.7188,
+   "lon": 32.6573
+  },
+  "categories": [
+   "temple",
+   "archaeological_site"
+  ],
+  "opening_hours": [
+   {
+    "weekday": 0,
+    "open": "06:00",
+    "close": "17:30"
+   },
+   {
+    "weekday": 1,
+    "open": "06:00",
+    "close": "17:30"
+   },
+   {
+    "weekday": 2,
+    "open": "06:00",
+    "close": "17:30"
+   },
+   {
+    "weekday": 3,
+    "open": "06:00",
+    "close": "17:30"
+   },
+   {
+    "weekday": 4,
+    "open": "06:00",
+    "close": "17:30"
+   },
+   {
+    "weekday": 5,
+    "open": "06:00",
+    "close": "17:30"
+   },
+   {
+    "weekday": 6,
+    "open": "06:00",
+    "close": "17:30"
+   }
+  ],
+  "rating": 4.8,
+  "rating_count": 47000,
+  "price_level": 2,
+  "wheelchair_accessible": true,
+  "timezone": "Africa/Cairo",
+  "typical_visit_minutes": 150,
+  "provenance": {
+   "source": "provider",
+   "provider": "mock",
+   "fetched_at": "2026-11-23T00:00:00Z"
+  }
+ },
+ {
+  "id": "mock:luxor-temple",
+  "provider": "mock",
+  "provider_place_id": "luxor-temple",
+  "name": "Luxor Temple",
+  "city": "Luxor",
+  "location": {
+   "lat": 25.6995,
+   "lon": 32.6391
+  },
+  "categories": [
+   "temple",
+   "landmark"
+  ],
+  "opening_hours": [
+   {
+    "weekday": 0,
+    "open": "06:00",
+    "close": "22:00"
+   },
+   {
+    "weekday": 1,
+    "open": "06:00",
+    "close": "22:00"
+   },
+   {
+    "weekday": 2,
+    "open": "06:00",
+    "close": "22:00"
+   },
+   {
+    "weekday": 3,
+    "open": "06:00",
+    "close": "22:00"
+   },
+   {
+    "weekday": 4,
+    "open": "06:00",
+    "close": "22:00"
+   },
+   {
+    "weekday": 5,
+    "open": "06:00",
+    "close": "22:00"
+   },
+   {
+    "weekday": 6,
+    "open": "06:00",
+    "close": "22:00"
+   }
+  ],
+  "rating": 4.8,
+  "rating_count": 39000,
+  "price_level": 2,
+  "wheelchair_accessible": true,
+  "timezone": "Africa/Cairo",
+  "typical_visit_minutes": 90,
+  "provenance": {
+   "source": "provider",
+   "provider": "mock",
+   "fetched_at": "2026-11-23T00:00:00Z"
+  }
+ },
+ {
+  "id": "mock:valley-of-the-kings",
+  "provider": "mock",
+  "provider_place_id": "valley-of-the-kings",
+  "name": "Valley of the Kings",
+  "city": "Luxor",
+  "location": {
+   "lat": 25.7402,
+   "lon": 32.6014
+  },
+  "categories": [
+   "archaeological_site"
+  ],
+  "opening_hours": [
+   {
+    "weekday": 0,
+    "open": "06:00",
+    "close": "17:00"
+   },
+   {
+    "weekday": 1,
+    "open": "06:00",
+    "close": "17:00"
+   },
+   {
+    "weekday": 2,
+    "open": "06:00",
+    "close": "17:00"
+   },
+   {
+    "weekday": 3,
+    "open": "06:00",
+    "close": "17:00"
+   },
+   {
+    "weekday": 4,
+    "open": "06:00",
+    "close": "17:00"
+   },
+   {
+    "weekday": 5,
+    "open": "06:00",
+    "close": "17:00"
+   },
+   {
+    "weekday": 6,
+    "open": "06:00",
+    "close": "17:00"
+   }
+  ],
+  "rating": 4.7,
+  "rating_count": 36000,
+  "price_level": 3,
+  "wheelchair_accessible": false,
+  "timezone": "Africa/Cairo",
+  "typical_visit_minutes": 180,
+  "provenance": {
+   "source": "provider",
+   "provider": "mock",
+   "fetched_at": "2026-11-23T00:00:00Z"
+  }
+ },
+ {
+  "id": "mock:medinet-habu",
+  "provider": "mock",
+  "provider_place_id": "medinet-habu",
+  "name": "Medinet Habu",
+  "city": "Luxor",
+  "location": {
+   "lat": 25.7195,
+   "lon": 32.6006
+  },
+  "categories": [
+   "temple"
+  ],
+  "opening_hours": [
+   {
+    "weekday": 0,
+    "open": "06:00",
+    "close": "17:00"
+   },
+   {
+    "weekday": 1,
+    "open": "06:00",
+    "close": "17:00"
+   },
+   {
+    "weekday": 2,
+    "open": "06:00",
+    "close": "17:00"
+   },
+   {
+    "weekday": 3,
+    "open": "06:00",
+    "close": "17:00"
+   },
+   {
+    "weekday": 4,
+    "open": "06:00",
+    "close": "17:00"
+   },
+   {
+    "weekday": 5,
+    "open": "06:00",
+    "close": "17:00"
+   },
+   {
+    "weekday": 6,
+    "open": "06:00",
+    "close": "17:00"
+   }
+  ],
+  "rating": 4.8,
+  "rating_count": 6000,
+  "price_level": 2,
+  "wheelchair_accessible": false,
+  "timezone": "Africa/Cairo",
+  "typical_visit_minutes": 90,
+  "provenance": {
+   "source": "provider",
+   "provider": "mock",
+   "fetched_at": "2026-11-23T00:00:00Z"
+  }
+ },
+ {
+  "id": "mock:luxor-museum",
+  "provider": "mock",
+  "provider_place_id": "luxor-museum",
+  "name": "Luxor Museum",
+  "city": "Luxor",
+  "location": {
+   "lat": 25.7076,
+   "lon": 32.644
+  },
+  "categories": [
+   "museum"
+  ],
+  "opening_hours": [
+   {
+    "weekday": 0,
+    "open": "09:00",
+    "close": "14:00"
+   },
+   {
+    "weekday": 1,
+    "open": "09:00",
+    "close": "14:00"
+   },
+   {
+    "weekday": 2,
+    "open": "09:00",
+    "close": "14:00"
+   },
+   {
+    "weekday": 3,
+    "open": "09:00",
+    "close": "14:00"
+   },
+   {
+    "weekday": 4,
+    "open": "09:00",
+    "close": "14:00"
+   },
+   {
+    "weekday": 5,
+    "open": "09:00",
+    "close": "14:00"
+   },
+   {
+    "weekday": 6,
+    "open": "09:00",
+    "close": "14:00"
+   },
+   {
+    "weekday": 0,
+    "open": "17:00",
+    "close": "21:00"
+   },
+   {
+    "weekday": 1,
+    "open": "17:00",
+    "close": "21:00"
+   },
+   {
+    "weekday": 2,
+    "open": "17:00",
+    "close": "21:00"
+   },
+   {
+    "weekday": 3,
+    "open": "17:00",
+    "close": "21:00"
+   },
+   {
+    "weekday": 4,
+    "open": "17:00",
+    "close": "21:00"
+   },
+   {
+    "weekday": 5,
+    "open": "17:00",
+    "close": "21:00"
+   },
+   {
+    "weekday": 6,
+    "open": "17:00",
+    "close": "21:00"
+   }
+  ],
+  "rating": 4.7,
+  "rating_count": 9000,
+  "price_level": 2,
+  "wheelchair_accessible": true,
+  "timezone": "Africa/Cairo",
+  "typical_visit_minutes": 90,
+  "provenance": {
+   "source": "provider",
+   "provider": "mock",
+   "fetched_at": "2026-11-23T00:00:00Z"
+  }
+ },
+ {
+  "id": "mock:corniche-cafe",
+  "provider": "mock",
+  "provider_place_id": "corniche-cafe",
+  "name": "Corniche Caf\u00e9",
+  "city": "Luxor",
+  "location": {
+   "lat": 25.696,
+   "lon": 32.637
+  },
+  "categories": [
+   "cafe"
+  ],
+  "opening_hours": [
+   {
+    "weekday": 0,
+    "open": "08:00",
+    "close": "23:00"
+   },
+   {
+    "weekday": 1,
+    "open": "08:00",
+    "close": "23:00"
+   },
+   {
+    "weekday": 2,
+    "open": "08:00",
+    "close": "23:00"
+   },
+   {
+    "weekday": 3,
+    "open": "08:00",
+    "close": "23:00"
+   },
+   {
+    "weekday": 4,
+    "open": "08:00",
+    "close": "23:00"
+   },
+   {
+    "weekday": 5,
+    "open": "08:00",
+    "close": "23:00"
+   },
+   {
+    "weekday": 6,
+    "open": "08:00",
+    "close": "23:00"
+   }
+  ],
+  "rating": 4.3,
+  "rating_count": 1200,
+  "price_level": 1,
+  "wheelchair_accessible": true,
+  "timezone": "Africa/Cairo",
+  "typical_visit_minutes": 45,
+  "provenance": {
+   "source": "provider",
+   "provider": "mock",
+   "fetched_at": "2026-11-23T00:00:00Z"
+  }
+ },
+ {
+  "id": "mock:luxor-souq",
+  "provider": "mock",
+  "provider_place_id": "luxor-souq",
+  "name": "Luxor Souq",
+  "city": "Luxor",
+  "location": {
+   "lat": 25.698,
+   "lon": 32.642
+  },
+  "categories": [
+   "market",
+   "shopping"
+  ],
+  "opening_hours": [
+   {
+    "weekday": 0,
+    "open": "09:00",
+    "close": "22:00"
+   },
+   {
+    "weekday": 1,
+    "open": "09:00",
+    "close": "22:00"
+   },
+   {
+    "weekday": 2,
+    "open": "09:00",
+    "close": "22:00"
+   },
+   {
+    "weekday": 3,
+    "open": "09:00",
+    "close": "22:00"
+   },
+   {
+    "weekday": 4,
+    "open": "09:00",
+    "close": "22:00"
+   },
+   {
+    "weekday": 5,
+    "open": "09:00",
+    "close": "22:00"
+   },
+   {
+    "weekday": 6,
+    "open": "09:00",
+    "close": "22:00"
+   }
+  ],
+  "rating": 4.1,
+  "rating_count": 5200,
+  "price_level": 1,
+  "wheelchair_accessible": false,
+  "timezone": "Africa/Cairo",
+  "typical_visit_minutes": 60,
+  "provenance": {
+   "source": "provider",
+   "provider": "mock",
+   "fetched_at": "2026-11-23T00:00:00Z"
+  }
+ }
+]
