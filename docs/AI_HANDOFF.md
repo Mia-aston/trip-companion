@@ -2,7 +2,7 @@
 
 ## Current state (23 Nov 2026)
 
-**Milestone:** M1 — Trip workspace (in progress). M0 done. Stacked PRs: #1 `m0-foundation` → #2 `m0/core-001-contracts` → #3 `m1/core-002-schema` → #4 `m1/core-003-trips-api`.
+**Milestone:** M1 — Trip workspace (in progress). M0 done. Stacked PRs: #1 `m0-foundation` → #2 `m0/core-001-contracts` → #3 `m1/core-002-schema` → #4 `m1/core-003-trips-api` → #5 `m1/core-004-seed` → #6 `m1/ui-001-create-trip`.
 **Rule:** one issue per branch; contract changes go through docs + DECISIONS first.
 
 ### Done
@@ -21,18 +21,21 @@
 - **CORE-003 done** on `m1/core-003-trips-api`: all `/v1/trips` routes persisted (create, get, patch, delete; members, constraints, bookings add/remove). Pure rules in `app/domain/trips/rules.py` (`apply_update` re-validates the merged trip; duplicate member → 409; booking stop check). Domain errors (`app/domain/shared/errors.py`) → 404/409/422 envelope. `get_session` is a unit of work (commit on success, rollback on error). E1 holds at API level.
 - CI fix: alembic autogenerate ignores PostGIS extension tables (tiger/topology) shipped by the `postgis/postgis` image.
 
+- **CORE-004 done**: `scripts/seed_egypt.py` (idempotent, `--reset`).
+- **UI-001 done**: Next.js app — `/` Create Trip form, `/trips/[id]` read-only trip page (times in stop timezone). API CORS (A-14). Playwright e2e (desktop + phone) + CI `e2e` job.
+- **M1 exit criteria met** on the PR #6 branch (E1 at repository, API and UI level); closes when #1–#6 are merged.
+
 ### Contracts affected
-- A-13: PATCH accepts `stops` (replace all); explicit `null` clears optional fields. 501s removed; OpenAPI lists 404/409/422.
+- A-13 (PATCH `stops`), A-14 (CORS). No schema change since CORE-002.
 
 ### Known gaps / blockers
-- No auth (D-01): `owner_id` NULL, every trip visible to every caller — dev only.
-- No PATCH for members/bookings/constraints (NICE); delete + re-add instead.
-- No `Idempotency-Key` yet on booking create (planned with expenses in M6).
+- No auth (D-01): every trip visible to every caller — dev only. No trips list endpoint/page (not in MVP contract).
+- UI cannot edit yet (members/constraints/bookings/PATCH exist in API; editing UI comes with the itinerary editor, M3).
 
-### Next safe tasks
-1. CORE-004: Egypt fixture loader (`python scripts/seed_egypt.py` for dev/staging), idempotent.
-2. UI-001: Create Trip form + trip page (read-only lists) against `/v1/trips`, Playwright smoke test.
-3. Then M1 exit (E1 + UI smoke) → M2.
+### Next safe tasks (M2 — Places + routing)
+1. PLACE-001: normalized `Place` contract (hours, rating, price level, accessibility, timezone, provenance) + mock fixtures for Egypt POIs; extend the provider contract suite.
+2. ROUTE-001: `RouteMatrix` contract + mock adapter (haversine × mode speed), contract tests.
+3. provider_snapshots table + TTL; ITIN-001 candidate day builder → E2.
 
 ### Context rule
 Pick one issue, read `AGENTS.md` → `docs/SCOPE.md` → module README → touched contracts. Do not redesign unrelated modules.
