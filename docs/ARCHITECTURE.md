@@ -102,6 +102,6 @@ services/api/tests/
   fixtures/            # sanitized provider responses, Egypt scenario
 apps/web/src/
   lib/                 # API client (only place that calls fetch)
-  types/               # TS contracts — generated from OpenAPI (D-08)
+  types/               # TS contracts — generated from OpenAPI (A-08)
 ```
-`packages/contracts/` from the plan is replaced by OpenAPI-generated TS types (D-08) to avoid hand-maintained duplicates.
+`packages/contracts/` from the plan is replaced by OpenAPI-generated TS types (A-08) to avoid hand-maintained duplicates.

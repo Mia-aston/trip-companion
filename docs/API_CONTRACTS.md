@@ -8,7 +8,7 @@ Conventions (MVP):
 - Errors: `{ "error": { "code": "...", "message": "...", "details": [...] } }`; validation = 422, conflict with locked/booked items = 409, provider down = 503 with `stale: true` data if any.
 - Volatile data carries `provenance: { source: "provider|user|ai", provider?, fetched_at?, expires_at? }`.
 - Mutations that create money/booking rows accept `Idempotency-Key`.
-- OpenAPI from FastAPI is the machine contract; TS types are generated from it (D-08).
+- OpenAPI from FastAPI is the machine contract; TS types are generated from it (A-08).
 
 | Method & path | Purpose | Milestone | Tier | Status |
 |---|---|---|---|---|

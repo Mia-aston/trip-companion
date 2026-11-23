@@ -34,7 +34,7 @@ Rules:
 
 ## Golden scenario: Egypt
 
-Fixture: `tests/fixtures/egypt/` (built in M1, extended per milestone). Dates are a draft — owner to confirm (D-10).
+Fixture: `tests/fixtures/egypt/` (built in M1, extended per milestone). Confirmed by owner (A-06).
 
 | Item | Value |
 |---|---|
