@@ -120,6 +120,7 @@
             ]
           },
           "ends_at": {
+            "description": "Offset required on input; normalized to and returned in UTC. Display in the stop's timezone.",
             "format": "date-time",
             "title": "Ends At",
             "type": "string"
@@ -158,6 +159,7 @@
             "title": "Reference"
           },
           "starts_at": {
+            "description": "Offset required on input; normalized to and returned in UTC. Display in the stop's timezone.",
             "format": "date-time",
             "title": "Starts At",
             "type": "string"
@@ -215,6 +217,7 @@
             ]
           },
           "ends_at": {
+            "description": "Offset required on input; normalized to and returned in UTC. Display in the stop's timezone.",
             "format": "date-time",
             "title": "Ends At",
             "type": "string"
@@ -248,6 +251,7 @@
             "title": "Reference"
           },
           "starts_at": {
+            "description": "Offset required on input; normalized to and returned in UTC. Display in the stop's timezone.",
             "format": "date-time",
             "title": "Starts At",
             "type": "string"
@@ -944,6 +948,7 @@
         "additionalProperties": false,
         "properties": {
           "ends_at": {
+            "description": "Offset required on input; normalized to and returned in UTC. Display in the stop's timezone.",
             "format": "date-time",
             "title": "Ends At",
             "type": "string"
@@ -979,6 +984,7 @@
             "default": "user"
           },
           "starts_at": {
+            "description": "Offset required on input; normalized to and returned in UTC. Display in the stop's timezone.",
             "format": "date-time",
             "title": "Starts At",
             "type": "string"
@@ -1002,6 +1008,7 @@
         "description": "A fixed block the plan must respect, e.g. a meeting or a tour pickup.",
         "properties": {
           "ends_at": {
+            "description": "Offset required on input; normalized to and returned in UTC. Display in the stop's timezone.",
             "format": "date-time",
             "title": "Ends At",
             "type": "string"
@@ -1023,6 +1030,7 @@
             "type": "string"
           },
           "starts_at": {
+            "description": "Offset required on input; normalized to and returned in UTC. Display in the stop's timezone.",
             "format": "date-time",
             "title": "Starts At",
             "type": "string"

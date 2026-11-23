@@ -209,6 +209,7 @@ export interface components {
             /**
              * Ends At
              * Format: date-time
+             * @description Offset required on input; normalized to and returned in UTC. Display in the stop's timezone.
              */
             ends_at: string;
             /**
@@ -227,6 +228,7 @@ export interface components {
             /**
              * Starts At
              * Format: date-time
+             * @description Offset required on input; normalized to and returned in UTC. Display in the stop's timezone.
              */
             starts_at: string;
             /** @default confirmed */
@@ -245,6 +247,7 @@ export interface components {
             /**
              * Ends At
              * Format: date-time
+             * @description Offset required on input; normalized to and returned in UTC. Display in the stop's timezone.
              */
             ends_at: string;
             kind: components["schemas"]["BookingKind"];
@@ -258,6 +261,7 @@ export interface components {
             /**
              * Starts At
              * Format: date-time
+             * @description Offset required on input; normalized to and returned in UTC. Display in the stop's timezone.
              */
             starts_at: string;
             /** @default confirmed */
@@ -532,6 +536,7 @@ export interface components {
             /**
              * Ends At
              * Format: date-time
+             * @description Offset required on input; normalized to and returned in UTC. Display in the stop's timezone.
              */
             ends_at: string;
             /** @default hard */
@@ -558,6 +563,7 @@ export interface components {
             /**
              * Starts At
              * Format: date-time
+             * @description Offset required on input; normalized to and returned in UTC. Display in the stop's timezone.
              */
             starts_at: string;
         };
@@ -569,6 +575,7 @@ export interface components {
             /**
              * Ends At
              * Format: date-time
+             * @description Offset required on input; normalized to and returned in UTC. Display in the stop's timezone.
              */
             ends_at: string;
             /** @default hard */
@@ -583,6 +590,7 @@ export interface components {
             /**
              * Starts At
              * Format: date-time
+             * @description Offset required on input; normalized to and returned in UTC. Display in the stop's timezone.
              */
             starts_at: string;
         };

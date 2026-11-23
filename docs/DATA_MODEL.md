@@ -1,20 +1,20 @@
 # Data model
 
 Source: plan v0.1 §11, §14. Input variables and their tiers: `docs/SCOPE.md#trip-input-variables`.
-Status column: **built** = in migration `0001`; **change** = exists but must be updated (CORE-001/002); **todo** = not yet built.
+Status column: **built** = in a migration (`0001`/`0002`); **change** = exists but must be updated (CORE-001/002); **todo** = not yet built.
 
 ## Entities
 
 | Entity | Purpose | Key fields | Tier | Milestone | Status |
 |---|---|---|---|---|---|
-| `users` | account/profile; no inferred sensitive traits | id, email, display_name, default_currency, locale | MVP | M1 | todo |
+| `users` | account/profile; no inferred sensitive traits | id, email, display_name, default_currency, locale | MVP | M1 | built (0002) |
 | `taste_profiles` | declared taste (+ learned, NEXT) | user_id, vector (taste/texture), cuisines_liked[], dietary[], updated_at | MVP | M5 | todo |
-| `trips` | the trip | id, owner_id, title, status (draft/planned/active/done), start/end_date, adults, children_ages[], infants, origin, base_currency, settlement_currency, budget_total, budget_scope, pace, day_start, day_end, interests[], dietary[], mobility_needs, price_level, flight_prefs JSON | MVP | M1 | **change** (has single `travellers`; lacks status, currency, budget, owner) |
-| `trip_stops` | ordered destinations (multi-city) | trip_id, seq, place_id/city, nights, arrive_on, leave_on, timezone, accommodation_booking_id / area | MVP | M1 | todo |
-| `trip_members` | people who pay/owe | trip_id, user_id?, display_name, role, currency_pref | MVP | M1 | **change** (lacks role, user_id, currency_pref) |
-| `trip_constraints` | hard/soft constraints | trip_id, kind (must_do/avoid/time_window — dietary & mobility are trip fields, A-09), hardness (hard/soft), payload JSON (typed per kind), source (user/booking/system), locked | MVP | M1 | todo |
+| `trips` | the trip | id, owner_id, title, status (draft/planned/active/done), start/end_date, adults, children_ages[], infants, origin, base_currency, settlement_currency, budget_total, budget_scope, pace, day_start, day_end, interests[], dietary[], mobility_needs, price_level, flight_prefs JSON | MVP | M1 | built (0002) |
+| `trip_stops` | ordered destinations (multi-city) | trip_id, seq, place_id/city, nights, arrive_on, leave_on, timezone, accommodation_booking_id / area | MVP | M1 | built (0002) |
+| `trip_members` | people who pay/owe | trip_id, user_id?, display_name, role, currency_pref | MVP | M1 | built (0002) |
+| `trip_constraints` | hard/soft constraints | trip_id, kind (must_do/avoid/time_window — dietary & mobility are trip fields, A-09), hardness (hard/soft), payload JSON (typed per kind), source (user/booking/system), locked | MVP | M1 | built (0002) |
 | `transport_options` | normalized flight search result snapshot | trip_id, provider, offer_id, segments JSON, total, currency, fetched_at, expires_at | MVP | M4 | todo |
-| `bookings` | confirmed external booking (manual in MVP) | trip_id, kind (flight/hotel/activity/transport), title, starts_at, ends_at, place_id?, reference, cost → expense_id?, status | MVP | M1 | todo |
+| `bookings` | confirmed external booking (manual in MVP) | trip_id, kind (flight/hotel/activity/transport), title, starts_at, ends_at, place_id?, reference, cost → expense_id?, status | MVP | M1 | built (0002) |
 | `places` | canonical normalized place | provider, provider_place_id, name, location (geography), categories[], opening_hours JSON, rating, price_level, accessibility, timezone, fetched_at | MVP | M2 | **change** (lacks hours/rating/price/fetched_at) |
 | `trip_places` | place state within a trip | trip_id, place_id, state (candidate/saved/scheduled/visited/skipped), score | MVP | M2 | todo |
 | `plan_versions` | immutable plan snapshots | trip_id, version, parent_version, created_by (user/planner), reason, diff JSON, created_at | MVP | M3 | todo |

@@ -6,19 +6,19 @@ Each milestone lists: **MVP** (must ship to exit) · **Deferred** (NICE → afte
 
 ---
 
-## M0 — Documentation & contracts  ⏳ in progress
+## M0 — Documentation & contracts  ✅ done (23 Nov 2026)
 **MVP**
 - [x] Monorepo scaffold, API skeleton, mock flight/places providers
 - [x] Postgres/PostGIS baseline schema + Alembic + DB tests (migration 0001)
 - [x] Provider contract test suite; CI (lint, `alembic check`, PostGIS tests, web typecheck)
 - [x] Split plan v0.1 into repo docs (SCOPE, PRODUCT, ARCHITECTURE, DATA_MODEL, API_CONTRACTS, TESTING, WORKFLOW, DECISIONS)
 - [x] DOC-001 Owner review + freeze v0.1 docs; open-decision defaults accepted (23 Nov 2026)
-- [x] CORE-001 Pydantic contracts for Trip (new variables), Member, Stop, Constraint, Booking, Money; `/v1` routes declared; TS types generated (A-08) — awaiting owner review
+- [x] CORE-001 Pydantic contracts for Trip (new variables), Member, Stop, Constraint, Booking, Money; `/v1` routes declared; TS types generated (A-08) — reviewed by owner
 
 **Exit:** all open architecture questions tagged in DECISIONS.md with a default; core Pydantic/TS contracts reviewed. No feature code before this.
 
-## M1 — Trip workspace
-**MVP issues:** CORE-002 migration 0002 (trips change, stops, constraints, bookings, users minimal) · CORE-003 trips/members/stops/constraints/bookings API (`/v1`, persisted) · CORE-004 Egypt fixture loader · UI-001 Create Trip flow (form + trip page, read-only lists)
+## M1 — Trip workspace  ⏳ in progress
+**MVP issues:** ~~CORE-002 migration 0002 (trips change, stops, constraints, bookings, users minimal)~~ ✅ · CORE-003 trips/members/stops/constraints/bookings API (`/v1`, persisted) · CORE-004 Egypt fixture loader · UI-001 Create Trip flow (form + trip page, read-only lists)
 **Deferred:** NICE trip duplication · NEXT sharing/roles, collaborative edit
 **Exit (E1):** Egypt reference trip persists and reloads identically, without AI. API tests + UI smoke green.
 

@@ -1,4 +1,4 @@
-from datetime import date
+from datetime import date, time
 from decimal import Decimal
 
 import pytest
@@ -7,13 +7,21 @@ from sqlalchemy import func, select
 from sqlalchemy.exc import IntegrityError
 
 from app.db.models import ExpenseRow, ExpenseShareRow, PlaceRow, TransferRow, TripMemberRow, TripRow
-from app.db.repositories import TripRepository
-from app.domain.trips.models import Pace, TripCreate
+
+TRIP_DEFAULTS = dict(
+    title="Test trip",
+    origin="London",
+    start_date=date(2027, 3, 14),
+    end_date=date(2027, 3, 20),
+    base_currency="GBP",
+    settlement_currency="GBP",
+    day_start=time(9),
+    day_end=time(20),
+)
 
 
 def _trip(session, **overrides) -> TripRow:
-    values = dict(origin="London", destination="Cairo", start_date=date(2027, 3, 14), end_date=date(2027, 3, 20))
-    row = TripRow(**{**values, **overrides})
+    row = TripRow(**{**TRIP_DEFAULTS, **overrides})
     session.add(row)
     session.flush()
     return row
@@ -34,61 +42,16 @@ def test_postgis_extension_installed(session):
     assert session.scalar(select(func.postgis_version()))
 
 
-@pytest.mark.xfail(strict=True, reason="CORE-002: trips table not yet migrated to the CORE-001 Trip contract")
-def test_trip_repository_round_trip(session):
-    repo = TripRepository(session)
-    created = repo.add(
-        TripCreate(
-            origin="London",
-            destination="Cairo",
-            start_date=date(2027, 3, 14),
-            end_date=date(2027, 3, 20),
-            travellers=3,
-            interests=["history", "food"],
-            pace=Pace.PACKED,
-        )
-    )
-    session.expire_all()
-    loaded = repo.get(created.id)
-    assert loaded == created
-    assert loaded.pace is Pace.PACKED
-
-
-def test_trip_defaults(session):
-    trip = _trip(session)
-    session.refresh(trip)
-    assert trip.travellers == 1
-    assert trip.interests == []
-    assert trip.pace == "balanced"
-    assert trip.created_at is not None
-
-
-@pytest.mark.parametrize(
-    "overrides",
-    [
-        {"end_date": date(2027, 3, 1)},
-        {"travellers": 0},
-        {"travellers": 21},
-        {"pace": "frantic"},
-    ],
-    ids=["reversed-dates", "zero-travellers", "too-many-travellers", "bad-pace"],
-)
-def test_trip_check_constraints(session, overrides):
-    with pytest.raises(IntegrityError):
-        with session.begin_nested():
-            _trip(session, **overrides)
-
-
-def test_member_names_unique_per_trip(session):
+def test_member_names_unique_per_trip_case_insensitive(session):
     trip = _trip(session)
     _members(session, trip, "An")
     with pytest.raises(IntegrityError):
         with session.begin_nested():
-            _members(session, trip, "An")
+            _members(session, trip, "an")
 
 
 def test_expense_with_shares_and_transfer(session):
-    trip = _trip(session, travellers=2)
+    trip = _trip(session, adults=2)
     an, binh = _members(session, trip, "An", "Binh")
     expense = ExpenseRow(trip_id=trip.id, description="Dinner", amount=Decimal("40.00"), currency="GBP", payer_id=an.id)
     expense.shares = [

@@ -3,7 +3,7 @@
 Source: plan v0.1 §12. Paths may change; **semantics may not change without updating this file first** (contract PR before implementation PR, see `docs/WORKFLOW.md`).
 
 Conventions (MVP):
-- All routes under `/v1`. JSON, snake_case. Times ISO-8601 with offset; dates `YYYY-MM-DD`.
+- All routes under `/v1`. JSON, snake_case. Instants ISO-8601 with offset on input, always returned in UTC (`Z`) (A-11); dates `YYYY-MM-DD`; wall-clock times `HH:MM:SS`.
 - Money is `{ "amount": "128.62", "currency": "EUR" }` (string decimal, never float).
 - Errors: `{ "error": { "code": "...", "message": "...", "details": [...] } }`; validation = 422, conflict with locked/booked items = 409, provider down = 503 with `stale: true` data if any.
 - Volatile data carries `provenance: { source: "provider|user|ai", provider?, fetched_at?, expires_at? }`.

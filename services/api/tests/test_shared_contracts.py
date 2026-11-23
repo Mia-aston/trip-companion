@@ -58,3 +58,9 @@ def test_timezone_must_be_iana():
 def test_geopoint_ranges():
     with pytest.raises(ValidationError):
         GeoPoint(lat=91, lon=0)
+
+
+def test_datetimes_are_normalized_to_utc():
+    p = Provenance(source="provider", provider="mock", fetched_at="2026-11-06T22:30:00+02:00")
+    assert p.fetched_at == datetime(2026, 11, 6, 20, 30, tzinfo=UTC)
+    assert p.model_dump(mode="json")["fetched_at"] == "2026-11-06T20:30:00Z"
