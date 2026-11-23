@@ -19,6 +19,7 @@ Domain code must be vendor-neutral. Any vendor request/response translation belo
 | `app/domain/itinerary/days.py` | ITIN-001 candidate day builder (pure): window, blocked intervals, capacity, ranked candidates |
 | `app/db/cache.py` | `CachedPlacesProvider` / `CachedRoutesProvider`: same protocols, backed by `places`, `provider_snapshots`, `route_legs` |
 | `app/providers/registry.py` | picks adapters from `PLACES_PROVIDER` / `ROUTES_PROVIDER` |
+| `app/domain/itinerary/{plan,validator,planner}.py` | AI-001 `ProposedPlan` → canonical `PlanDay`s; ITIN-002 validator V1–V9; `Planner` protocol + `GreedyPlanner` |
 | `app/orchestration` | fetch from providers → call pure domain functions |
 | `app/db/models.py` | SQLAlchemy schema (PostgreSQL + PostGIS) |
 | `app/db/repositories.py` | ORM row ⇄ domain object translation; only place that touches rows |

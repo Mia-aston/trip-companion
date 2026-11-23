@@ -9,7 +9,7 @@ from app.providers.base import PlacesProvider, RoutesProvider
 STOP_RADIUS_M = 25_000
 
 
-def build_day_candidates(trip: Trip, places: PlacesProvider, routes: RoutesProvider) -> TripDayCandidates:
+def fetch_stop_contexts(trip: Trip, places: PlacesProvider, routes: RoutesProvider) -> dict[int, StopContext]:
     contexts: dict[int, StopContext] = {}
     for stop in trip.stops:
         base = places.resolve_city(stop.city)
@@ -23,4 +23,8 @@ def build_day_candidates(trip: Trip, places: PlacesProvider, routes: RoutesProvi
         ]
         waypoints = [Waypoint(id=p.id, location=p.location) for p in [base, *nearby]]
         contexts[stop.seq] = StopContext(base=base, places=nearby, matrix=routes.matrix(waypoints, TravelMode.DRIVE))
-    return plan_day_inputs(trip, contexts)
+    return contexts
+
+
+def build_day_candidates(trip: Trip, places: PlacesProvider, routes: RoutesProvider) -> TripDayCandidates:
+    return plan_day_inputs(trip, fetch_stop_contexts(trip, places, routes))

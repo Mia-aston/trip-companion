@@ -411,6 +411,11 @@ export interface components {
         };
         /** DayPlanInput */
         DayPlanInput: {
+            /**
+             * Base Place Id
+             * @description Stop base (travel times start here)
+             */
+            base_place_id: string | null;
             /** Blocked */
             blocked: components["schemas"]["BlockedInterval"][];
             /** Candidates */
