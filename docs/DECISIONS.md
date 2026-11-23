@@ -22,6 +22,10 @@ Accepted long-form ADRs live in `docs/decisions/`.
 | A-15 | Day capacity rules (buffers 90/180 min, pace utilisation, mobility/children factors, 60-min floor, scoring weights) as in ARCHITECTURE.md#day-capacity-m2; tunable constants in one module | M2 |
 | A-16 | Stop base location comes from the places provider (`city` place for the stop's city) until stops get explicit coordinates | M2 |
 | A-17 | Provider results cached in Postgres (places upsert, search snapshots 24 h, places/routes 7 days); stale cached data is returned when the provider loses a record; providers chosen by `PLACES_PROVIDER` / `ROUTES_PROVIDER` | M2 |
+| A-18 | MVP planner is deterministic (`GreedyPlanner`); an LLM planner is a NICE adapter behind the same `Planner` interface once D-07 is decided, and must pass the same validator | M3 |
+| A-19 | Plan versions are immutable full snapshots; every edit writes a new version; diffs use stable `item_key`s | M3 |
+| A-20 | Regenerate always preserves bookings, locked items and out-of-scope days (not configurable); MVP scope = one day; structured options only (`remove_item_keys`, `exclude_place_ids`, `stay_within_m`, `pace`), `note` stored not interpreted | M3 |
+| A-21 | A plan with validator errors is never persisted (422 + violations); warnings are stored on the version | M3 |
 | A-12 | `trips.owner_id` is nullable until auth lands (D-01, M8); members/constraints keep insertion order via `position` | CORE-002 |
 
 ## Open (default applies until decided)

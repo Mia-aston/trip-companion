@@ -17,12 +17,12 @@ Each milestone lists: **MVP** (must ship to exit) · **Deferred** (NICE → afte
 
 **Exit:** all open architecture questions tagged in DECISIONS.md with a default; core Pydantic/TS contracts reviewed. No feature code before this.
 
-## M1 — Trip workspace  ⏳ in progress
+## M1 — Trip workspace  ✅ done (merged via #10, 23 Nov 2026)
 **MVP issues:** ~~CORE-002 migration 0002 (trips change, stops, constraints, bookings, users minimal)~~ ✅ · ~~CORE-003 trips/members/stops/constraints/bookings API (`/v1`, persisted)~~ ✅ · ~~CORE-004 Egypt fixture loader~~ ✅ · ~~UI-001 Create Trip flow (form + trip page, read-only lists)~~ ✅
 **Deferred:** NICE trip duplication · NEXT sharing/roles, collaborative edit
-**Exit (E1):** Egypt reference trip persists and reloads identically, without AI. API tests + UI smoke green. — met on PR #6 branch (pending merge of #1–#6).
+**Exit (E1):** Egypt reference trip persists and reloads identically, without AI. API tests + UI smoke green. — met.
 
-## M2 — Places + routing  ✅ exit met on PR #9 (pending merge)
+## M2 — Places + routing  ✅ done (merged via #10, 23 Nov 2026)
 Everything runs on **mock providers + fixtures**; live adapters wait for D-02 and do not block the exit.
 
 **MVP issues (in order)**
@@ -34,10 +34,18 @@ Everything runs on **mock providers + fixtures**; live adapters wait for D-02 an
 **Deferred:** PLACE-002 live places adapter + ROUTE-002 live routes adapter (after D-02; contract suite must pass) · NICE photos metadata, transit mode · NEXT multi-provider merge
 **Exit (E2):** for the Egypt trip, every day has a capacity and ranked feasible candidates with travel times; 31 Oct (late arrival) and 6 Nov after the airport cut-off have zero sightseeing capacity; must-dos (Giza pyramids) appear on a Cairo day; closed places never appear on that weekday.
 
-## M3 — Itinerary engine
-**MVP issues:** ITIN-002 feasibility validator (hours, travel, overlaps, bookings, day window) · AI-001 structured itinerary output schema · AI-002 planner orchestration with fake LLM in tests · ITIN-003 locked items + partial regeneration (day scope) + plan_versions/diff · UI-002 itinerary editor (edit, lock, regenerate day)
-**Deferred:** NICE rollback endpoint, drag-and-drop · NEXT multi-day re-flow, auto order optimisation
-**Exit (E3, E3b):** remove Aswan → only 6 Nov changes; balloon cancel → only 5 Nov morning changes; validator green; diff stored.
+## M3 — Itinerary engine  ⏳ in progress
+Rules: `docs/ARCHITECTURE.md#itinerary-engine-m3`. One PR per issue, each based on `main`, merged before the next starts.
+
+**MVP issues (in order)**
+1. M3 doc pass (this) — itinerary tables, validator rules, planner contract, regenerate contract, E3 fixture.
+2. ITIN-002 + AI-001 — `ProposedPlan` schema (structured planner output), `validate()` (pure, rules V1–V9), `GreedyPlanner` (deterministic, no LLM) behind the `Planner` interface. Property test: validator never accepts overlaps / out-of-window items.
+3. AI-002 — migration 0004 (`plan_versions`, `itinerary_days`, `itinerary_items`), plan repository, orchestration (day inputs → planner → validator → persist → explanation), `POST …/itinerary/generate`, `GET …/itinerary`, `GET …/itinerary/diff`.
+4. ITIN-003 — item edits (`PATCH`, lock, add custom item, delete), `POST …/itinerary/regenerate` (day scope), diff by stable `item_key` → **E3, E3b**.
+5. UI-002 — itinerary editor: generate, day list, lock toggle, remove/add item, "regenerate this day" (pace, stay-near radius, exclude), version note + diff summary; Playwright.
+
+**Deferred:** NICE LLM planner adapter (needs D-07; same `Planner` interface, must pass the same validator), rollback endpoint, drag-and-drop, meal suggestions from food engine (M5) · NEXT multi-day re-flow, route-order optimisation, free-text change interpretation
+**Exit (E3, E3b):** on the Egypt trip, removing the user-added "Aswan day trip" and regenerating 6 Nov "around Luxor downtown" changes only 6 Nov unlocked items; every other day, all bookings and locked items are identical; 22:30 departure respected; a new plan version with a diff is stored; validator has no errors. Cancelling the balloon booking and regenerating 5 Nov replaces only the morning block.
 
 ## M4 — Flight search
 **MVP issues:** FLIGHT-001 normalized flight contract (segments, fare, baggage, expiry) · FLIGHT-002 mock provider + fixtures (exists, extend) · FLIGHT-003 live adapter (after D-03) · select flight → booking + hard time constraint · UI flight options + external booking link
