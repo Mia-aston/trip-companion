@@ -11,11 +11,11 @@ Source: plan v0.1 §16, §23. Process: `docs/WORKFLOW.md`.
 | Unit | split formulas, score functions, time-window validator, lock rules | `tests/test_*.py` | every PR | M0 ✅ |
 | Contract | provider fixture → normalized model; every adapter passes the same suite | `tests/test_providers_contract.py` + `tests/fixtures/` | every PR | M0 ✅ |
 | Schema / DB | migrations up/down, constraints, cascades, PostGIS | `tests/db/` (needs `TEST_DATABASE_URL`) | every PR (CI PostGIS) | M0 ✅ |
-| API | route validation + persistence via TestClient | `tests/api/` | every PR | M1 |
+| API | route validation + persistence via TestClient | `tests/test_trips_api.py`, `tests/db/test_trips_api.py` | every PR | M1 ✅ |
 | Property-based | splits sum to expense; settlement Σ = 0; validator never accepts overlap | `hypothesis` | every PR | M3/M6 |
 | Golden scenario | Egypt slices (below) | `tests/golden/` | every PR touching itinerary/budget | M1→M6 |
 | Evals | itinerary feasibility rate, explanation grounding, food-match explanation grounding | `evals/` (LLM, not in default CI) | nightly / manual | M3/M5 |
-| UI | create trip, choose flight, edit day, add expense (Playwright) | `apps/web/e2e/` | every PR touching web | M1 (smoke) → M7 |
+| UI | create trip, choose flight, edit day, add expense (Playwright, desktop + phone) | `apps/web/e2e/` | every PR (CI `e2e` job) | M1 ✅ (smoke) → M7 |
 
 Rules:
 - No live provider calls in CI. Live adapters are tested with sanitized recorded fixtures.
@@ -51,7 +51,7 @@ Fixture: `tests/fixtures/egypt/` (built in M1, extended per milestone). Confirme
 | Slice | Milestone | Assertion |
 |---|---|---|
 | E1 persist | M1 | Egypt trip with members, stops, constraints, bookings saves and reloads identically, no AI |
-| E2 feasibility | M2 | each day's candidates are reachable within the day window using the route matrix; late-arrival day has 0 sightseeing stops |
+| E2 feasibility ✅ (`tests/golden/test_e2_day_candidates.py`; API level in `tests/db/test_places_api.py`) | M2 | each day's candidates are reachable within the day window using the route matrix; late-arrival day has 0 sightseeing stops |
 | E3 regenerate | M3 | "remove Aswan, stay Luxor downtown" on 6 Nov changes only 6 Nov items; all other days, hotel and flight are byte-identical; new plan_version with diff; validator passes; 22:30 departure respected |
 | E3b weather | M3 | balloon cancelled → only 5 Nov morning block replaced |
 | E4 flights | M4 | selecting a flight that lands 31 Oct 23:30 sets day-1 capacity to 0 sightseeing |

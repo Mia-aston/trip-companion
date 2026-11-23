@@ -106,6 +106,32 @@
         "title": "AvoidCreate",
         "type": "object"
       },
+      "BlockedInterval": {
+        "additionalProperties": false,
+        "properties": {
+          "end": {
+            "format": "time",
+            "title": "End",
+            "type": "string"
+          },
+          "label": {
+            "title": "Label",
+            "type": "string"
+          },
+          "start": {
+            "format": "time",
+            "title": "Start",
+            "type": "string"
+          }
+        },
+        "required": [
+          "start",
+          "end",
+          "label"
+        ],
+        "title": "BlockedInterval",
+        "type": "object"
+      },
       "Booking": {
         "additionalProperties": false,
         "properties": {
@@ -120,6 +146,7 @@
             ]
           },
           "ends_at": {
+            "description": "Offset required on input; normalized to and returned in UTC. Display in the stop's timezone.",
             "format": "date-time",
             "title": "Ends At",
             "type": "string"
@@ -158,6 +185,7 @@
             "title": "Reference"
           },
           "starts_at": {
+            "description": "Offset required on input; normalized to and returned in UTC. Display in the stop's timezone.",
             "format": "date-time",
             "title": "Starts At",
             "type": "string"
@@ -215,6 +243,7 @@
             ]
           },
           "ends_at": {
+            "description": "Offset required on input; normalized to and returned in UTC. Display in the stop's timezone.",
             "format": "date-time",
             "title": "Ends At",
             "type": "string"
@@ -248,6 +277,7 @@
             "title": "Reference"
           },
           "starts_at": {
+            "description": "Offset required on input; normalized to and returned in UTC. Display in the stop's timezone.",
             "format": "date-time",
             "title": "Starts At",
             "type": "string"
@@ -365,6 +395,151 @@
         ],
         "title": "ConstraintSource",
         "type": "string"
+      },
+      "DayCandidate": {
+        "additionalProperties": false,
+        "properties": {
+          "categories": {
+            "items": {
+              "$ref": "#/components/schemas/PlaceCategory"
+            },
+            "title": "Categories",
+            "type": "array"
+          },
+          "fits": {
+            "description": "travel there + visit + travel back <= capacity",
+            "title": "Fits",
+            "type": "boolean"
+          },
+          "hours_known": {
+            "title": "Hours Known",
+            "type": "boolean"
+          },
+          "must_do": {
+            "title": "Must Do",
+            "type": "boolean"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "place_id": {
+            "title": "Place Id",
+            "type": "string"
+          },
+          "reasons": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Reasons",
+            "type": "array"
+          },
+          "score": {
+            "maximum": 1.0,
+            "minimum": 0.0,
+            "title": "Score",
+            "type": "number"
+          },
+          "travel_minutes": {
+            "description": "One way from the stop base",
+            "title": "Travel Minutes",
+            "type": "integer"
+          },
+          "visit_minutes": {
+            "title": "Visit Minutes",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "place_id",
+          "name",
+          "categories",
+          "score",
+          "visit_minutes",
+          "travel_minutes",
+          "fits",
+          "must_do",
+          "hours_known",
+          "reasons"
+        ],
+        "title": "DayCandidate",
+        "type": "object"
+      },
+      "DayPlanInput": {
+        "additionalProperties": false,
+        "properties": {
+          "blocked": {
+            "items": {
+              "$ref": "#/components/schemas/BlockedInterval"
+            },
+            "title": "Blocked",
+            "type": "array"
+          },
+          "candidates": {
+            "items": {
+              "$ref": "#/components/schemas/DayCandidate"
+            },
+            "title": "Candidates",
+            "type": "array"
+          },
+          "capacity_minutes": {
+            "title": "Capacity Minutes",
+            "type": "integer"
+          },
+          "city": {
+            "title": "City",
+            "type": "string"
+          },
+          "date": {
+            "format": "date",
+            "title": "Date",
+            "type": "string"
+          },
+          "free_minutes": {
+            "title": "Free Minutes",
+            "type": "integer"
+          },
+          "notes": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Notes",
+            "type": "array"
+          },
+          "stop_seq": {
+            "title": "Stop Seq",
+            "type": "integer"
+          },
+          "timezone": {
+            "title": "Timezone",
+            "type": "string"
+          },
+          "window": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/TimeWindow"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "None = no sightseeing time this day"
+          }
+        },
+        "required": [
+          "date",
+          "stop_seq",
+          "city",
+          "timezone",
+          "window",
+          "blocked",
+          "free_minutes",
+          "capacity_minutes",
+          "candidates",
+          "notes"
+        ],
+        "title": "DayPlanInput",
+        "type": "object"
       },
       "DietaryRestriction": {
         "description": "Hard filter for food. Allergies trigger a 'verify with venue' warning in UI.",
@@ -484,6 +659,29 @@
           "checked_bags"
         ],
         "title": "FlightPrefs",
+        "type": "object"
+      },
+      "GeoPoint": {
+        "additionalProperties": false,
+        "properties": {
+          "lat": {
+            "maximum": 90.0,
+            "minimum": -90.0,
+            "title": "Lat",
+            "type": "number"
+          },
+          "lon": {
+            "maximum": 180.0,
+            "minimum": -180.0,
+            "title": "Lon",
+            "type": "number"
+          }
+        },
+        "required": [
+          "lat",
+          "lon"
+        ],
+        "title": "GeoPoint",
         "type": "object"
       },
       "Hardness": {
@@ -783,6 +981,36 @@
         "title": "MustDoCreate",
         "type": "object"
       },
+      "OpeningPeriod": {
+        "additionalProperties": false,
+        "description": "One weekly opening interval in the place's local time. `close <= open` means it closes after midnight.",
+        "properties": {
+          "close": {
+            "format": "time",
+            "title": "Close",
+            "type": "string"
+          },
+          "open": {
+            "format": "time",
+            "title": "Open",
+            "type": "string"
+          },
+          "weekday": {
+            "description": "0 = Monday \u2026 6 = Sunday (ISO weekday - 1)",
+            "maximum": 6.0,
+            "minimum": 0.0,
+            "title": "Weekday",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "weekday",
+          "open",
+          "close"
+        ],
+        "title": "OpeningPeriod",
+        "type": "object"
+      },
       "Pace": {
         "enum": [
           "relaxed",
@@ -790,6 +1018,280 @@
           "packed"
         ],
         "title": "Pace",
+        "type": "string"
+      },
+      "Place": {
+        "additionalProperties": false,
+        "properties": {
+          "categories": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/PlaceCategory"
+            },
+            "title": "Categories",
+            "type": "array"
+          },
+          "city": {
+            "anyOf": [
+              {
+                "maxLength": 120,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "City"
+          },
+          "id": {
+            "description": "Stable id: '<provider>:<provider_place_id>'",
+            "title": "Id",
+            "type": "string"
+          },
+          "location": {
+            "$ref": "#/components/schemas/GeoPoint"
+          },
+          "name": {
+            "maxLength": 255,
+            "minLength": 1,
+            "title": "Name",
+            "type": "string"
+          },
+          "opening_hours": {
+            "anyOf": [
+              {
+                "items": {
+                  "$ref": "#/components/schemas/OpeningPeriod"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "None = unknown; [] = never open",
+            "title": "Opening Hours"
+          },
+          "price_level": {
+            "anyOf": [
+              {
+                "description": "1 = budget \u2026 4 = luxury",
+                "maximum": 4.0,
+                "minimum": 1.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Price Level"
+          },
+          "provenance": {
+            "$ref": "#/components/schemas/Provenance"
+          },
+          "provider": {
+            "title": "Provider",
+            "type": "string"
+          },
+          "provider_place_id": {
+            "title": "Provider Place Id",
+            "type": "string"
+          },
+          "rating": {
+            "anyOf": [
+              {
+                "maximum": 5.0,
+                "minimum": 0.0,
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Rating"
+          },
+          "rating_count": {
+            "anyOf": [
+              {
+                "minimum": 0.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Rating Count"
+          },
+          "timezone": {
+            "examples": [
+              "Africa/Cairo"
+            ],
+            "title": "Timezone",
+            "type": "string"
+          },
+          "typical_visit_minutes": {
+            "default": 60,
+            "maximum": 600.0,
+            "minimum": 5.0,
+            "title": "Typical Visit Minutes",
+            "type": "integer"
+          },
+          "wheelchair_accessible": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Wheelchair Accessible"
+          }
+        },
+        "required": [
+          "id",
+          "provider",
+          "provider_place_id",
+          "name",
+          "city",
+          "location",
+          "categories",
+          "opening_hours",
+          "rating",
+          "rating_count",
+          "price_level",
+          "wheelchair_accessible",
+          "timezone",
+          "typical_visit_minutes",
+          "provenance"
+        ],
+        "title": "Place",
+        "type": "object"
+      },
+      "PlaceCategory": {
+        "enum": [
+          "city",
+          "landmark",
+          "museum",
+          "temple",
+          "archaeological_site",
+          "market",
+          "park",
+          "viewpoint",
+          "restaurant",
+          "cafe",
+          "nature",
+          "nightlife",
+          "shopping",
+          "art",
+          "activity"
+        ],
+        "title": "PlaceCategory",
+        "type": "string"
+      },
+      "PlaceSearch": {
+        "additionalProperties": false,
+        "properties": {
+          "categories": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/PlaceCategory"
+            },
+            "title": "Categories",
+            "type": "array"
+          },
+          "limit": {
+            "default": 20,
+            "maximum": 100.0,
+            "minimum": 1.0,
+            "title": "Limit",
+            "type": "integer"
+          },
+          "near": {
+            "$ref": "#/components/schemas/GeoPoint"
+          },
+          "query": {
+            "default": "",
+            "description": "Name or category text; empty = anything nearby",
+            "maxLength": 200,
+            "title": "Query",
+            "type": "string"
+          },
+          "radius_m": {
+            "default": 5000,
+            "maximum": 50000.0,
+            "minimum": 100.0,
+            "title": "Radius M",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "near"
+        ],
+        "title": "PlaceSearch",
+        "type": "object"
+      },
+      "Provenance": {
+        "additionalProperties": false,
+        "description": "Where a user-visible fact came from and how fresh it is.",
+        "properties": {
+          "expires_at": {
+            "anyOf": [
+              {
+                "description": "Offset required on input; normalized to and returned in UTC. Display in the stop's timezone.",
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Expires At"
+          },
+          "fetched_at": {
+            "anyOf": [
+              {
+                "description": "Offset required on input; normalized to and returned in UTC. Display in the stop's timezone.",
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Fetched At"
+          },
+          "provider": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Provider"
+          },
+          "source": {
+            "$ref": "#/components/schemas/ProvenanceSource"
+          }
+        },
+        "required": [
+          "source",
+          "provider",
+          "fetched_at",
+          "expires_at"
+        ],
+        "title": "Provenance",
+        "type": "object"
+      },
+      "ProvenanceSource": {
+        "enum": [
+          "provider",
+          "user",
+          "ai"
+        ],
+        "title": "ProvenanceSource",
         "type": "string"
       },
       "Stop": {
@@ -944,6 +1446,7 @@
         "additionalProperties": false,
         "properties": {
           "ends_at": {
+            "description": "Offset required on input; normalized to and returned in UTC. Display in the stop's timezone.",
             "format": "date-time",
             "title": "Ends At",
             "type": "string"
@@ -979,6 +1482,7 @@
             "default": "user"
           },
           "starts_at": {
+            "description": "Offset required on input; normalized to and returned in UTC. Display in the stop's timezone.",
             "format": "date-time",
             "title": "Starts At",
             "type": "string"
@@ -1002,6 +1506,7 @@
         "description": "A fixed block the plan must respect, e.g. a meeting or a tour pickup.",
         "properties": {
           "ends_at": {
+            "description": "Offset required on input; normalized to and returned in UTC. Display in the stop's timezone.",
             "format": "date-time",
             "title": "Ends At",
             "type": "string"
@@ -1023,6 +1528,7 @@
             "type": "string"
           },
           "starts_at": {
+            "description": "Offset required on input; normalized to and returned in UTC. Display in the stop's timezone.",
             "format": "date-time",
             "title": "Starts At",
             "type": "string"
@@ -1450,6 +1956,37 @@
         "title": "TripCreate",
         "type": "object"
       },
+      "TripDayCandidates": {
+        "additionalProperties": false,
+        "properties": {
+          "days": {
+            "items": {
+              "$ref": "#/components/schemas/DayPlanInput"
+            },
+            "title": "Days",
+            "type": "array"
+          },
+          "trip_id": {
+            "title": "Trip Id",
+            "type": "string"
+          },
+          "unmet_must_dos": {
+            "description": "Must-dos that fit on no day",
+            "items": {
+              "type": "string"
+            },
+            "title": "Unmet Must Dos",
+            "type": "array"
+          }
+        },
+        "required": [
+          "trip_id",
+          "days",
+          "unmet_must_dos"
+        ],
+        "title": "TripDayCandidates",
+        "type": "object"
+      },
       "TripStatus": {
         "enum": [
           "draft",
@@ -1462,7 +1999,7 @@
       },
       "TripUpdate": {
         "additionalProperties": false,
-        "description": "PATCH body. Omitted fields are unchanged. Stops/members/constraints/bookings use sub-resources.",
+        "description": "PATCH body. Omitted fields are unchanged; explicit `null` clears an optional field (e.g. `budget`).\n\n`stops` replaces the whole stop list (needed to change trip length). Members, constraints and\nbookings use their sub-resources. Cross-field rules are re-checked on the merged trip (`rules.apply_update`).",
         "properties": {
           "adults": {
             "anyOf": [
@@ -1663,6 +2200,22 @@
               }
             ]
           },
+          "stops": {
+            "anyOf": [
+              {
+                "items": {
+                  "$ref": "#/components/schemas/StopCreate"
+                },
+                "maxItems": 20,
+                "minItems": 1,
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Stops"
+          },
           "title": {
             "anyOf": [
               {
@@ -1710,6 +2263,137 @@
         "summary": "Health"
       }
     },
+    "/v1/places/search": {
+      "post": {
+        "operationId": "search_places_v1_places_search_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PlaceSearch"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/Place"
+                  },
+                  "title": "Response Search Places V1 Places Search Post",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Not found"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Conflicts with stored state"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Validation error or invalid change"
+          }
+        },
+        "summary": "Search Places",
+        "tags": [
+          "places"
+        ]
+      }
+    },
+    "/v1/places/{place_id}": {
+      "get": {
+        "operationId": "get_place_v1_places__place_id__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "place_id",
+            "required": true,
+            "schema": {
+              "examples": [
+                "mock:karnak"
+              ],
+              "maxLength": 300,
+              "title": "Place Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Place"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Not found"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Conflicts with stored state"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Validation error or invalid change"
+          }
+        },
+        "summary": "Get Place",
+        "tags": [
+          "places"
+        ]
+      }
+    },
     "/v1/trips": {
       "post": {
         "operationId": "create_trip_v1_trips_post",
@@ -1734,6 +2418,26 @@
             },
             "description": "Successful Response"
           },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Not found"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Conflicts with stored state"
+          },
           "422": {
             "content": {
               "application/json": {
@@ -1742,17 +2446,7 @@
                 }
               }
             },
-            "description": "Validation error"
-          },
-          "501": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            },
-            "description": "Declared in contract, not implemented yet"
+            "description": "Validation error or invalid change"
           }
         },
         "summary": "Create Trip",
@@ -1780,6 +2474,26 @@
           "204": {
             "description": "Successful Response"
           },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Not found"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Conflicts with stored state"
+          },
           "422": {
             "content": {
               "application/json": {
@@ -1788,17 +2502,7 @@
                 }
               }
             },
-            "description": "Validation error"
-          },
-          "501": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            },
-            "description": "Declared in contract, not implemented yet"
+            "description": "Validation error or invalid change"
           }
         },
         "summary": "Delete Trip",
@@ -1831,6 +2535,26 @@
             },
             "description": "Successful Response"
           },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Not found"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Conflicts with stored state"
+          },
           "422": {
             "content": {
               "application/json": {
@@ -1839,17 +2563,7 @@
                 }
               }
             },
-            "description": "Validation error"
-          },
-          "501": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            },
-            "description": "Declared in contract, not implemented yet"
+            "description": "Validation error or invalid change"
           }
         },
         "summary": "Get Trip",
@@ -1892,6 +2606,26 @@
             },
             "description": "Successful Response"
           },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Not found"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Conflicts with stored state"
+          },
           "422": {
             "content": {
               "application/json": {
@@ -1900,17 +2634,7 @@
                 }
               }
             },
-            "description": "Validation error"
-          },
-          "501": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            },
-            "description": "Declared in contract, not implemented yet"
+            "description": "Validation error or invalid change"
           }
         },
         "summary": "Update Trip",
@@ -1955,6 +2679,26 @@
             },
             "description": "Successful Response"
           },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Not found"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Conflicts with stored state"
+          },
           "422": {
             "content": {
               "application/json": {
@@ -1963,17 +2707,7 @@
                 }
               }
             },
-            "description": "Validation error"
-          },
-          "501": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            },
-            "description": "Declared in contract, not implemented yet"
+            "description": "Validation error or invalid change"
           }
         },
         "summary": "Add Booking",
@@ -2011,6 +2745,26 @@
           "204": {
             "description": "Successful Response"
           },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Not found"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Conflicts with stored state"
+          },
           "422": {
             "content": {
               "application/json": {
@@ -2019,17 +2773,7 @@
                 }
               }
             },
-            "description": "Validation error"
-          },
-          "501": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            },
-            "description": "Declared in contract, not implemented yet"
+            "description": "Validation error or invalid change"
           }
         },
         "summary": "Remove Booking",
@@ -2112,6 +2856,26 @@
             },
             "description": "Successful Response"
           },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Not found"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Conflicts with stored state"
+          },
           "422": {
             "content": {
               "application/json": {
@@ -2120,17 +2884,7 @@
                 }
               }
             },
-            "description": "Validation error"
-          },
-          "501": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            },
-            "description": "Declared in contract, not implemented yet"
+            "description": "Validation error or invalid change"
           }
         },
         "summary": "Add Constraint",
@@ -2168,6 +2922,26 @@
           "204": {
             "description": "Successful Response"
           },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Not found"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Conflicts with stored state"
+          },
           "422": {
             "content": {
               "application/json": {
@@ -2176,9 +2950,43 @@
                 }
               }
             },
-            "description": "Validation error"
+            "description": "Validation error or invalid change"
+          }
+        },
+        "summary": "Remove Constraint",
+        "tags": [
+          "trips"
+        ]
+      }
+    },
+    "/v1/trips/{trip_id}/day-candidates": {
+      "get": {
+        "description": "Per day: available window, capacity and ranked feasible places (ITIN-001). Read-only; nothing is scheduled.",
+        "operationId": "day_candidates_v1_trips__trip_id__day_candidates_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "trip_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Trip Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TripDayCandidates"
+                }
+              }
+            },
+            "description": "Successful Response"
           },
-          "501": {
+          "404": {
             "content": {
               "application/json": {
                 "schema": {
@@ -2186,10 +2994,30 @@
                 }
               }
             },
-            "description": "Declared in contract, not implemented yet"
+            "description": "Not found"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Conflicts with stored state"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Validation error or invalid change"
           }
         },
-        "summary": "Remove Constraint",
+        "summary": "Day Candidates",
         "tags": [
           "trips"
         ]
@@ -2231,6 +3059,26 @@
             },
             "description": "Successful Response"
           },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Not found"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Conflicts with stored state"
+          },
           "422": {
             "content": {
               "application/json": {
@@ -2239,17 +3087,7 @@
                 }
               }
             },
-            "description": "Validation error"
-          },
-          "501": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            },
-            "description": "Declared in contract, not implemented yet"
+            "description": "Validation error or invalid change"
           }
         },
         "summary": "Add Member",
@@ -2287,6 +3125,26 @@
           "204": {
             "description": "Successful Response"
           },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Not found"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Conflicts with stored state"
+          },
           "422": {
             "content": {
               "application/json": {
@@ -2295,17 +3153,7 @@
                 }
               }
             },
-            "description": "Validation error"
-          },
-          "501": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            },
-            "description": "Declared in contract, not implemented yet"
+            "description": "Validation error or invalid change"
           }
         },
         "summary": "Remove Member",

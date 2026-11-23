@@ -54,6 +54,7 @@ source .venv/bin/activate
 pip install -e '.[dev]'
 docker compose up -d postgres        # from repo root: PostGIS 16
 alembic upgrade head                  # create schema
+python scripts/seed_egypt.py          # optional: Egypt demo trip
 uvicorn app.main:app --reload
 ```
 

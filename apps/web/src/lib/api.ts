@@ -9,9 +9,19 @@ export class ApiRequestError extends Error {
   ) {
     super(body?.error.message ?? `API request failed: ${status}`);
   }
+
+  /** Human-readable lines from the error envelope's details. */
+  get details(): string[] {
+    return (this.body?.error.details ?? []).map((d) => {
+      if (typeof d === "string") return d;
+      const item = d as { loc?: (string | number)[]; msg?: string };
+      const where = (item.loc ?? []).filter((p) => p !== "body").join(".");
+      return where ? `${where}: ${item.msg}` : String(item.msg ?? JSON.stringify(d));
+    });
+  }
 }
 
-async function request<T>(path: string, init: RequestInit): Promise<T> {
+async function request<T>(path: string, init: RequestInit = {}): Promise<T> {
   const response = await fetch(`${API_BASE}${path}`, {
     ...init,
     headers: { "content-type": "application/json", ...init.headers },
@@ -25,4 +35,8 @@ async function request<T>(path: string, init: RequestInit): Promise<T> {
 
 export function createTrip(input: TripCreate): Promise<Trip> {
   return request<Trip>("/v1/trips", { method: "POST", body: JSON.stringify(input) });
+}
+
+export function getTrip(id: string): Promise<Trip> {
+  return request<Trip>(`/v1/trips/${encodeURIComponent(id)}`);
 }

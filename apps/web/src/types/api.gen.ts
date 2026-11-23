@@ -21,6 +21,40 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/places/search": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Search Places */
+        post: operations["search_places_v1_places_search_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/places/{place_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Place */
+        get: operations["get_place_v1_places__place_id__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/trips": {
         parameters: {
             query?: never;
@@ -125,6 +159,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/trips/{trip_id}/day-candidates": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Day Candidates
+         * @description Per day: available window, capacity and ranked feasible places (ITIN-001). Read-only; nothing is scheduled.
+         */
+        get: operations["day_candidates_v1_trips__trip_id__day_candidates_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/trips/{trip_id}/members": {
         parameters: {
             query?: never;
@@ -203,12 +257,28 @@ export interface components {
             /** Query */
             query?: string | null;
         };
+        /** BlockedInterval */
+        BlockedInterval: {
+            /**
+             * End
+             * Format: time
+             */
+            end: string;
+            /** Label */
+            label: string;
+            /**
+             * Start
+             * Format: time
+             */
+            start: string;
+        };
         /** Booking */
         Booking: {
             cost: components["schemas"]["Money"] | null;
             /**
              * Ends At
              * Format: date-time
+             * @description Offset required on input; normalized to and returned in UTC. Display in the stop's timezone.
              */
             ends_at: string;
             /**
@@ -227,6 +297,7 @@ export interface components {
             /**
              * Starts At
              * Format: date-time
+             * @description Offset required on input; normalized to and returned in UTC. Display in the stop's timezone.
              */
             starts_at: string;
             /** @default confirmed */
@@ -245,6 +316,7 @@ export interface components {
             /**
              * Ends At
              * Format: date-time
+             * @description Offset required on input; normalized to and returned in UTC. Display in the stop's timezone.
              */
             ends_at: string;
             kind: components["schemas"]["BookingKind"];
@@ -258,6 +330,7 @@ export interface components {
             /**
              * Starts At
              * Format: date-time
+             * @description Offset required on input; normalized to and returned in UTC. Display in the stop's timezone.
              */
             starts_at: string;
             /** @default confirmed */
@@ -307,6 +380,61 @@ export interface components {
          * @enum {string}
          */
         ConstraintSource: "user" | "booking" | "system";
+        /** DayCandidate */
+        DayCandidate: {
+            /** Categories */
+            categories: components["schemas"]["PlaceCategory"][];
+            /**
+             * Fits
+             * @description travel there + visit + travel back <= capacity
+             */
+            fits: boolean;
+            /** Hours Known */
+            hours_known: boolean;
+            /** Must Do */
+            must_do: boolean;
+            /** Name */
+            name: string;
+            /** Place Id */
+            place_id: string;
+            /** Reasons */
+            reasons: string[];
+            /** Score */
+            score: number;
+            /**
+             * Travel Minutes
+             * @description One way from the stop base
+             */
+            travel_minutes: number;
+            /** Visit Minutes */
+            visit_minutes: number;
+        };
+        /** DayPlanInput */
+        DayPlanInput: {
+            /** Blocked */
+            blocked: components["schemas"]["BlockedInterval"][];
+            /** Candidates */
+            candidates: components["schemas"]["DayCandidate"][];
+            /** Capacity Minutes */
+            capacity_minutes: number;
+            /** City */
+            city: string;
+            /**
+             * Date
+             * Format: date
+             */
+            date: string;
+            /** Free Minutes */
+            free_minutes: number;
+            /** Notes */
+            notes: string[];
+            /** Stop Seq */
+            stop_seq: number;
+            /** Timezone */
+            timezone: string;
+            /** @description None = no sightseeing time this day */
+            window: components["schemas"]["TimeWindow"] | null;
+        };
         /**
          * DietaryRestriction
          * @description Hard filter for food. Allergies trigger a 'verify with venue' warning in UI.
@@ -358,6 +486,13 @@ export interface components {
              * @description None = any
              */
             max_stops: number | null;
+        };
+        /** GeoPoint */
+        GeoPoint: {
+            /** Lat */
+            lat: number;
+            /** Lon */
+            lon: number;
         };
         /**
          * Hardness
@@ -462,10 +597,122 @@ export interface components {
             query?: string | null;
         };
         /**
+         * OpeningPeriod
+         * @description One weekly opening interval in the place's local time. `close <= open` means it closes after midnight.
+         */
+        OpeningPeriod: {
+            /**
+             * Close
+             * Format: time
+             */
+            close: string;
+            /**
+             * Open
+             * Format: time
+             */
+            open: string;
+            /**
+             * Weekday
+             * @description 0 = Monday … 6 = Sunday (ISO weekday - 1)
+             */
+            weekday: number;
+        };
+        /**
          * Pace
          * @enum {string}
          */
         Pace: "relaxed" | "balanced" | "packed";
+        /** Place */
+        Place: {
+            /**
+             * Categories
+             * @default []
+             */
+            categories: components["schemas"]["PlaceCategory"][];
+            /** City */
+            city: string | null;
+            /**
+             * Id
+             * @description Stable id: '<provider>:<provider_place_id>'
+             */
+            id: string;
+            location: components["schemas"]["GeoPoint"];
+            /** Name */
+            name: string;
+            /**
+             * Opening Hours
+             * @description None = unknown; [] = never open
+             */
+            opening_hours: components["schemas"]["OpeningPeriod"][] | null;
+            /** Price Level */
+            price_level: number | null;
+            provenance: components["schemas"]["Provenance"];
+            /** Provider */
+            provider: string;
+            /** Provider Place Id */
+            provider_place_id: string;
+            /** Rating */
+            rating: number | null;
+            /** Rating Count */
+            rating_count: number | null;
+            /** Timezone */
+            timezone: string;
+            /**
+             * Typical Visit Minutes
+             * @default 60
+             */
+            typical_visit_minutes: number;
+            /** Wheelchair Accessible */
+            wheelchair_accessible: boolean | null;
+        };
+        /**
+         * PlaceCategory
+         * @enum {string}
+         */
+        PlaceCategory: "city" | "landmark" | "museum" | "temple" | "archaeological_site" | "market" | "park" | "viewpoint" | "restaurant" | "cafe" | "nature" | "nightlife" | "shopping" | "art" | "activity";
+        /** PlaceSearch */
+        PlaceSearch: {
+            /**
+             * Categories
+             * @default []
+             */
+            categories?: components["schemas"]["PlaceCategory"][];
+            /**
+             * Limit
+             * @default 20
+             */
+            limit?: number;
+            near: components["schemas"]["GeoPoint"];
+            /**
+             * Query
+             * @description Name or category text; empty = anything nearby
+             * @default
+             */
+            query?: string;
+            /**
+             * Radius M
+             * @default 5000
+             */
+            radius_m?: number;
+        };
+        /**
+         * Provenance
+         * @description Where a user-visible fact came from and how fresh it is.
+         */
+        Provenance: {
+            /** Expires At */
+            expires_at: string | null;
+            /** Fetched At */
+            fetched_at: string | null;
+            /** Provider */
+            provider: string | null;
+            source: components["schemas"]["ProvenanceSource"];
+        };
+        /**
+         * ProvenanceSource
+         * @enum {string}
+         */
+        ProvenanceSource: "provider" | "user" | "ai";
         /** Stop */
         Stop: {
             /** Accommodation Area */
@@ -532,6 +779,7 @@ export interface components {
             /**
              * Ends At
              * Format: date-time
+             * @description Offset required on input; normalized to and returned in UTC. Display in the stop's timezone.
              */
             ends_at: string;
             /** @default hard */
@@ -558,6 +806,7 @@ export interface components {
             /**
              * Starts At
              * Format: date-time
+             * @description Offset required on input; normalized to and returned in UTC. Display in the stop's timezone.
              */
             starts_at: string;
         };
@@ -569,6 +818,7 @@ export interface components {
             /**
              * Ends At
              * Format: date-time
+             * @description Offset required on input; normalized to and returned in UTC. Display in the stop's timezone.
              */
             ends_at: string;
             /** @default hard */
@@ -583,6 +833,7 @@ export interface components {
             /**
              * Starts At
              * Format: date-time
+             * @description Offset required on input; normalized to and returned in UTC. Display in the stop's timezone.
              */
             starts_at: string;
         };
@@ -778,6 +1029,18 @@ export interface components {
             /** Title */
             title: string;
         };
+        /** TripDayCandidates */
+        TripDayCandidates: {
+            /** Days */
+            days: components["schemas"]["DayPlanInput"][];
+            /** Trip Id */
+            trip_id: string;
+            /**
+             * Unmet Must Dos
+             * @description Must-dos that fit on no day
+             */
+            unmet_must_dos: string[];
+        };
         /**
          * TripStatus
          * @enum {string}
@@ -785,7 +1048,10 @@ export interface components {
         TripStatus: "draft" | "planned" | "active" | "done";
         /**
          * TripUpdate
-         * @description PATCH body. Omitted fields are unchanged. Stops/members/constraints/bookings use sub-resources.
+         * @description PATCH body. Omitted fields are unchanged; explicit `null` clears an optional field (e.g. `budget`).
+         *
+         *     `stops` replaces the whole stop list (needed to change trip length). Members, constraints and
+         *     bookings use their sub-resources. Cross-field rules are re-checked on the merged trip (`rules.apply_update`).
          */
         TripUpdate: {
             /** Adults */
@@ -814,6 +1080,8 @@ export interface components {
             /** Start Date */
             start_date?: string | null;
             status?: components["schemas"]["TripStatus"] | null;
+            /** Stops */
+            stops?: components["schemas"]["StopCreate"][] | null;
             /** Title */
             title?: string | null;
         };
@@ -848,6 +1116,106 @@ export interface operations {
             };
         };
     };
+    search_places_v1_places_search_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PlaceSearch"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Place"][];
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Conflicts with stored state */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation error or invalid change */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    get_place_v1_places__place_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                place_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Place"];
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Conflicts with stored state */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation error or invalid change */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
     create_trip_v1_trips_post: {
         parameters: {
             query?: never;
@@ -870,8 +1238,8 @@ export interface operations {
                     "application/json": components["schemas"]["Trip"];
                 };
             };
-            /** @description Validation error */
-            422: {
+            /** @description Not found */
+            404: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -879,8 +1247,17 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
-            /** @description Declared in contract, not implemented yet */
-            501: {
+            /** @description Conflicts with stored state */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation error or invalid change */
+            422: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -910,8 +1287,8 @@ export interface operations {
                     "application/json": components["schemas"]["Trip"];
                 };
             };
-            /** @description Validation error */
-            422: {
+            /** @description Not found */
+            404: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -919,8 +1296,17 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
-            /** @description Declared in contract, not implemented yet */
-            501: {
+            /** @description Conflicts with stored state */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation error or invalid change */
+            422: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -948,8 +1334,8 @@ export interface operations {
                 };
                 content?: never;
             };
-            /** @description Validation error */
-            422: {
+            /** @description Not found */
+            404: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -957,8 +1343,17 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
-            /** @description Declared in contract, not implemented yet */
-            501: {
+            /** @description Conflicts with stored state */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation error or invalid change */
+            422: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -992,8 +1387,8 @@ export interface operations {
                     "application/json": components["schemas"]["Trip"];
                 };
             };
-            /** @description Validation error */
-            422: {
+            /** @description Not found */
+            404: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -1001,8 +1396,17 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
-            /** @description Declared in contract, not implemented yet */
-            501: {
+            /** @description Conflicts with stored state */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation error or invalid change */
+            422: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -1036,8 +1440,8 @@ export interface operations {
                     "application/json": components["schemas"]["Booking"];
                 };
             };
-            /** @description Validation error */
-            422: {
+            /** @description Not found */
+            404: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -1045,8 +1449,17 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
-            /** @description Declared in contract, not implemented yet */
-            501: {
+            /** @description Conflicts with stored state */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation error or invalid change */
+            422: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -1075,8 +1488,8 @@ export interface operations {
                 };
                 content?: never;
             };
-            /** @description Validation error */
-            422: {
+            /** @description Not found */
+            404: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -1084,8 +1497,17 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
-            /** @description Declared in contract, not implemented yet */
-            501: {
+            /** @description Conflicts with stored state */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation error or invalid change */
+            422: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -1119,8 +1541,8 @@ export interface operations {
                     "application/json": components["schemas"]["MustDo"] | components["schemas"]["Avoid"] | components["schemas"]["TimeWindowConstraint"];
                 };
             };
-            /** @description Validation error */
-            422: {
+            /** @description Not found */
+            404: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -1128,8 +1550,17 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
-            /** @description Declared in contract, not implemented yet */
-            501: {
+            /** @description Conflicts with stored state */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation error or invalid change */
+            422: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -1158,7 +1589,25 @@ export interface operations {
                 };
                 content?: never;
             };
-            /** @description Validation error */
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Conflicts with stored state */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation error or invalid change */
             422: {
                 headers: {
                     [name: string]: unknown;
@@ -1167,8 +1616,48 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
-            /** @description Declared in contract, not implemented yet */
-            501: {
+        };
+    };
+    day_candidates_v1_trips__trip_id__day_candidates_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                trip_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TripDayCandidates"];
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Conflicts with stored state */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation error or invalid change */
+            422: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -1202,8 +1691,8 @@ export interface operations {
                     "application/json": components["schemas"]["Member"];
                 };
             };
-            /** @description Validation error */
-            422: {
+            /** @description Not found */
+            404: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -1211,8 +1700,17 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
-            /** @description Declared in contract, not implemented yet */
-            501: {
+            /** @description Conflicts with stored state */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation error or invalid change */
+            422: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -1241,8 +1739,8 @@ export interface operations {
                 };
                 content?: never;
             };
-            /** @description Validation error */
-            422: {
+            /** @description Not found */
+            404: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -1250,8 +1748,17 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
-            /** @description Declared in contract, not implemented yet */
-            501: {
+            /** @description Conflicts with stored state */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation error or invalid change */
+            422: {
                 headers: {
                     [name: string]: unknown;
                 };

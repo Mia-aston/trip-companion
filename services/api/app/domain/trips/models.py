@@ -9,7 +9,7 @@ from enum import StrEnum
 from typing import Annotated, Literal, Self
 from uuid import UUID, uuid4
 
-from pydantic import AwareDatetime, Field, computed_field, model_validator
+from pydantic import Field, computed_field, model_validator
 
 from app.domain.shared.models import (
     Contract,
@@ -22,6 +22,7 @@ from app.domain.shared.models import (
     PriceLevel,
     TimeWindow,
     TimeZoneName,
+    UtcDatetime,
 )
 
 MAX_TRAVELLERS = 20
@@ -170,8 +171,8 @@ class TimeWindowConstraintCreate(Contract):
     kind: Literal["time_window"] = "time_window"
     hardness: Hardness = Hardness.HARD
     label: Name
-    starts_at: AwareDatetime
-    ends_at: AwareDatetime
+    starts_at: UtcDatetime
+    ends_at: UtcDatetime
 
     @model_validator(mode="after")
     def ordered(self) -> Self:
@@ -213,8 +214,8 @@ Constraint = Annotated[MustDo | Avoid | TimeWindowConstraint, Field(discriminato
 class BookingCreate(Contract):
     kind: BookingKind
     title: Name
-    starts_at: AwareDatetime
-    ends_at: AwareDatetime
+    starts_at: UtcDatetime
+    ends_at: UtcDatetime
     stop_seq: int | None = Field(default=None, ge=0, description="Which stop this belongs to")
     location_name: str | None = Field(default=None, max_length=200)
     reference: str | None = Field(default=None, max_length=120, description="Confirmation code")
@@ -304,7 +305,11 @@ class TripCreate(_Travellers, _TripPreferences):
 
 
 class TripUpdate(Contract):
-    """PATCH body. Omitted fields are unchanged. Stops/members/constraints/bookings use sub-resources."""
+    """PATCH body. Omitted fields are unchanged; explicit `null` clears an optional field (e.g. `budget`).
+
+    `stops` replaces the whole stop list (needed to change trip length). Members, constraints and
+    bookings use their sub-resources. Cross-field rules are re-checked on the merged trip (`rules.apply_update`).
+    """
 
     title: Name | None = None
     start_date: date | None = None
@@ -323,6 +328,7 @@ class TripUpdate(Contract):
     price_level: PriceLevel | None = None
     flight_prefs: FlightPrefs | None = None
     status: TripStatus | None = None
+    stops: Annotated[list[StopCreate], Field(min_length=1, max_length=20)] | None = None
 
 
 class Trip(_Travellers, _TripPreferences):
@@ -341,17 +347,22 @@ class Trip(_Travellers, _TripPreferences):
     def from_create(cls, payload: TripCreate) -> "Trip":
         """Build an unsaved Trip: assign ids and derive stop dates from nights."""
         data = payload.model_dump(exclude={"stops", "members", "constraints", "bookings", "travellers"})
-        stops, day = [], payload.start_date
-        for seq, s in enumerate(payload.stops):
-            leave = day + timedelta(days=s.nights)
-            stops.append(Stop(id=uuid4(), seq=seq, arrive_on=day, leave_on=leave, **s.model_dump()))
-            day = leave
         constraint_types = {"must_do": MustDo, "avoid": Avoid, "time_window": TimeWindowConstraint}
         return cls(
             id=uuid4(),
-            stops=stops,
+            stops=derive_stops(payload.start_date, payload.stops),
             members=[Member(id=uuid4(), **m.model_dump()) for m in payload.members],
             constraints=[constraint_types[c.kind](id=uuid4(), **c.model_dump()) for c in payload.constraints],
             bookings=[Booking(id=uuid4(), **b.model_dump()) for b in payload.bookings],
             **data,
         )
+
+
+def derive_stops(start: date, stops: list[StopCreate]) -> list[Stop]:
+    """Assign seq + new ids and derive arrive/leave dates from nights, starting at `start`."""
+    out, day = [], start
+    for seq, s in enumerate(stops):
+        leave = day + timedelta(days=s.nights)
+        out.append(Stop(id=uuid4(), seq=seq, arrive_on=day, leave_on=leave, **s.model_dump()))
+        day = leave
+    return out
