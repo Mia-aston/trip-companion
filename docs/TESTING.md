@@ -51,7 +51,7 @@ Fixture: `tests/fixtures/egypt/` (built in M1, extended per milestone). Confirme
 | Slice | Milestone | Assertion |
 |---|---|---|
 | E1 persist | M1 | Egypt trip with members, stops, constraints, bookings saves and reloads identically, no AI |
-| E2 feasibility ✅ (`tests/golden/test_e2_day_candidates.py`, mock providers) | M2 | each day's candidates are reachable within the day window using the route matrix; late-arrival day has 0 sightseeing stops |
+| E2 feasibility ✅ (`tests/golden/test_e2_day_candidates.py`; API level in `tests/db/test_places_api.py`) | M2 | each day's candidates are reachable within the day window using the route matrix; late-arrival day has 0 sightseeing stops |
 | E3 regenerate | M3 | "remove Aswan, stay Luxor downtown" on 6 Nov changes only 6 Nov items; all other days, hotel and flight are byte-identical; new plan_version with diff; validator passes; 22:30 departure respected |
 | E3b weather | M3 | balloon cancelled → only 5 Nov morning block replaced |
 | E4 flights | M4 | selecting a flight that lands 31 Oct 23:30 sets day-1 capacity to 0 sightseeing |

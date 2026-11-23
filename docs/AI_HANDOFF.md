@@ -2,7 +2,7 @@
 
 ## Current state (23 Nov 2026)
 
-**Milestone:** M1 — Trip workspace (in progress). M0 done. Stacked PRs: #1 `m0-foundation` → #2 `m0/core-001-contracts` → #3 `m1/core-002-schema` → #4 `m1/core-003-trips-api` → #5 `m1/core-004-seed` → #6 `m1/ui-001-create-trip` → #7 `m2/place-route-contracts` → #8 `m2/itin-001-day-candidates`.
+**Milestone:** M1 — Trip workspace (in progress). M0 done. Stacked PRs: #1 `m0-foundation` → #2 `m0/core-001-contracts` → #3 `m1/core-002-schema` → #4 `m1/core-003-trips-api` → #5 `m1/core-004-seed` → #6 `m1/ui-001-create-trip` → #7 `m2/place-route-contracts` → #8 `m2/itin-001-day-candidates` → #9 `m2/place-003-persistence-api`.
 **Rule:** one issue per branch; contract changes go through docs + DECISIONS first.
 
 ### Done
@@ -28,17 +28,20 @@
 - **M2 started.** PLACE-001 + ROUTE-001 (#7): `Place` / `RouteMatrix` contracts, opening-hours checks, 21 Egypt fixture places, mock places/routes providers, contract suite.
 - **ITIN-001 done** (#8): `app/domain/itinerary/days.py` (pure) + `app/orchestration/day_candidates.py`. Golden slice **E2 passes** on mocks: 31 Oct no capacity, 6 Nov cut at 19:30, 4 Nov starts after the train, Giza must-do ranked first on Cairo days, closed places filtered.
 
+- **PLACE-003 done** (#9): migration 0003 (places columns, `provider_snapshots`, `route_legs`), `CachedPlacesProvider` / `CachedRoutesProvider` (A-17), provider registry, `POST /v1/places/search`, `GET /v1/places/{id}`, `GET /v1/trips/{id}/day-candidates`. **M2 exit met** (E2 at domain and API level).
+
 ### Contracts affected
-- New domain contracts (Place, RouteMatrix, DayPlanInput/TripDayCandidates); not yet exposed over HTTP. A-15 (capacity rules), A-16 (stop base via provider).
+- New endpoints above; OpenAPI + TS regenerated. A-15…A-17.
 
 ### Known gaps / blockers
-- Live places/routes adapters blocked on D-02 (vendor choice) — not needed for E2.
-- Egypt fixture lacks a Cairo → desert transport booking (the day builder flags it).
-- Capacity ignores meal breaks (M3 scheduler will place meals).
+- Live places/routes adapters wait for D-02. No UI for day candidates yet (comes with the itinerary editor in M3).
+- Egypt fixture lacks a Cairo → desert transport booking (flagged by the day builder).
+- 9 stacked PRs unmerged — merge #1 → #9 before M3 to keep the stack manageable.
 
-### Next safe tasks
-1. PLACE-003: migration 0003 (places columns, provider_snapshots + TTL, route_legs), `POST /v1/places/search`, `GET /v1/places/{id}`, `GET /v1/trips/{id}/day-candidates`, API tests → closes M2.
-2. Then M3: ITIN-002 validator, AI-001 structured plan schema.
+### Next safe tasks (M3 — Itinerary engine)
+1. M3 doc pass: plan_versions/itinerary tables, validator rules, structured plan schema, regenerate contract.
+2. ITIN-002 feasibility validator (pure) over `DayPlanInput` + a proposed schedule.
+3. AI-001 structured itinerary schema + fake planner; ITIN-003 locked items + partial regeneration → E3.
 
 ### Context rule
 Pick one issue, read `AGENTS.md` → `docs/SCOPE.md` → module README → touched contracts. Do not redesign unrelated modules.

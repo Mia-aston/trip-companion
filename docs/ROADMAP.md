@@ -22,14 +22,14 @@ Each milestone lists: **MVP** (must ship to exit) · **Deferred** (NICE → afte
 **Deferred:** NICE trip duplication · NEXT sharing/roles, collaborative edit
 **Exit (E1):** Egypt reference trip persists and reloads identically, without AI. API tests + UI smoke green. — met on PR #6 branch (pending merge of #1–#6).
 
-## M2 — Places + routing  ⏳ in progress
+## M2 — Places + routing  ✅ exit met on PR #9 (pending merge)
 Everything runs on **mock providers + fixtures**; live adapters wait for D-02 and do not block the exit.
 
 **MVP issues (in order)**
 1. ✅ PLACE-001 — normalized `Place` contract (categories, opening hours, rating, price level, wheelchair access, timezone, typical visit, provenance) + `is_open()`; mock provider over Egypt fixtures; provider contract suite updated.
 2. ✅ ROUTE-001 — `RouteMatrix` contract (walk / drive) + mock adapter (haversine × detour factor ÷ mode speed); contract suite.
 3. ✅ ITIN-001 — candidate day builder (pure): per date → stop, available window (day window ∩ flight/booking constraints), capacity from pace / mobility / party, ranked feasible candidates with travel time from the stop base. Rules: `docs/ARCHITECTURE.md#day-capacity-m2`.
-4. PLACE-003 — persistence + API: migration 0003 (places columns, `provider_snapshots` with TTL, `route_legs`), `POST /v1/places/search`, `GET /v1/places/{id}`, `GET /v1/trips/{id}/day-candidates`.
+4. ✅ PLACE-003 — persistence + API: migration 0003 (places columns, `provider_snapshots` with TTL, `route_legs`), `POST /v1/places/search`, `GET /v1/places/{id}`, `GET /v1/trips/{id}/day-candidates`.
 
 **Deferred:** PLACE-002 live places adapter + ROUTE-002 live routes adapter (after D-02; contract suite must pass) · NICE photos metadata, transit mode · NEXT multi-provider merge
 **Exit (E2):** for the Egypt trip, every day has a capacity and ranked feasible candidates with travel times; 31 Oct (late arrival) and 6 Nov after the airport cut-off have zero sightseeing capacity; must-dos (Giza pyramids) appear on a Cairo day; closed places never appear on that weekday.

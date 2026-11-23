@@ -17,13 +17,15 @@ Domain code must be vendor-neutral. Any vendor request/response translation belo
 | `app/domain/places` · `app/domain/routing` | `Place` (+ opening-hours checks), `RouteMatrix`, haversine |
 | `app/providers` | provider protocols (`base.py`), mocks over `tests/fixtures/places/*.json`, future vendor adapters |
 | `app/domain/itinerary/days.py` | ITIN-001 candidate day builder (pure): window, blocked intervals, capacity, ranked candidates |
+| `app/db/cache.py` | `CachedPlacesProvider` / `CachedRoutesProvider`: same protocols, backed by `places`, `provider_snapshots`, `route_legs` |
+| `app/providers/registry.py` | picks adapters from `PLACES_PROVIDER` / `ROUTES_PROVIDER` |
 | `app/orchestration` | fetch from providers → call pure domain functions |
 | `app/db/models.py` | SQLAlchemy schema (PostgreSQL + PostGIS) |
 | `app/db/repositories.py` | ORM row ⇄ domain object translation; only place that touches rows |
 | `migrations/` | Alembic migrations (`alembic revision --autogenerate -m "..."`, then review) |
 | `tests/` | unit + provider contract tests; `tests/db/` needs `TEST_DATABASE_URL` |
 
-## Schema (migrations `0001`, `0002`)
+## Schema (migrations `0001`–`0003`)
 
 - `users` — minimal account (D-01); `email` unique.
 - `trips` — CORE-001 contract: travellers (`adults`, `children_ages`, `infants`, party ≤ 20, infants ≤ adults), currencies, budget (all-or-nothing), pace, day window, interests, dietary, mobility, price level, `flight_prefs` JSONB, nullable `owner_id`.
@@ -31,7 +33,8 @@ Domain code must be vendor-neutral. Any vendor request/response translation belo
 - `trip_members` — unique `(trip_id, lower(display_name))`; role, currency_pref, `position` keeps order.
 - `trip_constraints` — kind `must_do|avoid|time_window`; kind-specific fields in `payload` JSONB (validated by the contract on read).
 - `bookings` — manual bookings; `ends_at >= starts_at`; cost all-or-nothing.
-- `places` — `geography(Point, 4326)` + GiST index; unique `(provider, provider_place_id)`.
+- `places` — normalized cache: `geography(Point, 4326)` + GiST, hours JSONB, rating, price, wheelchair, timezone, visit length, `fetched_at`; unique `(provider, provider_place_id)`.
+- `provider_snapshots` — per provider call: request hash, result ids, `expires_at`. `route_legs` — cached travel times per provider/mode/pair.
 - `expenses` (cost + payer), `expense_shares` (who owes what), `transfers` (member → member, never trip cost; sender ≠ recipient). Money `numeric(14,2)` + ISO-4217.
 - Deleting a trip cascades to all children. Instants are `timestamptz` and come back as UTC (A-11).
 
