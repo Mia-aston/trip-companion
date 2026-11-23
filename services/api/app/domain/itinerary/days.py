@@ -70,6 +70,7 @@ class DayPlanInput(Contract):
     stop_seq: int
     city: str
     timezone: str
+    base_place_id: str | None = Field(default=None, description="Stop base (travel times start here)")
     window: TimeWindow | None = Field(description="None = no sightseeing time this day")
     blocked: list[BlockedInterval]
     free_minutes: int
@@ -137,7 +138,7 @@ def _matches_must_do(c: MustDo, place: Place) -> bool:
     return bool(c.query) and c.query.casefold() in place.name.casefold()
 
 
-def _avoided(trip: Trip, place: Place) -> bool:
+def is_avoided(trip: Trip, place: Place) -> bool:
     for c in trip.constraints:
         if c.kind != "avoid":
             continue
@@ -251,6 +252,7 @@ def plan_day_inputs(trip: Trip, stops: dict[int, StopContext]) -> TripDayCandida
                 stop_seq=stop.seq,
                 city=stop.city,
                 timezone=tz_name,
+                base_place_id=ctx.base.id if ctx.base else None,
                 window=TimeWindow(start=start.time(), end=end.time()) if capacity else None,
                 blocked=[BlockedInterval(start=a.time(), end=b.time(), label=label) for a, b, label in blocked],
                 free_minutes=free,
@@ -290,7 +292,7 @@ def _rank(
 ) -> list[DayCandidate]:
     out = []
     for place in ctx.places:
-        if PlaceCategory.CITY in place.categories or _avoided(trip, place):
+        if PlaceCategory.CITY in place.categories or is_avoided(trip, place):
             continue
         if trip.mobility_needs is MobilityNeeds.WHEELCHAIR and place.wheelchair_accessible is False:
             continue

@@ -468,6 +468,18 @@
       "DayPlanInput": {
         "additionalProperties": false,
         "properties": {
+          "base_place_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Stop base (travel times start here)",
+            "title": "Base Place Id"
+          },
           "blocked": {
             "items": {
               "$ref": "#/components/schemas/BlockedInterval"
@@ -531,6 +543,7 @@
           "stop_seq",
           "city",
           "timezone",
+          "base_place_id",
           "window",
           "blocked",
           "free_minutes",

@@ -69,14 +69,14 @@ Deterministic, pure (`app/domain/itinerary/days.py`). For each date of the trip:
 ### Plan model
 - A trip has **plan versions** `1, 2, 3…`; each is an immutable full snapshot (days → items). Edits never mutate a version: they write the next one (A-19).
 - Every item has a stable `item_key` (UUID) that survives across versions; the diff between two versions is computed by `item_key`: `added`, `removed`, `changed` (time / place / lock), `unchanged`.
-- Item kinds: `place` (a visit), `booking` (mirrors a trip booking; always locked), `transfer` (travel between items, computed), `meal`, `custom` (user free text, e.g. "Aswan day trip"), `free`.
+- Item kinds: `place` (a visit), `booking` (mirrors a flight / transport / activity booking; always locked, deterministic `item_key`; hotels are day context, not items), `transfer` (travel between items, computed), `meal`, `custom` (user free text, e.g. "Aswan day trip"), `free`.
 - `source`: `planner`, `user`, `booking`. Booking items are generated from trip bookings on every version and cannot be edited through the itinerary.
 
 ### Planner contract (AI-001)
 `Planner.compose(PlannerContext) -> ProposedPlan`.
 - `PlannerContext` (bounded): for each day in scope — the `DayPlanInput` from ITIN-001 (window, blocked intervals, capacity, top 15 candidates), fixed items (bookings + locked + out-of-scope), preferences (pace, interests), exclusions.
 - `ProposedPlan`: `days[] { date, items[] { kind, place_id?, title, start "HH:MM", end "HH:MM", why } }` + `explanation` — local wall-clock times in the stop's timezone; the orchestrator converts to UTC.
-- **GreedyPlanner** (MVP, deterministic): per day, walk the ranked candidates; place each must-do first, then by score; start at the earliest free slot after the previous item + drive travel time; keep the visit inside opening hours and outside blocked/fixed intervals; insert a `meal` block (60 min) around 12:30–14:00 and a 19:00–20:30 dinner if the window covers it; stop when capacity is used. `why` = the candidate's reasons.
+- **GreedyPlanner** (MVP, deterministic): per day, walk the ranked candidates; place each must-do first, then by score; start at the earliest free slot after the previous item + drive travel time; keep the visit inside opening hours and outside blocked/fixed intervals; insert a `meal` block (60 min, lunch between 12:30 and 14:30, dinner between 19:00 and 21:00) when the window covers it; each place is visited once per trip; stop when capacity is used. `why` = the candidate's reasons.
 
 ### Validator (ITIN-002) — pure; errors block persisting, warnings are shown
 | Rule | Severity | Check |

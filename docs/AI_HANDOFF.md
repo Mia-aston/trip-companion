@@ -2,7 +2,7 @@
 
 ## Current state (23 Nov 2026)
 
-**Milestone:** M3 — Itinerary engine (doc pass). M0–M2 done and on `main` (#10). Process from M3: one PR per issue, based on `main`, merged before the next starts (stacked PRs #3–#9 had to be re-landed via #10).
+**Milestone:** M3 — Itinerary engine. M0–M2 on `main`; M3 doc pass merged (#11). Process from M3: one PR per issue, based on `main`, merged before the next starts (stacked PRs #3–#9 had to be re-landed via #10).
 **Rule:** one issue per branch; contract changes go through docs + DECISIONS first.
 
 ### Done
@@ -37,12 +37,12 @@
 - Live places/routes adapters wait for D-02; LLM planner waits for D-07 (A-18).
 - Egypt fixture lacks a Cairo → desert transport booking (flagged by the day builder).
 
+- **ITIN-002 + AI-001** (branch `m3/itin-002-validator-planner`): `plan.py` (ProposedPlan, PlanDay/PlanItem, booking items with deterministic keys, `materialize`), `validator.py` (V1–V9), `planner.py` (`Planner` protocol, `GreedyPlanner`: must-dos first, meals, one visit per place per trip), `orchestration/itinerary.py::plan_trip` (in memory). Egypt plan: 0 errors, 1 warning (White Desert hours unknown). Property tests + mutation-checked.
+
 ### Next safe tasks (M3, in order — see ROADMAP)
-1. Merge the M3 doc pass PR.
-2. ITIN-002 + AI-001: `ProposedPlan`, `validate()` V1–V9, `GreedyPlanner` (pure) + property tests.
-3. AI-002: migration 0004, plan repository, generate/get/diff API.
-4. ITIN-003: item edits + regenerate → E3/E3b.
-5. UI-002 itinerary editor.
+1. AI-002: migration 0004 (`plan_versions`, `itinerary_days`, `itinerary_items`), plan repository, persist `plan_trip` output (422 on errors, A-21), `POST …/itinerary/generate`, `GET …/itinerary`, `GET …/itinerary/diff`.
+2. ITIN-003: item edits + regenerate → E3/E3b.
+3. UI-002 itinerary editor.
 
 ### Context rule
 Pick one issue, read `AGENTS.md` → `docs/SCOPE.md` → module README → touched contracts. Do not redesign unrelated modules.
