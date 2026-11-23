@@ -47,6 +47,11 @@ export function TripView({ id }: { id: string }) {
       <p className="muted">
         {trip.origin} · {shortDate(trip.start_date)} – {shortDate(trip.end_date)} · <span className="tag">{trip.status}</span>
       </p>
+      <p>
+        <a className="button-link" href={`/trips/${trip.id}/itinerary`}>
+          Open itinerary →
+        </a>
+      </p>
 
       <section className="card">
         <h2>Overview</h2>

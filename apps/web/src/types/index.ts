@@ -22,3 +22,13 @@ export type Constraint = Schemas["MustDo"] | Schemas["Avoid"] | Schemas["TimeWin
 export type Booking = Schemas["Booking"];
 export type BookingCreate = Schemas["BookingCreate"];
 export type ApiError = Schemas["ErrorResponse"];
+
+// Itinerary (M3)
+export type PlanVersion = Schemas["PlanVersion"];
+export type PlanDay = Schemas["PlanDay"];
+export type PlanItem = Schemas["PlanItem"];
+export type PlanDiff = Schemas["PlanDiff"];
+export type Violation = Schemas["Violation"];
+export type RegenerateRequest = Schemas["RegenerateRequest"];
+export type AddItem = Schemas["AddItem"];
+export type EditItem = Schemas["EditItem"];
