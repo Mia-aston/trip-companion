@@ -38,6 +38,10 @@ Domain code must be vendor-neutral. Any vendor request/response translation belo
 
 Add the instance to `FLIGHT_PROVIDERS` / `PLACES_PROVIDERS` in `tests/test_providers_contract.py`; it must pass the contract suite (use recorded fixtures, not live calls).
 
+## Dev data
+
+`python scripts/seed_egypt.py` loads the Egypt golden trip into `DATABASE_URL` (idempotent; `--reset` recreates it).
+
 ## Changing a contract
 
 1. Edit models in `app/domain/**/models.py` (+ docs/API_CONTRACTS.md / DATA_MODEL.md).

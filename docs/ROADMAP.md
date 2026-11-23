@@ -18,7 +18,7 @@ Each milestone lists: **MVP** (must ship to exit) · **Deferred** (NICE → afte
 **Exit:** all open architecture questions tagged in DECISIONS.md with a default; core Pydantic/TS contracts reviewed. No feature code before this.
 
 ## M1 — Trip workspace  ⏳ in progress
-**MVP issues:** ~~CORE-002 migration 0002 (trips change, stops, constraints, bookings, users minimal)~~ ✅ · ~~CORE-003 trips/members/stops/constraints/bookings API (`/v1`, persisted)~~ ✅ · CORE-004 Egypt fixture loader · UI-001 Create Trip flow (form + trip page, read-only lists)
+**MVP issues:** ~~CORE-002 migration 0002 (trips change, stops, constraints, bookings, users minimal)~~ ✅ · ~~CORE-003 trips/members/stops/constraints/bookings API (`/v1`, persisted)~~ ✅ · ~~CORE-004 Egypt fixture loader~~ ✅ · UI-001 Create Trip flow (form + trip page, read-only lists)
 **Deferred:** NICE trip duplication · NEXT sharing/roles, collaborative edit
 **Exit (E1):** Egypt reference trip persists and reloads identically, without AI. API tests + UI smoke green.
 
