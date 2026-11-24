@@ -47,7 +47,7 @@ Rules: `docs/ARCHITECTURE.md#itinerary-engine-m3`. One PR per issue, each based 
 **Deferred:** NICE LLM planner adapter (needs D-07; same `Planner` interface, must pass the same validator), rollback endpoint, drag-and-drop, meal suggestions from food engine (M5) · NEXT multi-day re-flow, route-order optimisation, free-text change interpretation
 **Exit (E3, E3b):** on the Egypt trip, removing the user-added "Aswan day trip" and regenerating 6 Nov "around Luxor downtown" changes only 6 Nov unlocked items; every other day, all bookings and locked items are identical; 22:30 departure respected; a new plan version with a diff is stored; validator has no errors. Cancelling the balloon booking and regenerating 5 Nov replaces only the morning block.
 
-## M4 — Flight search  ⏳ in progress
+## M4 — Flight search  ✅ exit met on UI-004 PR (pending merge; live adapter waits for D-03)
 Rules: `docs/ARCHITECTURE.md#flight-search-m4`. Runs on the **mock** provider until D-03 (Skyscanner vs Duffel) is decided; the live adapter is a separate issue and must pass the same contract suite.
 
 **MVP issues (in order, one PR each from `main`)**
@@ -55,7 +55,7 @@ Rules: `docs/ARCHITECTURE.md#flight-search-m4`. Runs on the **mock** provider un
 2. ✅ FLIGHT-001 — `FlightSearch` / `FlightOffer` contracts (segments, stops, duration, cabin, fare, baggage, refund/change flags, booking link, `expires_at`, provenance); mock provider rewritten on fixtures (LON↔CAI, LXR→LON, direct + 1-stop, varied times/prices); provider contract suite extended.
 3. ✅ FLIGHT-002 — migration 0005 `transport_options` (search snapshots with expiry), `POST /v1/trips/{id}/flights/search` (pax and prefs from the trip; filters max stops / bags / cabin; sort price or duration).
 4. ✅ FLIGHT-004 — `POST /v1/trips/{id}/transport/select` → tentative flight booking (replaces the previous flight in that direction), 409 if the offer expired; response lists dates whose day capacity changed → **E4**.
-5. UI-004 — flight options on the trip page: search outbound / return, filter, pick, external booking link, "offer expired — search again".
+5. ✅ UI-004 — flight options on the trip page: search outbound / return, filter, pick, external booking link, "offer expired — search again".
 
 **Deferred:** FLIGHT-003 live adapter (after D-03) · NICE time-of-day / self-transfer filters, confirm-booking endpoint · NEXT round-trip fare combos, price alerts, flexible dates · NO ticketing, refunds
 **Exit (E4):** for the Egypt trip, selecting an outbound flight landing 31 Oct 23:30 gives 31 Oct zero capacity; switching to one landing 31 Oct 14:00 gives 31 Oct sightseeing capacity and candidates; selecting an expired offer returns 409 and changes nothing.

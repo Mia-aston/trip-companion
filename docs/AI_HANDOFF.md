@@ -47,10 +47,9 @@
 - Explanation text after a one-day re-plan describes only that day.
 - Egypt fixture still lacks a Cairo → desert transport booking.
 
-### Next safe tasks (M4, in order — see ROADMAP)
-1. ✅ FLIGHT-001 (#17), FLIGHT-002 (#18) merged. FLIGHT-004 on `m4/flight-004-select`: select → tentative booking, 409 expired, affected_dates; **E4 passes**.
-2. (done) FLIGHT-002: migration 0005 + search API. 4. FLIGHT-004: select → booking (E4). 5. UI-004 flight options.
-Owner decision pending: D-03 (Skyscanner vs Duffel) for FLIGHT-003.
+### Next safe tasks
+1. Merge UI-004 (branch `m4/ui-004-flight-picker`) → **M4 exit met** (E4 at API and UI level). FLIGHT-003 live adapter waits for owner decision D-03 (Skyscanner vs Duffel).
+2. M5 doc pass (contextual recommendations): TasteProfile + dietary schema, review signal extraction (non-sensitive), restaurant ranker + why, knowledge cards (before / at place) with sources, curated photo spots, place drawer UI; privacy test for no sensitive inference (E5). Needs D-07 (LLM) only for generated knowledge text — can start with curated fixtures.
 
 ### Context rule
 Pick one issue, read `AGENTS.md` → `docs/SCOPE.md` → module README → touched contracts. Do not redesign unrelated modules.

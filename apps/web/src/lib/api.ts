@@ -1,4 +1,15 @@
-import type { AddItem, ApiError, EditItem, PlanVersion, RegenerateRequest, Trip, TripCreate } from "../types";
+import type {
+  AddItem,
+  ApiError,
+  EditItem,
+  FlightSearchResult,
+  PlanVersion,
+  RegenerateRequest,
+  SelectResult,
+  Trip,
+  TripCreate,
+  TripFlightSearch,
+} from "../types";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_BASE ?? "http://localhost:8000";
 
@@ -78,4 +89,20 @@ export function deleteItem(tripId: string, itemKey: string): Promise<PlanVersion
 
 export function lockItem(tripId: string, itemKey: string, locked: boolean): Promise<PlanVersion> {
   return request<PlanVersion>(`${itinerary(tripId)}/items/${itemKey}/lock`, { method: "POST", body: JSON.stringify({ locked }) });
+}
+
+// --- flights (M4) -----------------------------------------------------------
+
+export function searchFlights(tripId: string, body: TripFlightSearch): Promise<FlightSearchResult> {
+  return request<FlightSearchResult>(`/v1/trips/${encodeURIComponent(tripId)}/flights/search`, {
+    method: "POST",
+    body: JSON.stringify(body),
+  });
+}
+
+export function selectOffer(tripId: string, offerId: string): Promise<SelectResult> {
+  return request<SelectResult>(`/v1/trips/${encodeURIComponent(tripId)}/transport/select`, {
+    method: "POST",
+    body: JSON.stringify({ offer_id: offerId }),
+  });
 }

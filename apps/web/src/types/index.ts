@@ -32,3 +32,10 @@ export type Violation = Schemas["Violation"];
 export type RegenerateRequest = Schemas["RegenerateRequest"];
 export type AddItem = Schemas["AddItem"];
 export type EditItem = Schemas["EditItem"];
+
+// Flights (M4)
+export type FlightOffer = Schemas["FlightOffer"];
+export type FlightSegment = Schemas["FlightSegment"];
+export type FlightSearchResult = Schemas["FlightSearchResult"];
+export type TripFlightSearch = Schemas["TripFlightSearch"];
+export type SelectResult = Schemas["SelectResult"];
