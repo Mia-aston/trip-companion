@@ -50,6 +50,9 @@ export function TripView({ id }: { id: string }) {
       <p>
         <a className="button-link" href={`/trips/${trip.id}/itinerary`}>
           Open itinerary →
+        </a>{" "}
+        <a className="button-link secondary" href={`/trips/${trip.id}/flights`}>
+          Flights →
         </a>
       </p>
 

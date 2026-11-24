@@ -15,7 +15,7 @@ Source: plan v0.1 §16, §23. Process: `docs/WORKFLOW.md`.
 | Property-based | validator reports overlap iff present; GreedyPlanner output never has validator errors (random pace/interests/mobility/bookings/must-dos) ✅ · splits sum to expense; settlement Σ = 0 (M6) | `tests/test_itinerary_properties.py` (`hypothesis`) | every PR | M3 ✅ / M6 |
 | Golden scenario | Egypt slices (below) | `tests/golden/` | every PR touching itinerary/budget | M1→M6 |
 | Evals | itinerary feasibility rate, explanation grounding, food-match explanation grounding | `evals/` (LLM, not in default CI) | nightly / manual | M3/M5 |
-| UI | create trip ✅, edit day + E3 in the editor ✅, choose flight, add expense (Playwright, desktop + phone) | `apps/web/e2e/` | every PR (CI `e2e` job) | M1 ✅ · M3 ✅ → M7 |
+| UI | create trip ✅, edit day + E3 in the editor ✅, choose flight + E4 ✅, add expense (Playwright, desktop + phone) | `apps/web/e2e/` | every PR (CI `e2e` job) | M1 ✅ · M3 ✅ · M4 ✅ → M7 |
 
 Rules:
 - No live provider calls in CI. Live adapters are tested with sanitized recorded fixtures.
