@@ -365,6 +365,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/trips/{trip_id}/transport/select": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Select
+         * @description Turn an unexpired offer into a tentative flight booking (replaces the same direction). 409 if expired.
+         */
+        post: operations["select_v1_trips__trip_id__transport_select_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -1297,6 +1317,23 @@ export interface components {
              * Format: date
              */
             date: string;
+        };
+        /** SelectOffer */
+        SelectOffer: {
+            /** Offer Id */
+            offer_id: string;
+        };
+        /** SelectResult */
+        SelectResult: {
+            /**
+             * Affected Dates
+             * @description Days whose sightseeing window or capacity changed — consider re-planning
+             */
+            affected_dates: string[];
+            booking: components["schemas"]["Booking"];
+            direction: components["schemas"]["Direction"];
+            /** Replaced Booking Id */
+            replaced_booking_id: string | null;
         };
         /**
          * Severity
@@ -2849,6 +2886,59 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content?: never;
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Conflicts with stored state */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation error or invalid change */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    select_v1_trips__trip_id__transport_select_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                trip_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SelectOffer"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SelectResult"];
+                };
             };
             /** @description Not found */
             404: {

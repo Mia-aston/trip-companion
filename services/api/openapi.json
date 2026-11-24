@@ -2260,6 +2260,65 @@
         "title": "RegenerateScope",
         "type": "object"
       },
+      "SelectOffer": {
+        "additionalProperties": false,
+        "properties": {
+          "offer_id": {
+            "examples": [
+              "mock:nm780-20261031-2a0c0i"
+            ],
+            "maxLength": 300,
+            "minLength": 3,
+            "title": "Offer Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "offer_id"
+        ],
+        "title": "SelectOffer",
+        "type": "object"
+      },
+      "SelectResult": {
+        "additionalProperties": false,
+        "properties": {
+          "affected_dates": {
+            "description": "Days whose sightseeing window or capacity changed \u2014 consider re-planning",
+            "items": {
+              "format": "date",
+              "type": "string"
+            },
+            "title": "Affected Dates",
+            "type": "array"
+          },
+          "booking": {
+            "$ref": "#/components/schemas/Booking"
+          },
+          "direction": {
+            "$ref": "#/components/schemas/Direction"
+          },
+          "replaced_booking_id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Replaced Booking Id"
+          }
+        },
+        "required": [
+          "direction",
+          "booking",
+          "replaced_booking_id",
+          "affected_dates"
+        ],
+        "title": "SelectResult",
+        "type": "object"
+      },
       "Severity": {
         "enum": [
           "error",
@@ -4999,6 +5058,80 @@
         "summary": "Remove Member",
         "tags": [
           "trips"
+        ]
+      }
+    },
+    "/v1/trips/{trip_id}/transport/select": {
+      "post": {
+        "description": "Turn an unexpired offer into a tentative flight booking (replaces the same direction). 409 if expired.",
+        "operationId": "select_v1_trips__trip_id__transport_select_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "trip_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Trip Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SelectOffer"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SelectResult"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Not found"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Conflicts with stored state"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Validation error or invalid change"
+          }
+        },
+        "summary": "Select",
+        "tags": [
+          "flights"
         ]
       }
     }
