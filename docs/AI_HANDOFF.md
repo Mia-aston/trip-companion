@@ -2,7 +2,7 @@
 
 ## Current state (23 Nov 2026)
 
-**Milestone:** M3 — Itinerary engine. M0–M2 on `main`; M3 doc pass (#11), ITIN-002/AI-001 (#12), AI-002 (#13), ITIN-003 (#14) merged. Process from M3: one PR per issue, based on `main`, merged before the next starts (stacked PRs #3–#9 had to be re-landed via #10).
+**Milestone:** M4 — Flight search (doc pass). M3 done (#11–#15). M0–M2 on `main`; M3 doc pass (#11), ITIN-002/AI-001 (#12), AI-002 (#13), ITIN-003 (#14) merged. Process from M3: one PR per issue, based on `main`, merged before the next starts (stacked PRs #3–#9 had to be re-landed via #10).
 **Rule:** one issue per branch; contract changes go through docs + DECISIONS first.
 
 ### Done
@@ -47,9 +47,11 @@
 - Explanation text after a one-day re-plan describes only that day.
 - Egypt fixture still lacks a Cairo → desert transport booking.
 
-### Next safe tasks
-1. M4 doc pass (flight search): FLIGHT-001 contract (segments, fares, baggage, expiry), select-flight → booking + time constraint, E4.
-2. Owner decision D-03 (Skyscanner vs Duffel) before FLIGHT-003 live adapter.
+### Next safe tasks (M4, in order — see ROADMAP)
+1. Merge the M4 doc pass.
+2. FLIGHT-001: FlightSearch/FlightOffer contracts + fixture-based mock provider + contract suite.
+3. FLIGHT-002: migration 0005 + search API. 4. FLIGHT-004: select → booking (E4). 5. UI-004 flight options.
+Owner decision pending: D-03 (Skyscanner vs Duffel) for FLIGHT-003.
 
 ### Context rule
 Pick one issue, read `AGENTS.md` → `docs/SCOPE.md` → module README → touched contracts. Do not redesign unrelated modules.
