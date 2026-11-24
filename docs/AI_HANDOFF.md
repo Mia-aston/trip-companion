@@ -2,7 +2,7 @@
 
 ## Current state (23 Nov 2026)
 
-**Milestone:** M4 — Flight search (doc pass). M3 done (#11–#15). M0–M2 on `main`; M3 doc pass (#11), ITIN-002/AI-001 (#12), AI-002 (#13), ITIN-003 (#14) merged. Process from M3: one PR per issue, based on `main`, merged before the next starts (stacked PRs #3–#9 had to be re-landed via #10).
+**Milestone:** M4 — Flight search. M3 done (#11–#15); M4 doc pass merged (#16). M0–M2 on `main`; M3 doc pass (#11), ITIN-002/AI-001 (#12), AI-002 (#13), ITIN-003 (#14) merged. Process from M3: one PR per issue, based on `main`, merged before the next starts (stacked PRs #3–#9 had to be re-landed via #10).
 **Rule:** one issue per branch; contract changes go through docs + DECISIONS first.
 
 ### Done
@@ -48,9 +48,8 @@
 - Egypt fixture still lacks a Cairo → desert transport booking.
 
 ### Next safe tasks (M4, in order — see ROADMAP)
-1. Merge the M4 doc pass.
-2. FLIGHT-001: FlightSearch/FlightOffer contracts + fixture-based mock provider + contract suite.
-3. FLIGHT-002: migration 0005 + search API. 4. FLIGHT-004: select → booking (E4). 5. UI-004 flight options.
+1. FLIGHT-001 (branch `m4/flight-001-contracts`): contracts + fixture mock (fictional carriers; NM778 16:30→23:30 matches the Egypt arrival, NM780 07:00→14:00 for E4) — merge.
+2. FLIGHT-002: migration 0005 + search API. 4. FLIGHT-004: select → booking (E4). 5. UI-004 flight options.
 Owner decision pending: D-03 (Skyscanner vs Duffel) for FLIGHT-003.
 
 ### Context rule

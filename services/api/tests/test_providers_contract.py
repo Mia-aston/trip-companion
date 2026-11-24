@@ -4,15 +4,16 @@ Add new adapters to the parametrize lists; real adapters should use recorded fix
 """
 
 from datetime import date
-from itertools import pairwise
+from zoneinfo import ZoneInfo
 
 import pytest
 
+from app.domain.flights.models import FlightOffer, FlightSearch
 from app.domain.places.models import Place, PlaceCategory
 from app.domain.routing.geo import haversine_m
 from app.domain.routing.models import RouteMatrix, TravelMode, Waypoint
 from app.domain.shared.models import GeoPoint
-from app.providers.base import FlightOption, FlightProvider, PlacesProvider, RoutesProvider
+from app.providers.base import FlightProvider, PlacesProvider, RoutesProvider
 from app.providers.mock_flights import MockFlightProvider
 from app.providers.mock_places import MockPlacesProvider
 from app.providers.mock_routes import MockRoutesProvider
@@ -22,44 +23,42 @@ PLACES_PROVIDERS: list[PlacesProvider] = [MockPlacesProvider()]
 ROUTES_PROVIDERS: list[RoutesProvider] = [MockRoutesProvider()]
 
 
+SEARCH = FlightSearch(direction="outbound", from_airport="LON", to_airport="CAI", date=date(2026, 10, 31), adults=2)
+
+
 @pytest.mark.parametrize("provider", FLIGHT_PROVIDERS, ids=lambda p: type(p).__name__)
 class TestFlightProviderContract:
-    def search(self, provider: FlightProvider, travellers: int = 2) -> list[FlightOption]:
-        return provider.search("LHR", "CAI", date(2027, 3, 14), travellers)
+    def test_returns_normalized_offers(self, provider):
+        offers = provider.search(SEARCH)
+        assert offers and all(isinstance(o, FlightOffer) for o in offers)
 
-    def test_returns_normalized_options(self, provider):
-        options = self.search(provider)
-        assert options, "provider should return at least one option for a valid route"
-        assert all(isinstance(o, FlightOption) for o in options)
+    def test_offer_ids_unique_and_prefixed(self, provider):
+        offers = provider.search(SEARCH)
+        assert len({o.id for o in offers}) == len(offers)
+        assert all(o.id.startswith(f"{provider.name}:") for o in offers)
 
-    def test_option_ids_are_unique(self, provider):
-        ids = [o.id for o in self.search(provider)]
-        assert len(ids) == len(set(ids))
+    def test_route_and_date_match_request(self, provider):
+        for o in provider.search(SEARCH):
+            first, last = o.segments[0], o.segments[-1]
+            assert first.departs_at.astimezone(ZoneInfo(first.origin_timezone)).date() == SEARCH.date
+            assert first.origin in {"LHR", "LGW", "STN", "LTN", "LCY", "LON"}
+            assert last.destination == "CAI"
 
-    def test_itinerary_matches_requested_route(self, provider):
-        for option in self.search(provider):
-            assert option.segments
-            assert option.segments[0].origin == "LHR"
-            assert option.segments[-1].destination == "CAI"
-            assert option.segments[0].departure.date() == date(2027, 3, 14)
+    def test_offers_expire_and_carry_provenance(self, provider):
+        for o in provider.search(SEARCH):
+            assert o.provenance.source == "provider" and o.provenance.fetched_at is not None
+            assert o.expires_at > o.provenance.fetched_at
 
-    def test_segments_are_chronological_and_connected(self, provider):
-        for option in self.search(provider):
-            for seg in option.segments:
-                assert seg.arrival > seg.departure
-            for prev, nxt in pairwise(option.segments):
-                assert prev.destination == nxt.origin
-                assert nxt.departure >= prev.arrival
+    def test_price_scales_with_passengers(self, provider):
+        one = {
+            o.offer_id.split("-")[0]: o.total.amount
+            for o in provider.search(FlightSearch.model_validate({**SEARCH.model_dump(), "adults": 1}))
+        }
+        two = {o.offer_id.split("-")[0]: o.total.amount for o in provider.search(SEARCH)}
+        assert all(two[k] > one[k] for k in one)
 
-    def test_price_is_positive_iso_currency(self, provider):
-        for option in self.search(provider):
-            assert option.total_amount > 0
-            assert len(option.currency) == 3 and option.currency.isupper()
-
-    def test_price_covers_all_travellers(self, provider):
-        one = min(o.total_amount for o in self.search(provider, travellers=1))
-        three = min(o.total_amount for o in self.search(provider, travellers=3))
-        assert three >= one
+    def test_unknown_route_is_empty(self, provider):
+        assert provider.search(FlightSearch.model_validate({**SEARCH.model_dump(), "to_airport": "SYD"})) == []
 
 
 CAIRO = GeoPoint(lat=30.0444, lon=31.2357)

@@ -15,7 +15,8 @@ Domain code must be vendor-neutral. Any vendor request/response translation belo
 | `app/domain/shared/errors.py` | `NotFound` / `Conflict` / `InvalidChange` → 404 / 409 / 422 |
 | `openapi.json` | committed API contract → web TS types (`scripts/export_openapi.py`) |
 | `app/domain/places` · `app/domain/routing` | `Place` (+ opening-hours checks), `RouteMatrix`, haversine |
-| `app/providers` | provider protocols (`base.py`), mocks over `tests/fixtures/places/*.json`, future vendor adapters |
+| `app/domain/flights` | `FlightSearch`, `FlightOffer` (segments, stops, duration, baggage, expiry), `filter_and_sort` |
+| `app/providers` | provider protocols (`base.py`), mocks over `tests/fixtures/places/*.json` and `tests/fixtures/flights/routes.json`, future vendor adapters |
 | `app/domain/itinerary/days.py` | ITIN-001 candidate day builder (pure): window, blocked intervals, capacity, ranked candidates |
 | `app/db/cache.py` | `CachedPlacesProvider` / `CachedRoutesProvider`: same protocols, backed by `places`, `provider_snapshots`, `route_legs` |
 | `app/providers/registry.py` | picks adapters from `PLACES_PROVIDER` / `ROUTES_PROVIDER` |
