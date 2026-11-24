@@ -403,3 +403,32 @@ class ItineraryItemRow(Base):
     weather_sensitive: Mapped[bool] = mapped_column(default=False)
     source: Mapped[str] = mapped_column(String(16))
     why: Mapped[str] = mapped_column(Text, default="", server_default="")
+
+
+class TransportOptionRow(Base):
+    """Snapshot of one flight offer returned by a search (A-24). Never a guaranteed fare; select checks expiry."""
+
+    __tablename__ = "transport_options"
+    __table_args__ = (
+        UniqueConstraint("trip_id", "search_id", "offer_id"),
+        CheckConstraint(_in("direction", ("outbound", "return")), name="direction_valid"),
+        CheckConstraint("expires_at > fetched_at", name="ttl_positive"),
+        CheckConstraint(f"currency {CURRENCY_CHECK}", name="currency_iso"),
+        CheckConstraint("stops >= 0", name="stops_non_negative"),
+    )
+
+    id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=uuid.uuid4)
+    trip_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("trips.id", ondelete="CASCADE"), index=True)
+    search_id: Mapped[uuid.UUID] = mapped_column(index=True)
+    direction: Mapped[str] = mapped_column(String(10))
+    provider: Mapped[str] = mapped_column(String(40))
+    offer_id: Mapped[str] = mapped_column(String(300))
+    offer: Mapped[dict] = mapped_column(JSONB)  # normalized FlightOffer, never the raw provider payload
+    total_amount: Mapped[Decimal] = mapped_column(Money)
+    currency: Mapped[str] = mapped_column(String(3))
+    stops: Mapped[int] = mapped_column(SmallInteger)
+    departs_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+    arrives_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+    fetched_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+    expires_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+    selected_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))

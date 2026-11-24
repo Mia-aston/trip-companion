@@ -179,6 +179,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/trips/{trip_id}/flights/search": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Search
+         * @description One direction. Passengers from the trip; cabin / max stops / bags default to the trip's flight prefs.
+         */
+        post: operations["search_v1_trips__trip_id__flights_search_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/trips/{trip_id}/itinerary": {
         parameters: {
             query?: never;
@@ -414,6 +434,19 @@ export interface components {
             /** Query */
             query?: string | null;
         };
+        /** Baggage */
+        Baggage: {
+            /**
+             * Carry On
+             * @default true
+             */
+            carry_on: boolean;
+            /**
+             * Checked Bags
+             * @description Checked bags included per passenger
+             */
+            checked_bags: number;
+        };
         /** BlockedInterval */
         BlockedInterval: {
             /**
@@ -608,6 +641,11 @@ export interface components {
          * @enum {string}
          */
         DietaryRestriction: "vegetarian" | "vegan" | "halal" | "kosher" | "gluten_free" | "lactose_free" | "nut_allergy" | "shellfish_allergy";
+        /**
+         * Direction
+         * @enum {string}
+         */
+        Direction: "outbound" | "return";
         /** EditItem */
         EditItem: {
             /** End */
@@ -632,6 +670,51 @@ export interface components {
         /** ErrorResponse */
         ErrorResponse: {
             error: components["schemas"]["ErrorBody"];
+        };
+        /** FlightOffer */
+        FlightOffer: {
+            /**
+             * Arrives At
+             * Format: date-time
+             */
+            readonly arrives_at: string;
+            baggage: components["schemas"]["Baggage"];
+            /** Booking Url */
+            booking_url: string | null;
+            cabin: components["schemas"]["CabinClass"];
+            /** Changeable */
+            changeable: boolean | null;
+            /**
+             * Departs At
+             * Format: date-time
+             */
+            readonly departs_at: string;
+            /** Duration Minutes */
+            readonly duration_minutes: number;
+            /**
+             * Expires At
+             * Format: date-time
+             * @description Offset required on input; normalized to and returned in UTC. Display in the stop's timezone.
+             */
+            expires_at: string;
+            /**
+             * Id
+             * @description '<provider>:<offer_id>'
+             */
+            id: string;
+            /** Offer Id */
+            offer_id: string;
+            provenance: components["schemas"]["Provenance"];
+            /** Provider */
+            provider: string;
+            /** Refundable */
+            refundable: boolean | null;
+            /** Segments */
+            segments: components["schemas"]["FlightSegment"][];
+            /** Stops */
+            readonly stops: number;
+            /** @description All passengers, in the offer currency */
+            total: components["schemas"]["Money"];
         };
         /** FlightPrefs */
         "FlightPrefs-Input": {
@@ -662,6 +745,112 @@ export interface components {
              * @description None = any
              */
             max_stops: number | null;
+        };
+        /**
+         * FlightSearch
+         * @description One direction (A-25). Passengers and preferences normally come from the trip.
+         */
+        FlightSearch: {
+            /**
+             * Adults
+             * @default 1
+             */
+            adults: number;
+            /** @default economy */
+            cabin: components["schemas"]["CabinClass"];
+            /**
+             * Checked Bags
+             * @description Minimum checked bags included per passenger
+             * @default 0
+             */
+            checked_bags: number;
+            /**
+             * Children Ages
+             * @default []
+             */
+            children_ages: number[];
+            /**
+             * Date
+             * Format: date
+             */
+            date: string;
+            direction: components["schemas"]["Direction"];
+            /**
+             * From Airport
+             * @description IATA airport/city code
+             */
+            from_airport: string;
+            /**
+             * Infants
+             * @default 0
+             */
+            infants: number;
+            /** Max Stops */
+            max_stops: number | null;
+            /** @default price */
+            sort: components["schemas"]["SortBy"];
+            /**
+             * To Airport
+             * @description IATA airport/city code
+             */
+            to_airport: string;
+        };
+        /** FlightSearchResult */
+        FlightSearchResult: {
+            /**
+             * Filtered Out
+             * @description Offers dropped by cabin / stops / bags / expiry filters
+             */
+            filtered_out: number;
+            /** Offers */
+            offers: components["schemas"]["FlightOffer"][];
+            search: components["schemas"]["FlightSearch"];
+            /**
+             * Search Id
+             * Format: uuid
+             */
+            search_id: string;
+            /**
+             * Searched At
+             * Format: date-time
+             * @description Offset required on input; normalized to and returned in UTC. Display in the stop's timezone.
+             */
+            searched_at: string;
+        };
+        /** FlightSegment */
+        FlightSegment: {
+            /**
+             * Arrives At
+             * Format: date-time
+             * @description Offset required on input; normalized to and returned in UTC. Display in the stop's timezone.
+             */
+            arrives_at: string;
+            /** Carrier */
+            carrier: string;
+            /** Carrier Name */
+            carrier_name: string;
+            /**
+             * Departs At
+             * Format: date-time
+             * @description Offset required on input; normalized to and returned in UTC. Display in the stop's timezone.
+             */
+            departs_at: string;
+            /**
+             * Destination
+             * @description IATA airport/city code
+             */
+            destination: string;
+            /** Destination Timezone */
+            destination_timezone: string;
+            /** Flight Number */
+            flight_number: string;
+            /**
+             * Origin
+             * @description IATA airport/city code
+             */
+            origin: string;
+            /** Origin Timezone */
+            origin_timezone: string;
         };
         /** GenerateRequest */
         GenerateRequest: {
@@ -1114,6 +1303,11 @@ export interface components {
          * @enum {string}
          */
         Severity: "error" | "warning";
+        /**
+         * SortBy
+         * @enum {string}
+         */
+        SortBy: "price" | "duration";
         /** Stop */
         Stop: {
             /** Accommodation Area */
@@ -1441,6 +1635,35 @@ export interface components {
              * @description Must-dos that fit on no day
              */
             unmet_must_dos: string[];
+        };
+        /**
+         * TripFlightSearch
+         * @description Request body. Passengers always come from the trip; preferences default to the trip's `flight_prefs`.
+         */
+        TripFlightSearch: {
+            cabin?: components["schemas"]["CabinClass"] | null;
+            /** Checked Bags */
+            checked_bags?: number | null;
+            /**
+             * Date
+             * @description Defaults to the trip start (outbound) or end (return) date
+             */
+            date?: string | null;
+            direction: components["schemas"]["Direction"];
+            /**
+             * From Airport
+             * @description IATA airport/city code
+             */
+            from_airport: string;
+            /** Max Stops */
+            max_stops?: number | null;
+            /** @default price */
+            sort?: components["schemas"]["SortBy"];
+            /**
+             * To Airport
+             * @description IATA airport/city code
+             */
+            to_airport: string;
         };
         /**
          * TripStatus
@@ -2049,6 +2272,59 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["TripDayCandidates"];
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Conflicts with stored state */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation error or invalid change */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    search_v1_trips__trip_id__flights_search_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                trip_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["TripFlightSearch"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FlightSearchResult"];
                 };
             };
             /** @description Not found */

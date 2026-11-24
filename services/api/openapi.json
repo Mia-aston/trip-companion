@@ -152,6 +152,29 @@
         "title": "AvoidCreate",
         "type": "object"
       },
+      "Baggage": {
+        "additionalProperties": false,
+        "properties": {
+          "carry_on": {
+            "default": true,
+            "title": "Carry On",
+            "type": "boolean"
+          },
+          "checked_bags": {
+            "description": "Checked bags included per passenger",
+            "maximum": 5.0,
+            "minimum": 0.0,
+            "title": "Checked Bags",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "checked_bags",
+          "carry_on"
+        ],
+        "title": "Baggage",
+        "type": "object"
+      },
       "BlockedInterval": {
         "additionalProperties": false,
         "properties": {
@@ -624,6 +647,14 @@
         "title": "DietaryRestriction",
         "type": "string"
       },
+      "Direction": {
+        "enum": [
+          "outbound",
+          "return"
+        ],
+        "title": "Direction",
+        "type": "string"
+      },
       "EditItem": {
         "additionalProperties": false,
         "properties": {
@@ -704,6 +735,128 @@
         "title": "ErrorResponse",
         "type": "object"
       },
+      "FlightOffer": {
+        "additionalProperties": false,
+        "properties": {
+          "arrives_at": {
+            "format": "date-time",
+            "readOnly": true,
+            "title": "Arrives At",
+            "type": "string"
+          },
+          "baggage": {
+            "$ref": "#/components/schemas/Baggage"
+          },
+          "booking_url": {
+            "anyOf": [
+              {
+                "maxLength": 1000,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Booking Url"
+          },
+          "cabin": {
+            "$ref": "#/components/schemas/CabinClass"
+          },
+          "changeable": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Changeable"
+          },
+          "departs_at": {
+            "format": "date-time",
+            "readOnly": true,
+            "title": "Departs At",
+            "type": "string"
+          },
+          "duration_minutes": {
+            "readOnly": true,
+            "title": "Duration Minutes",
+            "type": "integer"
+          },
+          "expires_at": {
+            "description": "Offset required on input; normalized to and returned in UTC. Display in the stop's timezone.",
+            "format": "date-time",
+            "title": "Expires At",
+            "type": "string"
+          },
+          "id": {
+            "description": "'<provider>:<offer_id>'",
+            "title": "Id",
+            "type": "string"
+          },
+          "offer_id": {
+            "title": "Offer Id",
+            "type": "string"
+          },
+          "provenance": {
+            "$ref": "#/components/schemas/Provenance"
+          },
+          "provider": {
+            "title": "Provider",
+            "type": "string"
+          },
+          "refundable": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Refundable"
+          },
+          "segments": {
+            "items": {
+              "$ref": "#/components/schemas/FlightSegment"
+            },
+            "maxItems": 6,
+            "minItems": 1,
+            "title": "Segments",
+            "type": "array"
+          },
+          "stops": {
+            "readOnly": true,
+            "title": "Stops",
+            "type": "integer"
+          },
+          "total": {
+            "$ref": "#/components/schemas/Money",
+            "description": "All passengers, in the offer currency"
+          }
+        },
+        "required": [
+          "id",
+          "provider",
+          "offer_id",
+          "segments",
+          "cabin",
+          "total",
+          "baggage",
+          "refundable",
+          "changeable",
+          "booking_url",
+          "expires_at",
+          "provenance",
+          "stops",
+          "departs_at",
+          "arrives_at",
+          "duration_minutes"
+        ],
+        "title": "FlightOffer",
+        "type": "object"
+      },
       "FlightPrefs-Input": {
         "additionalProperties": false,
         "properties": {
@@ -771,6 +924,222 @@
           "checked_bags"
         ],
         "title": "FlightPrefs",
+        "type": "object"
+      },
+      "FlightSearch": {
+        "additionalProperties": false,
+        "description": "One direction (A-25). Passengers and preferences normally come from the trip.",
+        "properties": {
+          "adults": {
+            "default": 1,
+            "maximum": 20.0,
+            "minimum": 1.0,
+            "title": "Adults",
+            "type": "integer"
+          },
+          "cabin": {
+            "$ref": "#/components/schemas/CabinClass",
+            "default": "economy"
+          },
+          "checked_bags": {
+            "default": 0,
+            "description": "Minimum checked bags included per passenger",
+            "maximum": 3.0,
+            "minimum": 0.0,
+            "title": "Checked Bags",
+            "type": "integer"
+          },
+          "children_ages": {
+            "default": [],
+            "items": {
+              "maximum": 17.0,
+              "minimum": 2.0,
+              "type": "integer"
+            },
+            "title": "Children Ages",
+            "type": "array"
+          },
+          "date": {
+            "format": "date",
+            "title": "Date",
+            "type": "string"
+          },
+          "direction": {
+            "$ref": "#/components/schemas/Direction"
+          },
+          "from_airport": {
+            "description": "IATA airport/city code",
+            "examples": [
+              "CAI"
+            ],
+            "pattern": "^[A-Z]{3}$",
+            "title": "From Airport",
+            "type": "string"
+          },
+          "infants": {
+            "default": 0,
+            "minimum": 0.0,
+            "title": "Infants",
+            "type": "integer"
+          },
+          "max_stops": {
+            "anyOf": [
+              {
+                "maximum": 3.0,
+                "minimum": 0.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Max Stops"
+          },
+          "sort": {
+            "$ref": "#/components/schemas/SortBy",
+            "default": "price"
+          },
+          "to_airport": {
+            "description": "IATA airport/city code",
+            "examples": [
+              "CAI"
+            ],
+            "pattern": "^[A-Z]{3}$",
+            "title": "To Airport",
+            "type": "string"
+          }
+        },
+        "required": [
+          "direction",
+          "from_airport",
+          "to_airport",
+          "date",
+          "adults",
+          "children_ages",
+          "infants",
+          "cabin",
+          "max_stops",
+          "checked_bags",
+          "sort"
+        ],
+        "title": "FlightSearch",
+        "type": "object"
+      },
+      "FlightSearchResult": {
+        "additionalProperties": false,
+        "properties": {
+          "filtered_out": {
+            "description": "Offers dropped by cabin / stops / bags / expiry filters",
+            "title": "Filtered Out",
+            "type": "integer"
+          },
+          "offers": {
+            "items": {
+              "$ref": "#/components/schemas/FlightOffer"
+            },
+            "title": "Offers",
+            "type": "array"
+          },
+          "search": {
+            "$ref": "#/components/schemas/FlightSearch"
+          },
+          "search_id": {
+            "format": "uuid",
+            "title": "Search Id",
+            "type": "string"
+          },
+          "searched_at": {
+            "description": "Offset required on input; normalized to and returned in UTC. Display in the stop's timezone.",
+            "format": "date-time",
+            "title": "Searched At",
+            "type": "string"
+          }
+        },
+        "required": [
+          "search_id",
+          "search",
+          "offers",
+          "searched_at",
+          "filtered_out"
+        ],
+        "title": "FlightSearchResult",
+        "type": "object"
+      },
+      "FlightSegment": {
+        "additionalProperties": false,
+        "properties": {
+          "arrives_at": {
+            "description": "Offset required on input; normalized to and returned in UTC. Display in the stop's timezone.",
+            "format": "date-time",
+            "title": "Arrives At",
+            "type": "string"
+          },
+          "carrier": {
+            "pattern": "^[A-Z0-9]{2}$",
+            "title": "Carrier",
+            "type": "string"
+          },
+          "carrier_name": {
+            "title": "Carrier Name",
+            "type": "string"
+          },
+          "departs_at": {
+            "description": "Offset required on input; normalized to and returned in UTC. Display in the stop's timezone.",
+            "format": "date-time",
+            "title": "Departs At",
+            "type": "string"
+          },
+          "destination": {
+            "description": "IATA airport/city code",
+            "examples": [
+              "CAI"
+            ],
+            "pattern": "^[A-Z]{3}$",
+            "title": "Destination",
+            "type": "string"
+          },
+          "destination_timezone": {
+            "examples": [
+              "Africa/Cairo"
+            ],
+            "title": "Destination Timezone",
+            "type": "string"
+          },
+          "flight_number": {
+            "maxLength": 10,
+            "minLength": 1,
+            "title": "Flight Number",
+            "type": "string"
+          },
+          "origin": {
+            "description": "IATA airport/city code",
+            "examples": [
+              "CAI"
+            ],
+            "pattern": "^[A-Z]{3}$",
+            "title": "Origin",
+            "type": "string"
+          },
+          "origin_timezone": {
+            "examples": [
+              "Africa/Cairo"
+            ],
+            "title": "Origin Timezone",
+            "type": "string"
+          }
+        },
+        "required": [
+          "carrier",
+          "carrier_name",
+          "flight_number",
+          "origin",
+          "destination",
+          "origin_timezone",
+          "destination_timezone",
+          "departs_at",
+          "arrives_at"
+        ],
+        "title": "FlightSegment",
         "type": "object"
       },
       "GenerateRequest": {
@@ -1899,6 +2268,14 @@
         "title": "Severity",
         "type": "string"
       },
+      "SortBy": {
+        "enum": [
+          "price",
+          "duration"
+        ],
+        "title": "SortBy",
+        "type": "string"
+      },
       "Stop": {
         "additionalProperties": false,
         "properties": {
@@ -2590,6 +2967,93 @@
           "unmet_must_dos"
         ],
         "title": "TripDayCandidates",
+        "type": "object"
+      },
+      "TripFlightSearch": {
+        "additionalProperties": false,
+        "description": "Request body. Passengers always come from the trip; preferences default to the trip's `flight_prefs`.",
+        "properties": {
+          "cabin": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/CabinClass"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "checked_bags": {
+            "anyOf": [
+              {
+                "maximum": 3.0,
+                "minimum": 0.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Checked Bags"
+          },
+          "date": {
+            "anyOf": [
+              {
+                "format": "date",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Defaults to the trip start (outbound) or end (return) date",
+            "title": "Date"
+          },
+          "direction": {
+            "$ref": "#/components/schemas/Direction"
+          },
+          "from_airport": {
+            "description": "IATA airport/city code",
+            "examples": [
+              "CAI"
+            ],
+            "pattern": "^[A-Z]{3}$",
+            "title": "From Airport",
+            "type": "string"
+          },
+          "max_stops": {
+            "anyOf": [
+              {
+                "maximum": 3.0,
+                "minimum": 0.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Max Stops"
+          },
+          "sort": {
+            "$ref": "#/components/schemas/SortBy",
+            "default": "price"
+          },
+          "to_airport": {
+            "description": "IATA airport/city code",
+            "examples": [
+              "CAI"
+            ],
+            "pattern": "^[A-Z]{3}$",
+            "title": "To Airport",
+            "type": "string"
+          }
+        },
+        "required": [
+          "direction",
+          "from_airport",
+          "to_airport"
+        ],
+        "title": "TripFlightSearch",
         "type": "object"
       },
       "TripStatus": {
@@ -3674,6 +4138,80 @@
         "summary": "Day Candidates",
         "tags": [
           "trips"
+        ]
+      }
+    },
+    "/v1/trips/{trip_id}/flights/search": {
+      "post": {
+        "description": "One direction. Passengers from the trip; cabin / max stops / bags default to the trip's flight prefs.",
+        "operationId": "search_v1_trips__trip_id__flights_search_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "trip_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Trip Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TripFlightSearch"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FlightSearchResult"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Not found"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Conflicts with stored state"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Validation error or invalid change"
+          }
+        },
+        "summary": "Search",
+        "tags": [
+          "flights"
         ]
       }
     },

@@ -48,8 +48,8 @@
 - Egypt fixture still lacks a Cairo → desert transport booking.
 
 ### Next safe tasks (M4, in order — see ROADMAP)
-1. FLIGHT-001 (branch `m4/flight-001-contracts`): contracts + fixture mock (fictional carriers; NM778 16:30→23:30 matches the Egypt arrival, NM780 07:00→14:00 for E4) — merge.
-2. FLIGHT-002: migration 0005 + search API. 4. FLIGHT-004: select → booking (E4). 5. UI-004 flight options.
+1. ✅ FLIGHT-001 merged (#17). FLIGHT-002 on `m4/flight-002-search-api`: migration 0005, snapshots, `POST /v1/trips/{id}/flights/search`.
+2. (done) FLIGHT-002: migration 0005 + search API. 4. FLIGHT-004: select → booking (E4). 5. UI-004 flight options.
 Owner decision pending: D-03 (Skyscanner vs Duffel) for FLIGHT-003.
 
 ### Context rule

@@ -53,7 +53,7 @@ Rules: `docs/ARCHITECTURE.md#flight-search-m4`. Runs on the **mock** provider un
 **MVP issues (in order, one PR each from `main`)**
 1. ✅ M4 doc pass.
 2. ✅ FLIGHT-001 — `FlightSearch` / `FlightOffer` contracts (segments, stops, duration, cabin, fare, baggage, refund/change flags, booking link, `expires_at`, provenance); mock provider rewritten on fixtures (LON↔CAI, LXR→LON, direct + 1-stop, varied times/prices); provider contract suite extended.
-3. FLIGHT-002 — migration 0005 `transport_options` (search snapshots with expiry), `POST /v1/trips/{id}/flights/search` (pax and prefs from the trip; filters max stops / bags / cabin; sort price or duration).
+3. ✅ FLIGHT-002 — migration 0005 `transport_options` (search snapshots with expiry), `POST /v1/trips/{id}/flights/search` (pax and prefs from the trip; filters max stops / bags / cabin; sort price or duration).
 4. FLIGHT-004 — `POST /v1/trips/{id}/transport/select` → tentative flight booking (replaces the previous flight in that direction), 409 if the offer expired; response lists dates whose day capacity changed → **E4**.
 5. UI-004 — flight options on the trip page: search outbound / return, filter, pick, external booking link, "offer expired — search again".
 
