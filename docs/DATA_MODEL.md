@@ -13,7 +13,7 @@ Status column: **built** = in a migration (`0001`–`0004`); **change** = exists
 | `trip_stops` | ordered destinations (multi-city) | trip_id, seq, place_id/city, nights, arrive_on, leave_on, timezone, accommodation_booking_id / area | MVP | M1 | built (0002) |
 | `trip_members` | people who pay/owe | trip_id, user_id?, display_name, role, currency_pref | MVP | M1 | built (0002) |
 | `trip_constraints` | hard/soft constraints | trip_id, kind (must_do/avoid/time_window — dietary & mobility are trip fields, A-09), hardness (hard/soft), payload JSON (typed per kind), source (user/booking/system), locked | MVP | M1 | built (0002) |
-| `transport_options` | normalized flight search result snapshot | trip_id, provider, offer_id, segments JSON, total, currency, fetched_at, expires_at | MVP | M4 | todo |
+| `transport_options` | normalized flight offer snapshot from a search | trip_id, search_id, direction (outbound/return), provider, offer_id, segments JSON, stops, duration_min, cabin, total_amount, currency, baggage JSON, refundable, changeable, booking_url, fetched_at, expires_at, selected_at | MVP | M4 | todo |
 | `bookings` | confirmed external booking (manual in MVP) | trip_id, kind (flight/hotel/activity/transport), title, starts_at, ends_at, place_id?, reference, cost → expense_id?, status | MVP | M1 | built (0002) |
 | `places` | canonical normalized place | provider, provider_place_id, name, location (geography), categories[], opening_hours JSON (weekly periods), rating, rating_count, price_level, wheelchair_accessible, timezone, typical_visit_minutes, fetched_at | MVP | M2 | built (0003) |
 | `trip_places` | place state within a trip | trip_id, place_id, state (candidate/saved/scheduled/visited/skipped), score | MVP | M2 | todo |

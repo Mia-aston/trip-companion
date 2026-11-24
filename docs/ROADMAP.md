@@ -34,7 +34,7 @@ Everything runs on **mock providers + fixtures**; live adapters wait for D-02 an
 **Deferred:** PLACE-002 live places adapter + ROUTE-002 live routes adapter (after D-02; contract suite must pass) · NICE photos metadata, transit mode · NEXT multi-provider merge
 **Exit (E2):** for the Egypt trip, every day has a capacity and ranked feasible candidates with travel times; 31 Oct (late arrival) and 6 Nov after the airport cut-off have zero sightseeing capacity; must-dos (Giza pyramids) appear on a Cairo day; closed places never appear on that weekday.
 
-## M3 — Itinerary engine  ✅ exit met on UI-002 PR (pending merge)
+## M3 — Itinerary engine  ✅ done (#11–#15, 24 Nov 2026)
 Rules: `docs/ARCHITECTURE.md#itinerary-engine-m3`. One PR per issue, each based on `main`, merged before the next starts.
 
 **MVP issues (in order)**
@@ -47,10 +47,18 @@ Rules: `docs/ARCHITECTURE.md#itinerary-engine-m3`. One PR per issue, each based 
 **Deferred:** NICE LLM planner adapter (needs D-07; same `Planner` interface, must pass the same validator), rollback endpoint, drag-and-drop, meal suggestions from food engine (M5) · NEXT multi-day re-flow, route-order optimisation, free-text change interpretation
 **Exit (E3, E3b):** on the Egypt trip, removing the user-added "Aswan day trip" and regenerating 6 Nov "around Luxor downtown" changes only 6 Nov unlocked items; every other day, all bookings and locked items are identical; 22:30 departure respected; a new plan version with a diff is stored; validator has no errors. Cancelling the balloon booking and regenerating 5 Nov replaces only the morning block.
 
-## M4 — Flight search
-**MVP issues:** FLIGHT-001 normalized flight contract (segments, fare, baggage, expiry) · FLIGHT-002 mock provider + fixtures (exists, extend) · FLIGHT-003 live adapter (after D-03) · select flight → booking + hard time constraint · UI flight options + external booking link
-**Deferred:** NICE time-of-day / self-transfer filters · NEXT price alerts, flexible dates · NO ticketing
-**Exit (E4):** selected arrival/departure changes day capacity correctly; expired offer forces re-search.
+## M4 — Flight search  ⏳ in progress
+Rules: `docs/ARCHITECTURE.md#flight-search-m4`. Runs on the **mock** provider until D-03 (Skyscanner vs Duffel) is decided; the live adapter is a separate issue and must pass the same contract suite.
+
+**MVP issues (in order, one PR each from `main`)**
+1. M4 doc pass (this).
+2. FLIGHT-001 — `FlightSearch` / `FlightOffer` contracts (segments, stops, duration, cabin, fare, baggage, refund/change flags, booking link, `expires_at`, provenance); mock provider rewritten on fixtures (LON↔CAI, LXR→LON, direct + 1-stop, varied times/prices); provider contract suite extended.
+3. FLIGHT-002 — migration 0005 `transport_options` (search snapshots with expiry), `POST /v1/trips/{id}/flights/search` (pax and prefs from the trip; filters max stops / bags / cabin; sort price or duration).
+4. FLIGHT-004 — `POST /v1/trips/{id}/transport/select` → tentative flight booking (replaces the previous flight in that direction), 409 if the offer expired; response lists dates whose day capacity changed → **E4**.
+5. UI-004 — flight options on the trip page: search outbound / return, filter, pick, external booking link, "offer expired — search again".
+
+**Deferred:** FLIGHT-003 live adapter (after D-03) · NICE time-of-day / self-transfer filters, confirm-booking endpoint · NEXT round-trip fare combos, price alerts, flexible dates · NO ticketing, refunds
+**Exit (E4):** for the Egypt trip, selecting an outbound flight landing 31 Oct 23:30 gives 31 Oct zero capacity; switching to one landing 31 Oct 14:00 gives 31 Oct sightseeing capacity and candidates; selecting an expired offer returns 409 and changes nothing.
 
 ## M5 — Contextual recommendation
 **MVP issues:** FOOD-001 TasteProfile + dietary schema · FOOD-002 review signal extractor (non-sensitive, schema-validated) · FOOD-003 restaurant ranker + "why" · KNOW-001 knowledge cards (before/at place) with sources · PHOTO-001 curated photo spot schema + read API · UI place drawer Know/Eat/Photo/Practical

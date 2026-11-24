@@ -116,6 +116,14 @@ The orchestrator never persists a plan with errors: it returns 422 with the viol
 - Removed: unlocked planner items in scope, plus `remove_item_keys` (the way to drop a user's own item, e.g. "Aswan day trip"). User items not listed are kept. Replacement comes from the planner over the day's candidates filtered by `exclude_place_ids` and `stay_within_m` (distance from the stop base).
 - `note` is stored as the version's `reason`; it is not interpreted in MVP (free-text interpretation needs an LLM, NEXT).
 
+## Flight search (M4)
+
+- **Search** is per direction (outbound / return), built from the trip: origin → first stop's airport (outbound) or last stop → origin (return), date, passengers (`adults`, `children_ages`, `infants`) and `flight_prefs` (cabin, max stops, checked bags). Airports per stop come from the request in MVP (`from` / `to` IATA codes); airport lookup from city is NEXT.
+- **Offers expire.** Every offer carries `expires_at` (mock: 30 min after search; live: provider value). Offers are stored as `transport_options` snapshots for traceability, never as a guaranteed fare (PROVIDERS.md).
+- **Select** turns one unexpired offer into a **tentative flight booking** (title, times, cost, reference = provider offer id, `booking_url`). It replaces the trip's existing flight booking in the same direction. Ticketing happens on the provider's site (NO ticketing in v1). An expired offer → 409 "search again"; nothing changes.
+- The selected flight is a hard time constraint through the existing rules: arrival flight = first flight booking (+90 min), departure = last (−180 min) — see Day capacity (M2). The select response lists the dates whose capacity changed so the UI can suggest re-planning those days (regenerate is not automatic).
+- Filters in MVP: max stops, checked bags included, cabin; sort by price or total duration. Prices are per trip (all passengers) in the offer currency; no FX in M4.
+
 ## Partial regeneration
 
 1. Identify affected date/range + dependency graph (e.g. hotel check-out, transfer to airport)
