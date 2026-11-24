@@ -30,6 +30,7 @@ Accepted long-form ADRs live in `docs/decisions/`.
 | A-23 | A selected flight becomes a **tentative** flight booking that replaces the previous one in the same direction; ticketing stays on the provider's site | M4 |
 | A-24 | Flight offers expire (`expires_at`); select requires an unexpired offer (409 otherwise); stored offers are snapshots, never guaranteed fares | M4 |
 | A-25 | MVP searches one direction at a time (outbound, return); airports given as IATA codes in the request; round-trip fare combos and city→airport lookup are NEXT | M4 |
+| A-26 | Manual testing runs locally via `docker compose up --build` (PostGIS + API + web, mock providers, Egypt demo trip with a stable id); CI boots the same stack. Public hosting is a later decision | ops |
 | A-12 | `trips.owner_id` is nullable until auth lands (D-01, M8); members/constraints keep insertion order via `position` | CORE-002 |
 
 ## Open (default applies until decided)

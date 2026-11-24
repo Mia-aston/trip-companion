@@ -1,3 +1,5 @@
+# Local manual testing: `docker compose up --build`, then open http://localhost:3000
+# Demo trip (Egypt): http://localhost:3000/trips/<id printed by the api service>
 services:
   postgres:
     image: postgis/postgis:16-3.4
@@ -9,5 +11,41 @@ services:
       - "5432:5432"
     volumes:
       - trip_companion_pg:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d trip_companion"]
+      interval: 3s
+      timeout: 3s
+      retries: 30
+
+  api:
+    build: ./services/api
+    environment:
+      DATABASE_URL: postgresql+psycopg://postgres:postgres@postgres:5432/trip_companion
+      CORS_ORIGINS: '["http://localhost:3000","http://127.0.0.1:3000"]'
+      PLACES_PROVIDER: mock
+      ROUTES_PROVIDER: mock
+      FLIGHT_PROVIDER: mock
+    ports:
+      - "8000:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
+      interval: 3s
+      timeout: 3s
+      retries: 40
+
+  web:
+    build:
+      context: ./apps/web
+      args:
+        NEXT_PUBLIC_API_BASE: http://localhost:8000
+    ports:
+      - "3000:3000"
+    depends_on:
+      api:
+        condition: service_healthy
+
 volumes:
   trip_companion_pg:
