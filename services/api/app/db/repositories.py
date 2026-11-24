@@ -195,8 +195,11 @@ class TripRepository:
     def __init__(self, session: Session) -> None:
         self.session = session
 
-    def add(self, payload: TripCreate, *, owner_id: UUID | None = None) -> Trip:
+    def add(self, payload: TripCreate, *, owner_id: UUID | None = None, trip_id: UUID | None = None) -> Trip:
+        """Persist a new trip. `trip_id` pins the id (demo seed); normally a random one is assigned."""
         trip = Trip.from_create(payload)
+        if trip_id is not None:
+            trip = trip.model_copy(update={"id": trip_id})
         self.session.add(_trip_row(trip, owner_id))
         self.session.flush()
         return trip

@@ -43,7 +43,11 @@ Each domain owns its models and service logic. External providers are accessed o
 8. Budget, split expenses and settlement
 9. During-trip daily mode
 
-## Getting started
+## Try it (manual testing)
+
+`docker compose up --build`, then open http://localhost:3000 — see [docs/MANUAL_TESTING.md](docs/MANUAL_TESTING.md) for the demo trip link and a test checklist.
+
+## Getting started (development)
 
 Backend skeleton:
 
@@ -52,7 +56,7 @@ cd services/api
 python -m venv .venv
 source .venv/bin/activate
 pip install -e '.[dev]'
-docker compose up -d postgres        # from repo root: PostGIS 16
+docker compose up -d postgres        # from repo root: PostGIS 16 only
 alembic upgrade head                  # create schema
 python scripts/seed_egypt.py          # optional: Egypt demo trip
 uvicorn app.main:app --reload
