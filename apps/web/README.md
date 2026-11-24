@@ -7,8 +7,9 @@ Next.js 16 (App Router) + TypeScript. Talks to the API only through `src/lib/api
 |---|---|
 | `/` | Create Trip form: title, origin, dates, multi-city stops (live "n of N nights allocated"), travellers (adults, children ages, infants), mobility, currency, budget, pace, interests, dietary. API validation errors are shown inline. |
 | `/trips/[id]` | Read-only trip page: overview, stops, members, constraints, bookings. Instants are shown in the stop's timezone (A-11). |
+| `/trips/[id]/itinerary` | Itinerary editor (UI-002): generate / re-plan, version + reason + diff summary, warnings, per day: items with local times (+1 for next day), lock / unlock / remove, add item, "Re-plan this day" (pace, stay near centre, drop your items, reason). Validator errors shown inline; nothing changes on error. |
 
-Later screens (per ROADMAP): flight options (M4), itinerary editor (M3), place drawer Know/Eat/Photo/Practical (M5), budget & settlement (M6), Today (M7).
+Later screens (per ROADMAP): flight options (M4), place drawer Know/Eat/Photo/Practical (M5), budget & settlement (M6), Today (M7).
 
 ## Run locally
 ```bash

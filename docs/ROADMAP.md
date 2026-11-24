@@ -34,7 +34,7 @@ Everything runs on **mock providers + fixtures**; live adapters wait for D-02 an
 **Deferred:** PLACE-002 live places adapter + ROUTE-002 live routes adapter (after D-02; contract suite must pass) · NICE photos metadata, transit mode · NEXT multi-provider merge
 **Exit (E2):** for the Egypt trip, every day has a capacity and ranked feasible candidates with travel times; 31 Oct (late arrival) and 6 Nov after the airport cut-off have zero sightseeing capacity; must-dos (Giza pyramids) appear on a Cairo day; closed places never appear on that weekday.
 
-## M3 — Itinerary engine  ⏳ in progress
+## M3 — Itinerary engine  ✅ exit met on UI-002 PR (pending merge)
 Rules: `docs/ARCHITECTURE.md#itinerary-engine-m3`. One PR per issue, each based on `main`, merged before the next starts.
 
 **MVP issues (in order)**
@@ -42,7 +42,7 @@ Rules: `docs/ARCHITECTURE.md#itinerary-engine-m3`. One PR per issue, each based 
 2. ✅ ITIN-002 + AI-001 — `ProposedPlan` schema (structured planner output), `validate()` (pure, rules V1–V9), `GreedyPlanner` (deterministic, no LLM) behind the `Planner` interface. Property test: validator never accepts overlaps / out-of-window items.
 3. ✅ AI-002 — migration 0004 (`plan_versions`, `itinerary_days`, `itinerary_items`), plan repository, orchestration (day inputs → planner → validator → persist → explanation), `POST …/itinerary/generate`, `GET …/itinerary`, `GET …/itinerary/diff`.
 4. ✅ ITIN-003 — item edits (`PATCH`, lock, add custom item, delete), `POST …/itinerary/regenerate` (day scope), diff by stable `item_key` → **E3, E3b**.
-5. UI-002 — itinerary editor: generate, day list, lock toggle, remove/add item, "regenerate this day" (pace, stay-near radius, exclude), version note + diff summary; Playwright.
+5. ✅ UI-002 — itinerary editor: generate, day list, lock toggle, remove/add item, "regenerate this day" (pace, stay-near radius, exclude), version note + diff summary; Playwright.
 
 **Deferred:** NICE LLM planner adapter (needs D-07; same `Planner` interface, must pass the same validator), rollback endpoint, drag-and-drop, meal suggestions from food engine (M5) · NEXT multi-day re-flow, route-order optimisation, free-text change interpretation
 **Exit (E3, E3b):** on the Egypt trip, removing the user-added "Aswan day trip" and regenerating 6 Nov "around Luxor downtown" changes only 6 Nov unlocked items; every other day, all bookings and locked items are identical; 22:30 departure respected; a new plan version with a diff is stored; validator has no errors. Cancelling the balloon booking and regenerating 5 Nov replaces only the morning block.

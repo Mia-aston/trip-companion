@@ -2,7 +2,7 @@
 
 ## Current state (23 Nov 2026)
 
-**Milestone:** M3 — Itinerary engine. M0–M2 on `main`; M3 doc pass (#11), ITIN-002/AI-001 (#12), AI-002 (#13) merged. Process from M3: one PR per issue, based on `main`, merged before the next starts (stacked PRs #3–#9 had to be re-landed via #10).
+**Milestone:** M3 — Itinerary engine. M0–M2 on `main`; M3 doc pass (#11), ITIN-002/AI-001 (#12), AI-002 (#13), ITIN-003 (#14) merged. Process from M3: one PR per issue, based on `main`, merged before the next starts (stacked PRs #3–#9 had to be re-landed via #10).
 **Rule:** one issue per branch; contract changes go through docs + DECISIONS first.
 
 ### Done
@@ -39,10 +39,17 @@
 
 - **ITIN-002 + AI-001** (branch `m3/itin-002-validator-planner`): `plan.py` (ProposedPlan, PlanDay/PlanItem, booking items with deterministic keys, `materialize`), `validator.py` (V1–V9), `planner.py` (`Planner` protocol, `GreedyPlanner`: must-dos first, meals, one visit per place per trip), `orchestration/itinerary.py::plan_trip` (in memory). Egypt plan: 0 errors, 1 warning (White Desert hours unknown). Property tests + mutation-checked.
 
-- **ITIN-003** (branch `m3/itin-003-edits-regenerate`): `edits.py` (add / edit / delete / lock, booking re-mirroring), `regenerate_day` (A-20), `apply_user_edit`, API `POST …/regenerate`, `POST|PATCH|DELETE …/items`, `POST …/items/{key}/lock`. **E3 and E3b pass** at API level. Fixture: +4 downtown Luxor places. Planner: visits/day capped by pace (A-22).
+- **ITIN-003** merged (#14): edits + one-day regenerate; E3/E3b at API level.
+- **UI-002** (branch `m3/ui-002-itinerary-editor`): `/trips/[id]/itinerary` editor; Playwright E3 through the UI (desktop + phone). **M3 exit criteria met** once merged.
 
-### Next safe tasks (M3)
-1. UI-002 itinerary editor: generate, day list, lock toggle, remove/add item, "regenerate this day" (pace, stay-near radius), version reason + diff summary; Playwright → M3 exit.
+### Known gaps / blockers
+- LLM planner (NICE) waits for D-07; live places/routes wait for D-02.
+- Explanation text after a one-day re-plan describes only that day.
+- Egypt fixture still lacks a Cairo → desert transport booking.
+
+### Next safe tasks
+1. M4 doc pass (flight search): FLIGHT-001 contract (segments, fares, baggage, expiry), select-flight → booking + time constraint, E4.
+2. Owner decision D-03 (Skyscanner vs Duffel) before FLIGHT-003 live adapter.
 
 ### Context rule
 Pick one issue, read `AGENTS.md` → `docs/SCOPE.md` → module README → touched contracts. Do not redesign unrelated modules.
