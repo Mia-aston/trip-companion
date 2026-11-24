@@ -50,4 +50,6 @@ class FlightSnapshots:
         ).first()
         if row is None:
             return None
-        return Direction(row.direction), FlightOffer.model_validate(row.offer), row
+        offer = FlightOffer.model_validate(row.offer)
+        # the column is the source of truth for expiry (queryable; can be shortened by the provider later)
+        return Direction(row.direction), offer.model_copy(update={"expires_at": row.expires_at}), row

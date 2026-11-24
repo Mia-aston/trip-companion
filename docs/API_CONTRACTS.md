@@ -33,7 +33,7 @@ Conventions (MVP):
 | `DELETE /v1/trips/{trip_id}/itinerary/items/{item_key}` | remove an unlocked item → new version | M3 | MVP | implemented (ITIN-003) |
 | `POST /v1/trips/{trip_id}/itinerary/items/{item_key}/lock` | lock/unlock (`{"locked": bool}`) → new version | M3 | MVP | implemented (ITIN-003) |
 | `POST /v1/trips/{trip_id}/flights/search` | `{direction, from, to, date, max_stops?, checked_bags?, cabin?, sort?}` → `{search_id, offers: FlightOffer[]}`; pax from the trip; each offer has `expires_at` | M4 | MVP | implemented (FLIGHT-002) |
-| `POST /v1/trips/{trip_id}/transport/select` | `{offer_id}` → tentative flight booking replacing the same direction; 409 if expired; returns booking + `affected_dates` | M4 | MVP | todo |
+| `POST /v1/trips/{trip_id}/transport/select` | `{offer_id}` → tentative flight booking replacing the same direction; 409 if expired; returns booking + `affected_dates` | M4 | MVP | implemented (FLIGHT-004) |
 | `GET /v1/places/{place_id}/knowledge?moment=&lang=` | knowledge cards | M5 | MVP | todo |
 | `GET /v1/places/{place_id}/food?trip_id=` | ranked restaurants with match % + why | M5 | MVP | todo |
 | `GET /v1/places/{place_id}/photo-spots` | curated spots | M5 | MVP | todo |

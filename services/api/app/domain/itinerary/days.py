@@ -14,7 +14,7 @@ from pydantic import Field
 from app.domain.places.models import Place, PlaceCategory, open_intervals
 from app.domain.routing.models import RouteMatrix
 from app.domain.shared.models import Contract, Interest, MobilityNeeds, Pace, TimeWindow
-from app.domain.trips.models import BookingKind, BookingStatus, MustDo, Stop, TimeWindowConstraint, Trip
+from app.domain.trips.models import Booking, BookingKind, BookingStatus, MustDo, Stop, TimeWindowConstraint, Trip
 
 # --- tunable constants (A-15) ---------------------------------------------
 ARRIVAL_BUFFER = timedelta(minutes=90)
@@ -108,7 +108,8 @@ def _stop_for(trip: Trip, day: date) -> Stop:
     return trip.stops[-1]
 
 
-def _flights(trip: Trip):
+def arrival_departure(trip: Trip) -> tuple[Booking | None, Booking | None]:
+    """The trip's arrival flight (first) and departure flight (last), ignoring cancelled bookings."""
     flights = sorted(
         (b for b in trip.bookings if b.kind is BookingKind.FLIGHT and b.status is not BookingStatus.CANCELLED),
         key=lambda b: b.starts_at,
@@ -171,7 +172,7 @@ def _capacity(trip: Trip, free: int) -> int:
 
 
 def plan_day_inputs(trip: Trip, stops: dict[int, StopContext]) -> TripDayCandidates:
-    arrival, departure = _flights(trip)
+    arrival, departure = arrival_departure(trip)
     days: list[DayPlanInput] = []
     must_do_fit: dict[str, bool] = {}
     must_dos = [c for c in trip.constraints if c.kind == "must_do"]

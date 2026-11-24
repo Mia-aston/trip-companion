@@ -23,7 +23,7 @@ Domain code must be vendor-neutral. Any vendor request/response translation belo
 | `app/domain/itinerary/{plan,validator,planner}.py` | AI-001 `ProposedPlan` → canonical `PlanDay`s; ITIN-002 validator V1–V9; `Planner` protocol + `GreedyPlanner` |
 | `app/domain/itinerary/edits.py` | ITIN-003 pure edits: add / edit / delete / lock, booking re-mirroring |
 | `app/domain/itinerary/versions.py` · `app/db/plans.py` | `PlanVersion`, diff by `item_key`, key reuse, kept items · `PlanRepository` (immutable versions) |
-| `app/db/flights.py` · `app/orchestration/flights.py` | offer snapshots (`transport_options`) · trip flight search (pax + prefs from the trip) |
+| `app/db/flights.py` · `app/orchestration/{flights,transport}.py` | offer snapshots (`transport_options`) · trip flight search (pax + prefs from the trip) · select offer → tentative flight booking + `affected_dates` |
 | `app/orchestration` | fetch from providers → call pure domain functions |
 | `app/db/models.py` | SQLAlchemy schema (PostgreSQL + PostGIS) |
 | `app/db/repositories.py` | ORM row ⇄ domain object translation; only place that touches rows |
