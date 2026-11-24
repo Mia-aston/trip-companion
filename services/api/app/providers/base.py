@@ -1,33 +1,17 @@
-from dataclasses import dataclass
-from datetime import date, datetime
 from typing import Protocol
 
+from app.domain.flights.models import FlightOffer, FlightSearch
 from app.domain.places.models import Place, PlaceCategory
 from app.domain.routing.models import RouteMatrix, TravelMode, Waypoint
 from app.domain.shared.models import GeoPoint
 
 
-@dataclass(frozen=True)
-class FlightSegment:
-    origin: str
-    destination: str
-    departure: datetime
-    arrival: datetime
-    carrier: str
-    flight_number: str
-
-
-@dataclass(frozen=True)
-class FlightOption:
-    id: str
-    segments: tuple[FlightSegment, ...]
-    total_amount: float
-    currency: str
-    booking_url: str | None = None
-
-
 class FlightProvider(Protocol):
-    def search(self, origin: str, destination: str, departure_date: date, travellers: int) -> list[FlightOption]: ...
+    """Adapters return normalized `FlightOffer`s with `expires_at` (FLIGHT-001). Filtering/sorting is domain code."""
+
+    name: str
+
+    def search(self, search: FlightSearch) -> list[FlightOffer]: ...
 
 
 class PlacesProvider(Protocol):

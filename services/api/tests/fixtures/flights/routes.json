@@ -1,0 +1,33 @@
+{
+  "_note": "Sanitized mock flight templates. Fictional carriers; times are local to each airport; day offsets are relative to the search date.",
+  "routes": [
+    {"from": "LON", "to": "CAI", "options": [
+      {"key": "nm780", "cabin": "economy", "adult_fare": "340.00", "currency": "GBP", "checked_bags": 1, "refundable": false, "changeable": true,
+       "segments": [{"carrier": "NM", "carrier_name": "Nile Mock Air", "flight_number": "NM780", "origin": "LHR", "destination": "CAI", "origin_timezone": "Europe/London", "destination_timezone": "Africa/Cairo", "depart": "07:00", "arrive": "14:00"}]},
+      {"key": "nm778", "cabin": "economy", "adult_fare": "290.00", "currency": "GBP", "checked_bags": 1, "refundable": false, "changeable": true,
+       "segments": [{"carrier": "NM", "carrier_name": "Nile Mock Air", "flight_number": "NM778", "origin": "LHR", "destination": "CAI", "origin_timezone": "Europe/London", "destination_timezone": "Africa/Cairo", "depart": "16:30", "arrive": "23:30"}]},
+      {"key": "bm1980", "cabin": "economy", "adult_fare": "210.00", "currency": "GBP", "checked_bags": 0, "refundable": false, "changeable": false,
+       "segments": [
+         {"carrier": "BM", "carrier_name": "Bosphorus Mock", "flight_number": "BM1980", "origin": "LHR", "destination": "IST", "origin_timezone": "Europe/London", "destination_timezone": "Europe/Istanbul", "depart": "06:45", "arrive": "12:45"},
+         {"carrier": "BM", "carrier_name": "Bosphorus Mock", "flight_number": "BM690", "origin": "IST", "destination": "CAI", "origin_timezone": "Europe/Istanbul", "destination_timezone": "Africa/Cairo", "depart": "14:30", "arrive": "15:45"}]},
+      {"key": "nm780j", "cabin": "business", "adult_fare": "1150.00", "currency": "GBP", "checked_bags": 2, "refundable": true, "changeable": true,
+       "segments": [{"carrier": "NM", "carrier_name": "Nile Mock Air", "flight_number": "NM780", "origin": "LHR", "destination": "CAI", "origin_timezone": "Europe/London", "destination_timezone": "Africa/Cairo", "depart": "07:00", "arrive": "14:00"}]}
+    ]},
+    {"from": "LXR", "to": "LON", "options": [
+      {"key": "nm315", "cabin": "economy", "adult_fare": "260.00", "currency": "GBP", "checked_bags": 1, "refundable": false, "changeable": true,
+       "segments": [{"carrier": "NM", "carrier_name": "Nile Mock Air", "flight_number": "NM315", "origin": "LXR", "destination": "LGW", "origin_timezone": "Africa/Cairo", "destination_timezone": "Europe/London", "depart": "22:30", "arrive": "03:00", "arrive_day_offset": 1}]},
+      {"key": "nm152", "cabin": "economy", "adult_fare": "230.00", "currency": "GBP", "checked_bags": 1, "refundable": false, "changeable": true,
+       "segments": [
+         {"carrier": "NM", "carrier_name": "Nile Mock Air", "flight_number": "NM152", "origin": "LXR", "destination": "CAI", "origin_timezone": "Africa/Cairo", "destination_timezone": "Africa/Cairo", "depart": "15:10", "arrive": "16:20"},
+         {"carrier": "NM", "carrier_name": "Nile Mock Air", "flight_number": "NM777", "origin": "CAI", "destination": "LHR", "origin_timezone": "Africa/Cairo", "destination_timezone": "Europe/London", "depart": "18:00", "arrive": "21:30"}]},
+      {"key": "bm695", "cabin": "economy", "adult_fare": "180.00", "currency": "GBP", "checked_bags": 0, "refundable": false, "changeable": false,
+       "segments": [
+         {"carrier": "BM", "carrier_name": "Bosphorus Mock", "flight_number": "BM695", "origin": "LXR", "destination": "IST", "origin_timezone": "Africa/Cairo", "destination_timezone": "Europe/Istanbul", "depart": "04:30", "arrive": "08:00"},
+         {"carrier": "BM", "carrier_name": "Bosphorus Mock", "flight_number": "BM1971", "origin": "IST", "destination": "LHR", "origin_timezone": "Europe/Istanbul", "destination_timezone": "Europe/London", "depart": "10:15", "arrive": "12:45"}]}
+    ]},
+    {"from": "CAI", "to": "LON", "options": [
+      {"key": "nm777", "cabin": "economy", "adult_fare": "250.00", "currency": "GBP", "checked_bags": 1, "refundable": false, "changeable": true,
+       "segments": [{"carrier": "NM", "carrier_name": "Nile Mock Air", "flight_number": "NM777", "origin": "CAI", "destination": "LHR", "origin_timezone": "Africa/Cairo", "destination_timezone": "Europe/London", "depart": "18:00", "arrive": "21:30"}]}
+    ]}
+  ]
+}
