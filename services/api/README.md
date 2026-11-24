@@ -23,13 +23,14 @@ Domain code must be vendor-neutral. Any vendor request/response translation belo
 | `app/domain/itinerary/{plan,validator,planner}.py` | AI-001 `ProposedPlan` → canonical `PlanDay`s; ITIN-002 validator V1–V9; `Planner` protocol + `GreedyPlanner` |
 | `app/domain/itinerary/edits.py` | ITIN-003 pure edits: add / edit / delete / lock, booking re-mirroring |
 | `app/domain/itinerary/versions.py` · `app/db/plans.py` | `PlanVersion`, diff by `item_key`, key reuse, kept items · `PlanRepository` (immutable versions) |
+| `app/db/flights.py` · `app/orchestration/flights.py` | offer snapshots (`transport_options`) · trip flight search (pax + prefs from the trip) |
 | `app/orchestration` | fetch from providers → call pure domain functions |
 | `app/db/models.py` | SQLAlchemy schema (PostgreSQL + PostGIS) |
 | `app/db/repositories.py` | ORM row ⇄ domain object translation; only place that touches rows |
 | `migrations/` | Alembic migrations (`alembic revision --autogenerate -m "..."`, then review) |
 | `tests/` | unit + provider contract tests; `tests/db/` needs `TEST_DATABASE_URL` |
 
-## Schema (migrations `0001`–`0004`)
+## Schema (migrations `0001`–`0005`)
 
 - `users` — minimal account (D-01); `email` unique.
 - `trips` — CORE-001 contract: travellers (`adults`, `children_ages`, `infants`, party ≤ 20, infants ≤ adults), currencies, budget (all-or-nothing), pace, day window, interests, dietary, mobility, price level, `flight_prefs` JSONB, nullable `owner_id`.
@@ -41,6 +42,7 @@ Domain code must be vendor-neutral. Any vendor request/response translation belo
 - `provider_snapshots` — per provider call: request hash, result ids, `expires_at`. `route_legs` — cached travel times per provider/mode/pair.
 - `expenses` (cost + payer), `expense_shares` (who owes what), `transfers` (member → member, never trip cost; sender ≠ recipient). Money `numeric(14,2)` + ISO-4217.
 - `plan_versions` → `itinerary_days` → `itinerary_items`: immutable snapshots (unique `(trip_id, version)`, `item_key` stable across versions).
+- `transport_options`: flight offer snapshots per search with `expires_at` (never guaranteed fares).
 - Deleting a trip cascades to all children. Instants are `timestamptz` and come back as UTC (A-11).
 
 `TripRepository` (`app/db/repositories.py`) persists the Trip aggregate: `add`, `get`, `save` (scalars + stops), `delete`, and `add_/remove_` member, constraint, booking. `get_session` commits per request and rolls back on any error.
